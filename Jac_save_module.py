@@ -9,6 +9,7 @@ import model_builder as mdb
 import os as os
 import project_tools.parameter_fitting as pmfit
 from FRET_experiment.MandC2004_hacked import MandC2004hack
+from project_tools import simulation
 import matplotlib.pyplot as plt
 
 '''
@@ -72,8 +73,8 @@ def plot_Lcurve_curvature(nrm_resd,nrm_soln,Lambdas):
     ax2.yaxis.label.set_color(line2.get_color())
     ax1.tick_params(axis='y', colors=line1.get_color())
     ax2.tick_params(axis='y', colors=line2.get_color())
-
-if __name__ == "__main__":
+    
+def run_main():
     cwd = os.getcwd()
     cwd0 = os.getcwd()
     cwd += "/1PB7"
@@ -85,7 +86,14 @@ if __name__ == "__main__":
     rcpmanager = MandC2004hack(os.getcwd())
     #pmfit.prepare_newtons_method(model,"FRET",rcpmanager.append_log)
     pmfit.save_new_parameters(model,"FRET",rcpmanager.append_log)
+    simulation.constant_temp.start_next_Tf_loop_iteration(model,rcpmanager.append_log)
+    
+    os.chdir(cwd0)
         
+    
+
+if __name__ == "__main__":
+    run_main()
     
     print "GOT TO END"
 
