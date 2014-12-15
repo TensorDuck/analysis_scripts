@@ -5,6 +5,7 @@ by Justin Chen
 """
 
 #import plot_epsilon_native
+import FRET_experiment
 import plot_depsilon_native
 import pair_distance_calculator
 import plot_function
