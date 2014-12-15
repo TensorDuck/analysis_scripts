@@ -9,7 +9,6 @@ import traj_R
 import traj_Rcompute
 import traj_Rexperiment
 import traj_trace
-import Jac_test_module
 
 
 
