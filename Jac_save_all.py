@@ -16,7 +16,7 @@ if __name__ == "__main__":
     print temps
     for t in temps:
         print "Starting temperature %d" % t
-        os.chdir(str(t))
+        os.chdir("%d"%t)
         run_saving()
         os.chdir(cwd)
     print "Finished all temperatures"
