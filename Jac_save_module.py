@@ -79,7 +79,7 @@ def run_main():
     cwd0 = os.getcwd()
     cwd += "/1PB7"
     log = "%s/modelbuilder.log" % cwd
-    T_fit = np.loadtxt("fitting_temperature.txt")
+    T_fit = int(np.loadtxt("fitting_temperature.txt"))
     model = mdb.check_inputs.load_model(cwd, False)
 
     rcpmanager = MandC2004hack(os.getcwd())
@@ -92,18 +92,18 @@ def run_main():
     newdirec = "%s/iteration_%d" % (cwd, model.iteration)
     
     if not os.path.isdir(newdirec):
-        makedir(newdirec)
+        os.mkdir(newdirec)
     
     os.chdir(newdirec)
     
-    simulation.run_temperature_array(model,T_fit,T_fit,5)
+    simulation.constant_temp.run_temperature_array(model,T_fit,T_fit,5)
     
     append_log(model.subdir,"Submitting short_temps iteration %d " % model.iteration)
     append_log(model.subdir,"  T_min = %d , T_max = %d , dT = %d" % (T_fit, T_fit, 5))
     append_log(model.subdir,"Starting: Tf_loop_iteration")
     
     os.chdir(cwd0)
-    open(model.subdir+"/model.info","w").write(Models[i].get_model_info_string())
+    open(model.subdir+"/model.info","w").write(model.get_model_info_string())
     
 if __name__ == "__main__":
     run_main()
