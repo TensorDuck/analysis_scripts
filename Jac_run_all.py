@@ -22,7 +22,7 @@ if __name__ == "__main__":
     f = open("fitting.txt","r")
     method = f.readline()
     svdt = False
-    if method == "tsvd"
+    if method == "tsvd":
         svdt = True
     f.close()
     
