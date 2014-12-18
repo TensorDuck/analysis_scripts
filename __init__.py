@@ -14,3 +14,4 @@ import Jac_run_module
 import Jac_save_module
 import Jac_save_all
 import Jac_run_all
+import quick_jac

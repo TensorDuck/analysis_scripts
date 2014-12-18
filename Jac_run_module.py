@@ -37,7 +37,7 @@ def run_main(T_fit, pairs, spacing, svdt):
     
 if __name__ == "__main__":
     T_fit = int(np.loadtxt("fitting_temperature.txt"))
-    run_main(T_fit)
+    run_main(T_fit, np.array([[114, 192]]), 0.1, True)
 
 
 
