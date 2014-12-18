@@ -12,7 +12,66 @@ import os
 import matplotlib.pyplot as plt
 import matplotlib
 
+def histogram_iterations(pairs,spacing,temperature):
+    ##assumes you are in the directory with al lthe iterations.
+    cwd = os.getcwd()
+    print "Beginning histogramming of the directory %s" % cwd
+    if not os.path.isfile("model.info"):
+        print "NO model.info, need that file to proceed, FAILING"
+    
+    f = open("model.info","r")
+    iFound = False
+    iterations = 0
+    while not iFound:
+        if f.readline() == "[ Iteration ]\n":
+            iterations = int(f.readline()[:-1]) + 1
+            iFound = True
+    f.close()
+    
+    if not os.path.isdir("histanalysis"):
+        os.mkdir("histanalysis")
+    
+    opd = "%s/histanalysis" %cwd
+    
+    centers_of_bins = [] 
+    normalized_valu = []
+    
+    for i in pairs:## first index, pair, second index, histogram info
+        centers_of_bins.append([])
+        normalized_valu.append([])
+    ##get original data
+    for j in range(np.shape(pairs)[0]):
+        data = np.loadtxt("T%d_0-pair%d-%d.dat"%(temperature,pairs[j][0]+1, pairs[j][1]+1)) 
+        centers_of_bins[j].append(data[:,0])
+        normalized_valu[j].append(data[:,1])
+    ##start histogram analysis
+    for i in range(iterations):
+        print "Starting histogram analysis"
+        os.chdir("iteration_%d/%d_0"%(i,temperature))
+        traj = md.load("traj.xtc", top="Native.pdb")
+        compdist = compute_distances(traj, pairs)
+        for j in range(np.shape(compdist)[1]): ##for each pair
+            print "Calculating pair %s" % str(pairs[j]) 
+            hist, centers = histogram_data_normalized(compdist[:,j], spacing)
+            centers_of_bins[j].append(centers)
+            normalized_valu[j].append(hist)
+        os.chdir(cwd)
+    print "Finished calculating the histograms, begining file writing"
+    os.chdir(opd)
+    ##start saving the data
+    for j in range(np.shape(pairs)[0]):
+        for i in range(iterations+1):
+            data = np.array([centers_of_bins[j][i],normalized_valu[j][i]])
+            data = data.transpose()
+            np.savetxt("Iteration%d-pair%d-%d.dat"%(i, pairs[j][0]+1, pairs[j][1]+1), data)
+    os.chdir(cwd)  
+    print "Completed histogramming and file writing for directory %s" % cwd   
+    return centers_of_bins, normalized_valu, np.arange(iterations+1)
+
+
+
 def histogram_directory(pairs, spacing):
+    ##assumes you are in diretory with short_temps.txt
     cwd = os.getcwd()
     print "Beginning histogramming of the directory %s" % cwd
     if not os.path.isfile("short_temps"):
@@ -62,6 +121,19 @@ def histogram_directory(pairs, spacing):
     
 
 def plot_directory(centers_of_bins, normalized_valu, pairs, temp_directory, spacing):
+    for i in np.arange(np.shape(temp_directory)[0]):
+        temp_directory[i] = "T=" + temp_directory[i][:-2]
+    plot_it(centers_of_bins, normalized_valu, pairs, temp_directory, spacing, "ProbDist")
+
+def plot_iterations(centers_of_bins, normalized_valu, pairs, label, spacing, fit_temp):
+    label_string = []
+    for i in label:
+        label_string.append("Iter=%d" % i)
+        
+    plot_it(centers_of_bins, normalized_valu, pairs, label_string, spacing, "T-%d-Iter-%d"%(fit_temp, np.max(label)))
+       
+    
+def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title):
     #Plot every file, different graphs for different pairs. Outputs a picture to the current directory
     cwd = os.getcwd()
     print "Beginning plotting of directory %s" %cwd
@@ -73,20 +145,20 @@ def plot_directory(centers_of_bins, normalized_valu, pairs, temp_directory, spac
     fhist, fcenter = histogram_data_normalized(fdata, spacing)
     
     for j in range(np.shape(pairs)[0]):
-        plt.figure(j)
+        plt.figure()
         maxvalue = 0.0
         maxcenter = 0.0
         plt.plot(fcenter,fhist, alpha=1, color="k", linewidth=2, marker="o", label="D-FRET Data")
         plt.xlabel("R (nm)", fontsize=20)
         plt.ylabel("Probability",fontsize=20)
         plt.title("R-histogram for pair %d-%d"% (pairs[j][0]+1, pairs[j][1]+1), fontsize=20)
-        for i in range(np.shape(temp_directory)[0]):
-            plt.plot(centers_of_bins[j][i], normalized_valu[j][i], alpha=0.75, linewidth=2, linestyle=linetype[i/6], color=colors[i], label="T-%s"%temp_directory[i][:-2], marker="o")
+        for i in range(np.shape(label)[0]):
+            plt.plot(centers_of_bins[j][i], normalized_valu[j][i], alpha=0.75, linewidth=2, linestyle=linetype[i/6], color=colors[i], label="%s"%label[i], marker="o")
             maxvalue = find_max(maxvalue, np.max(normalized_valu[j][i]))
             maxcenter = find_max(maxcenter, np.max(centers_of_bins[j][i]))
         plt.axis([0,int(maxcenter*1.5)+1, 0, maxvalue*1.2],fontisze=20) 
         plt.legend()
-        plt.savefig("ProbDist-Pair-%d-%d.png"% (pairs[j][0]+1, pairs[j][1]+1))
+        plt.savefig("%s-Pair-%d-%d.png"% (title, pairs[j][0]+1, pairs[j][1]+1))
 
     print "Finished plotting the directory"
 
