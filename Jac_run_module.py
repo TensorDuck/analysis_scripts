@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import project_tools.parameter_fitting.FRET.truncated_SVD_FRET as tsvd
 import analysis_scripts.pair_distance_calculator as pdistance
 
-def run_main(T_fit, pairs, spacing):
+def run_main(T_fit, pairs, spacing, svdt):
     
     print pmfit.FRET.compute_Jacobian.def_temp
     pmfit.FRET.compute_Jacobian.def_temp = T_fit
@@ -24,7 +24,8 @@ def run_main(T_fit, pairs, spacing):
     log = "%s/modelbuilder.log" % cwd
 
     model = mdb.check_inputs.load_model(cwd, False)
-    model.fitting_solver = "TSVD"
+    if svdt:
+        model.fitting_solver = "TSVD"
     rcpmanager = MandC2004hack(os.getcwd())
     pmfit.prepare_newtons_method(model,"FRET",rcpmanager.append_log)
     
