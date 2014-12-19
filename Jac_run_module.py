@@ -20,7 +20,7 @@ def run_main(T_fit, pairs, spacing, svdt):
     cwd = os.getcwd()
     cwd0 = os.getcwd()
     cwd += "/1PB7"
-
+    
     log = "%s/modelbuilder.log" % cwd
 
     model = mdb.check_inputs.load_model(cwd, False)
@@ -32,6 +32,8 @@ def run_main(T_fit, pairs, spacing, svdt):
     os.chdir(cwd)
     centers_of_bins, normalized_valu, labels = pdistance.histogram_iterations(pairs,spacing,T_fit)
     os.chdir(cwd0)
+    
+    
     return centers_of_bins, normalized_valu, labels
     
     

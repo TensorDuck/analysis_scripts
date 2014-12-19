@@ -130,7 +130,7 @@ def plot_iterations(centers_of_bins, normalized_valu, pairs, label, spacing, fit
     for i in label:
         label_string.append("Iter=%d" % i)
         
-    plot_it(centers_of_bins, normalized_valu, pairs, label_string, spacing, "T-%d-Iter-%d"%(fit_temp, np.max(label)))
+    plot_it(centers_of_bins, normalized_valu, pairs, label_string, spacing, "T-%d-Iter-%d"%(fit_temp, np.max(label)-1))
        
     
 def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title):
