@@ -5,6 +5,8 @@ This script is for running a jacobian and fitting calculation on every temperatu
 
 import numpy as np
 import os
+import matplotlib
+matplotlib.use("Agg")
 import analysis_scripts.Jac_run_module as jrm
 import analysis_scripts.pair_distance_calculator as pdistance
 
@@ -22,10 +24,10 @@ if __name__ == "__main__":
     f = open("fitting.txt","r")
     method = f.readline()
     svdt = False
-    if method == "tsvd":
+    if method[:4] == "tsvd":
         svdt = True
     f.close()
-    
+    print "svdt is = ", svdt
     if not os.path.isdir(owd):
         os.mkdir(owd)
     print temps

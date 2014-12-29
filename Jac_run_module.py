@@ -33,10 +33,22 @@ def run_main(T_fit, pairs, spacing, svdt):
     centers_of_bins, normalized_valu, labels = pdistance.histogram_iterations(pairs,spacing,T_fit)
     os.chdir(cwd0)
     
-    
+    newtondir = "%s/iteration_%d/newton" % (cwd,model.iteration)
+    os.chdir(newtondir)
+    estimate_lambda()
+    os.chdir(cwd0)    
     return centers_of_bins, normalized_valu, labels
-    
-    
+
+def estimate_lambda():
+    print "estimating the value of lambda from singular values"    
+    svf = np.loadtxt("singular_values.dat") 
+    index = 0
+    num = np.shape(svf)[0]
+    for i in range(num-1):
+        if svf[i]/svf[i+1] > 1000:
+            index = num - 1 - i   
+    open("Lambda_index.txt","w").write("%d"%index)
+
 if __name__ == "__main__":
     T_fit = int(np.loadtxt("fitting_temperature.txt"))
     run_main(T_fit, np.array([[114, 192]]), 0.1, True)
