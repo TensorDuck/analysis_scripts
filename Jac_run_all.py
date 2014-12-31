@@ -20,7 +20,7 @@ if __name__ == "__main__":
     owd = "%s/histograms" % cwd
     
     f = open("fitting.txt","r")
-    fsv = open("cutoffs.txt")
+    fsv = open("cutoffs.txt", "w")
     
     method = f.readline()
     svdt = False
