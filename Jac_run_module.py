@@ -35,19 +35,24 @@ def run_main(T_fit, pairs, spacing, svdt):
     
     newtondir = "%s/iteration_%d/newton" % (cwd,model.iteration)
     os.chdir(newtondir)
-    estimate_lambda()
+    highvalue, lowvalue = estimate_lambda()
     os.chdir(cwd0)    
-    return centers_of_bins, normalized_valu, labels
+    return centers_of_bins, normalized_valu, labels, highvalue, lowvalue
 
 def estimate_lambda():
     print "estimating the value of lambda from singular values"    
     svf = np.loadtxt("singular_values.dat") 
     index = 0
     num = np.shape(svf)[0]
+    lowvalue = 0.0
+    highvalue = 0.0
     for i in range(num-1):
         if svf[i]/svf[i+1] > 1000:
-            index = num - 1 - i   
+            index = num - 1 - i
+            highvalue = svf[i]
+            lowvalue = svf[i+1]   
     open("Lambda_index.txt","w").write("%d"%index)
+    return highvalue, lowvalue
 
 if __name__ == "__main__":
     T_fit = int(np.loadtxt("fitting_temperature.txt"))

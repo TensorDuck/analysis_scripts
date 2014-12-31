@@ -165,33 +165,48 @@ def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title):
 def get_FRET_data():
     found = False
     paths = [ "/home/jchen/projects/2014/10_00_14-FRET/", "/home/jc49/work/", ""]
-    fdata = []
     for i in paths:
         if os.path.isfile("%sFRET_trace.dat"%i) and (not found):
-            found = True
-            print "here is the data"
-            print np.loadtxt("%sFRET_trace.dat"%i)
-             
+            found = True 
             fdata = np.loadtxt("%sFRET_trace.dat"%i)
             print "FOUND FRET_data"
     return fdata
 
-def histogram_data_normalized(y, spacing, wgt=None):
-    hist, bincenters = histogram_data(y, spacing, wgt)
+def histogram_data_normalized(y, spacing, weight=[]):
+    hist, bincenters = histogram_data(y, spacing, weight)
     hist = hist / (spacing*np.sum(hist))
     return hist, bincenters
 
 
-def histogram_data(y, spacing, wgt=None):
+def histogram_data(y, spacing, weight=[]):
     maxstep = int(np.max(y)/spacing) + 1
     minstep = int(np.min(y)/spacing)
     numbins = maxstep - minstep
     ransize = (minstep*spacing,maxstep*spacing)
-    hist, edges = np.histogram(y, numbins, ransize, weights=wgt)
+    hist, edges = hist_it(y, numbins, ransize, weight)
     edges = edges + (0.5*spacing)
     bincenters = edges[:-1]
     return hist, bincenters
 
+def hist_it(y, numbins, ransize, weight=[]):
+    if weight == []:
+        hist, edges = np.histogram(y, numbins, ransize)
+    else:
+        hist, edges = bin_it(y, numbins, ransize, weight)
+    return hist, edges
+
+def bin_it(y, numbins, ransize, weight=[]):
+    if not np.shape(weight)[0] == np.shape(y)[0]:
+        print "ERROR: Weights and Trajectory not the same length"
+    hist = np.zeros(numbins)
+    spacing = (ransize(1)-ransize(0)) / numbins
+    for i in range(np.shape(y)[0]):
+        hist[int((y[i]-ransize(0))/spacing)] += weight[i]
+    edges = np.arange(ransize(0), ransize(1)+spacing, spacing)
+    return hist, edges
+        
+    
+     
 def compute_distances(traj, prs):
     return md.compute_distances(traj, prs, periodic=False)
 
