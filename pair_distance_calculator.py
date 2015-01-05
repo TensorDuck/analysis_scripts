@@ -35,27 +35,31 @@ def histogram_iterations(pairs,spacing,temperature):
     
     centers_of_bins = [] 
     normalized_valu = []
+    labels = []
     
     for i in pairs:## first index, pair, second index, histogram info
         centers_of_bins.append([])
         normalized_valu.append([])
     ##get original data
+    labels.append(0)
     for j in range(np.shape(pairs)[0]):
         data = np.loadtxt("T%d_0-pair%d-%d.dat"%(temperature,pairs[j][0]+1, pairs[j][1]+1)) 
         centers_of_bins[j].append(data[:,0])
         normalized_valu[j].append(data[:,1])
     ##start histogram analysis
     for i in range(iterations):
-        print "Starting histogram analysis"
-        os.chdir("iteration_%d/%d_0"%(i,temperature))
-        traj = md.load("traj.xtc", top="Native.pdb")
-        compdist = compute_distances(traj, pairs)
-        for j in range(np.shape(compdist)[1]): ##for each pair
-            print "Calculating pair %s" % str(pairs[j]) 
-            hist, centers = histogram_data_normalized(compdist[:,j], spacing)
-            centers_of_bins[j].append(centers)
-            normalized_valu[j].append(hist)
-        os.chdir(cwd)
+        if (i > iterations-4) or (i%4==0)
+            print "Starting histogram analysis"
+            labels.append(i+1)
+            os.chdir("iteration_%d/%d_0"%(i,temperature))
+            traj = md.load("traj.xtc", top="Native.pdb")
+            compdist = compute_distances(traj, pairs)
+            for j in range(np.shape(compdist)[1]): ##for each pair
+                print "Calculating pair %s" % str(pairs[j]) 
+                hist, centers = histogram_data_normalized(compdist[:,j], spacing)
+                centers_of_bins[j].append(centers)
+                normalized_valu[j].append(hist)
+            os.chdir(cwd)
     print "Finished calculating the histograms, begining file writing"
     os.chdir(opd)
     ##start saving the data
@@ -66,7 +70,7 @@ def histogram_iterations(pairs,spacing,temperature):
             np.savetxt("Iteration%d-pair%d-%d.dat"%(i, pairs[j][0]+1, pairs[j][1]+1), data)
     os.chdir(cwd)  
     print "Completed histogramming and file writing for directory %s" % cwd   
-    return centers_of_bins, normalized_valu, np.arange(iterations+1)
+    return centers_of_bins, normalized_valu, labels
 
 
 
