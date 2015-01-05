@@ -48,7 +48,7 @@ def histogram_iterations(pairs,spacing,temperature):
         normalized_valu[j].append(data[:,1])
     ##start histogram analysis
     for i in range(iterations):
-        if (i > iterations-4) or (i%4==0)
+        if (i > iterations-4) or (i%4==0):
             print "Starting histogram analysis"
             labels.append(i+1)
             os.chdir("iteration_%d/%d_0"%(i,temperature))
