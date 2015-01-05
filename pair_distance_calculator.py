@@ -47,10 +47,12 @@ def histogram_iterations(pairs,spacing,temperature):
         centers_of_bins[j].append(data[:,0])
         normalized_valu[j].append(data[:,1])
     ##start histogram analysis
+    num_calculated = 1
     for i in range(iterations):
         if (i > iterations-4) or (i%4==0):
             print "Starting histogram analysis"
             labels.append(i+1)
+            num_calculated += 1
             os.chdir("iteration_%d/%d_0"%(i,temperature))
             traj = md.load("traj.xtc", top="Native.pdb")
             compdist = compute_distances(traj, pairs)
@@ -64,10 +66,10 @@ def histogram_iterations(pairs,spacing,temperature):
     os.chdir(opd)
     ##start saving the data
     for j in range(np.shape(pairs)[0]):
-        for i in range(iterations+1):
+        for i in range(num_calculated):
             data = np.array([centers_of_bins[j][i],normalized_valu[j][i]])
             data = data.transpose()
-            np.savetxt("Iteration%d-pair%d-%d.dat"%(i, pairs[j][0]+1, pairs[j][1]+1), data)
+            np.savetxt("Iteration%d-pair%d-%d.dat"%(labels[i], pairs[j][0]+1, pairs[j][1]+1), data)
     os.chdir(cwd)  
     print "Completed histogramming and file writing for directory %s" % cwd   
     return centers_of_bins, normalized_valu, labels
