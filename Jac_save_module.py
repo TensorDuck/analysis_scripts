@@ -28,8 +28,7 @@ def run_main(T_fit):
     append_log = rcpmanager.append_log
     #pmfit.prepare_newtons_method(model,"FRET",rcpmanager.append_log)
     pmfit.save_new_parameters(model,"FRET",append_log)
-    
-    '''
+
 
     model.iteration += 1
     newdirec = "%s/iteration_%d" % (cwd, model.iteration)
@@ -47,7 +46,7 @@ def run_main(T_fit):
     
     os.chdir(cwd0)
     open(model.subdir+"/model.info","w").write(model.get_model_info_string())
-'''
+
 if __name__ == "__main__":
     T_fit = int(np.loadtxt("fitting_temperature.txt"))
     run_main(T_fit)
