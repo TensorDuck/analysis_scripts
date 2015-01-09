@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     temps = np.loadtxt("Temparray.txt")
     cwd = os.getcwd()
-    f = open("Fitting_damping.txt")
+    f = open("Fitting_damping.txt","w")
     print temps
     for t in temps:
         print "Starting temperature %d" % t
