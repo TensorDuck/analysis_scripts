@@ -20,7 +20,7 @@ if __name__ == "__main__":
         os.chdir("%d"%t)
         iteration = run_saving(int(t))
         ffit = int(open("1PB7/iteration_%d/newton/fitting_scale").readline())
-        if ffit = "1":
+        if ffit == "1":
             f.write("Temperature %d scaled = True\n"%t)
         else:
             f.write("Temperature %d scaled = False\n"%t)
