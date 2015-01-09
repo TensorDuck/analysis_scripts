@@ -46,6 +46,8 @@ def run_main(T_fit):
     
     os.chdir(cwd0)
     open(model.subdir+"/model.info","w").write(model.get_model_info_string())
+    
+    return model.iteration-1
 
 if __name__ == "__main__":
     T_fit = int(np.loadtxt("fitting_temperature.txt"))

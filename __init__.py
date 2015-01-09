@@ -18,3 +18,4 @@ import Jac_run_module
 import Jac_save_module
 import Jac_save_all
 import quick_jac
+import free_energy_plot_1d
