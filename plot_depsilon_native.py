@@ -30,8 +30,6 @@ def plot_epsilons(bottom, nameb, modelA):
         square[pairs[i][0]-1, pairs[i][1]-1] = bottom[i]
         square[pairs[i][1]-1, pairs[i][0]-1] = colmax
     
-    print np.shape(x)
-    print np.shape(square)
     print "Starting ", nameb
     plt.figure()
     plt.pcolor(x, y, square ,cmap="RdBu", vmin=colmin, vmax=colmax)

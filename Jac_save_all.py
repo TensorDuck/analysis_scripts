@@ -27,6 +27,6 @@ if __name__ == "__main__":
         os.chdir(cwd)
     
     f = open("Fitting_damping_%d.txt"%iteration,"w")
-    f.write("fit_string")
+    f.write(fit_string)
     f.close()
     print "Finished all temperatures"
