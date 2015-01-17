@@ -12,14 +12,12 @@ import matplotlib.pyplot as plt
 import project_tools.parameter_fitting.FRET.truncated_SVD_FRET as tsvd
 import analysis_scripts.pair_distance_calculator as pdistance
 
-def run_main(T_fit, pairs, spacing, svdt):
+def run_main(T_fit, pairs, spacing, svdt, subfolder="1PB7"):
     
-    print pmfit.FRET.compute_Jacobian.def_temp
     pmfit.FRET.compute_Jacobian.def_temp = T_fit
-    print pmfit.FRET.compute_Jacobian.def_temp
     cwd = os.getcwd()
     cwd0 = os.getcwd()
-    cwd += "/1PB7"
+    cwd += "/%s" % subfolder
     
     log = "%s/modelbuilder.log" % cwd
 
@@ -28,15 +26,18 @@ def run_main(T_fit, pairs, spacing, svdt):
         model.fitting_solver = "TSVD"
     rcpmanager = MandC2004hack(os.getcwd())
     pmfit.prepare_newtons_method(model,"FRET",rcpmanager.append_log)
-    
+    '''
+    #This will make a histogram of all the different iterations and save the data accordingly
     os.chdir(cwd)
     centers_of_bins, normalized_valu, labels = pdistance.histogram_iterations(pairs,spacing,T_fit)
     os.chdir(cwd0)
-    
+    '''
+    ##Following will estimate the expected cutoff, along with return the boundaries of the cutoff
     newtondir = "%s/iteration_%d/newton" % (cwd,model.iteration)
     os.chdir(newtondir)
     highvalue, lowvalue = estimate_lambda()
     os.chdir(cwd0)    
+    
     return centers_of_bins, normalized_valu, labels, highvalue, lowvalue
 
 def estimate_lambda():
@@ -44,8 +45,8 @@ def estimate_lambda():
     svf = np.loadtxt("singular_values.dat") 
     index = 0
     num = np.shape(svf)[0]
-    lowvalue = 0.0
-    highvalue = 0.0
+    lowvalue = np.min(svf)
+    highvalue = np.min(svf)
     for i in range(num-1):
         if svf[i]/svf[i+1] > 1000:
             index = num - 1 - i
@@ -56,7 +57,7 @@ def estimate_lambda():
 
 if __name__ == "__main__":
     T_fit = int(np.loadtxt("fitting_temperature.txt"))
-    run_main(T_fit, np.array([[114, 192]]), 0.1, True)
+    run_main(T_fit, np.array([[114, 192]]), 0.1, True, "1PBQ")
 
 
 

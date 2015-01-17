@@ -17,6 +17,19 @@ from FRET_experiment.MandC2004_hacked import MandC2004hack
 from project_tools import simulation
 import matplotlib.pyplot as plt
 
+def step_1(sub_folder = "1PB7"):
+    cwd = os.getcwd()
+    cwd0 = os.getcwd()
+    cwd += "/%s"%sub_folder
+    log = "%s/modelbuilder.log" % cwd
+    model = mdb.check_inputs.load_model(cwd, False)
+
+    rcpmanager = MandC2004hack(os.getcwd())
+    append_log = rcpmanager.append_log
+    
+    pmfit.save_new_parameters(model,"FRET",append_log)
+    
+
 def run_main(T_fit):
     cwd = os.getcwd()
     cwd0 = os.getcwd()
@@ -50,9 +63,9 @@ def run_main(T_fit):
     return model.iteration-1
 
 if __name__ == "__main__":
-    T_fit = int(np.loadtxt("fitting_temperature.txt"))
-    run_main(T_fit)
-    
+    #T_fit = int(np.loadtxt("fitting_temperature.txt"))
+    #run_main(T_fit)
+    step_1("1PBQ")
     print "GOT TO END"
 
 
