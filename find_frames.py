@@ -61,7 +61,7 @@ if __name__ == "__main__":
         fsave = open(fout,"w")
     
     if args.step == None:
-        merge(args.range[0], args.range[1])
+        mf.merge(args.range[0], args.range[1])
         find_frames_2D(args.range[0], args.range[1], bounds=args.bound, fout=fsave, groupname=args.group_name)
     else:
         if args.range[0] < args.step:
