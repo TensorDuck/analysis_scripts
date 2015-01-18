@@ -47,9 +47,9 @@ if __name__ == "__main__":
         print "Fixing range to lower bound of iteration 6"
     
     if args.name == None:
-        fout = "%s/iter%d-%d-frame%d-%d-%d-%d"%(args.save_dir,args.range[0],args.range[1],args.bound[0],args.bound[1],args.bound[2],args.bound[3])
+        fout = "%s/iter%d-%d-frames.ndx"%(args.save_dir,args.range[0],args.range[1])
     else:
-        fout = "%s/%s"%(args.save_dir,args.fname)
+        fout = "%s/%s.ndx"%(args.save_dir,args.fname)
     
     if args.append:
         fsave = open(fout,"a")
