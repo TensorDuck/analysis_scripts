@@ -29,9 +29,9 @@ if __name__ == "__main__":
     
     args = par.parse_args()
     
-    if file_dir[-1] == "/":
+    if args.file_dir[-1] == "/":
         args.file_dir = file_dir[:-1]
-    if save_dir[-1] == "/":
+    if args.save_dir[-1] == "/":
         args.save_dir = save_dir[:-1]
     
     if args.range[0] < 6:
