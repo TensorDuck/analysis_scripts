@@ -136,7 +136,7 @@ if __name__=="__main__":
             for stop in np.arange(args.step, args.range[1], args.step):
                 combine_iterations_rmsd(args.range[0], stop, file_location, output_location, w=args.weight, nbins=args.bins, axisr=raxis, axisq=qaxis)
         else:
-            for stop in np.arange(args.range[0], args.range[1], args.step):
+            for stop in np.arange(args.range[0]+args.step, args.range[1], args.step):
                 combine_iterations_rmsd(args.range[0], stop, file_location, output_location, w=args.weight, nbins=args.bins, axisr=raxis, axisq=qaxis)
         
     
