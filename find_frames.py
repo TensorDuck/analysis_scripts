@@ -6,6 +6,7 @@ Specific to dealing with the output from the dmdmd script
 import numpy as np
 import analysis_scripts.merge_files as mf
 import argparse
+import os
 
 def find_frames_2D(start, stop, bounds=[0, 1, 0, 1], fout=None, groupname="group1"):
     frame_num = 1
