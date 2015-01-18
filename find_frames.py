@@ -8,10 +8,12 @@ import analysis_scripts.merge_files as mf
 import argparse
 import os
 
-def find_frames_2D(start, stop, bounds=[0, 1, 0, 1], fout=None, groupname="group1"):
+def find_frames_2D(start, stop, bounds=[0, 1, 0, 1], fout=None, groupname=None):
     frame_num = 1
     if fout == None:
         fout = open("iter%d-%d.ndx"%(start,stop), "w")
+    if groupname == None:
+        groupname = "group1"
         
     fout.write("\n[%s]\n"%groupname)
     for i in np.arange(start, stop+1, 2):
@@ -48,7 +50,7 @@ if __name__ == "__main__":
         args.range[0] = 6
         print "Fixing range to lower bound of iteration 6"
     
-    if args.name == None:
+    if args.fname == None:
         fout = "%s/iter%d-%d-frames.ndx"%(args.save_dir,args.range[0],args.range[1])
     else:
         fout = "%s/%s.ndx"%(args.save_dir,args.fname)
