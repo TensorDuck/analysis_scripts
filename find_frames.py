@@ -94,7 +94,7 @@ if __name__ == "__main__":
                 mf.merge(args.range[0], stop, args.file_dir, args.save_dir)     
                 find_frames_2D(args.range[0], stop, bounds=args.bound, fout=fsave, groupname=args.group_name,xvg_dir=xvg_file_dir) 
     
-    finfo.write("%s is for a range of %5.5f < Q <%5.5f and %5.5f < rmsd(nm) < %5.5f\n"%(args.group_name,args.bound[0],args.bound[1],args.bound[2],args.bound[3]))
+    finfo.write("[%s] is for a range of %5.5f < Q <%5.5f and %5.5f < rmsd(nm) < %5.5f\n"%(args.group_name,args.bound[0],args.bound[1],args.bound[2],args.bound[3]))
     finfo.close() 
     fsave.close()
                 
