@@ -11,6 +11,7 @@ import os
 def find_frames_2D(start, stop, bounds=[0, 1, 0, 1], fout=None, groupname=None, xvg_dir=None):
     print "Begin Frame Loading"
     frame_num = 1
+    close = False
     if fout == None:
         fout = open("iter%d-%d.ndx"%(start,stop), "w")
         close = True
@@ -31,7 +32,6 @@ def find_frames_2D(start, stop, bounds=[0, 1, 0, 1], fout=None, groupname=None, 
         for i in range(np.shape(rc1)[0]):
             if rc1[i]<bounds[1] and rc1[i]>bounds[0] and rc2[i]<bounds[3] and rc2[i]>bounds[2]:
                 fout.write("%d\n"%frame_num)
-                print "here"
             frame_num += 1
     if close:
         fout.close()
