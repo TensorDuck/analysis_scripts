@@ -67,15 +67,19 @@ if __name__ == "__main__":
     
     if args.fname == None:
         fout = "%s/iter%d-%d-frames.ndx"%(args.save_dir,args.range[0],args.range[1])
+        fout = "%s/iter%d-%d-info.txt"%(args.save_dir,args.range[0],args.range[1])
     else:
         fout = "%s/%s.ndx"%(args.save_dir,args.fname)
+        finf = "%s/%s-info.txt"%(args.save_dir,args.fname)
     
     if args.append:
         print "Appending the File"
         fsave = open(fout,"a")
+        finfo = open(finf,"a")
     else:
         print "Overwriting the File"
         fsave = open(fout,"w")
+        finfo = open(finf,"w")
     
     if args.step == None:
         mf.merge(args.range[0], args.range[1],args.file_dir, args.save_dir)
@@ -90,6 +94,7 @@ if __name__ == "__main__":
                 mf.merge(args.range[0], stop, args.file_dir, args.save_dir)     
                 find_frames_2D(args.range[0], stop, bounds=args.bound, fout=fsave, groupname=args.group_name,xvg_dir=xvg_file_dir) 
     
-    
+    finfo.write("%s is for a range of %5.5f < Q <%5.5f and %5.5f < rmsd(nm) < %5.5f\n")
+    finfo.close() 
     fsave.close()
                 
