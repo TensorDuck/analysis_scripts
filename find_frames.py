@@ -9,9 +9,11 @@ import argparse
 import os
 
 def find_frames_2D(start, stop, bounds=[0, 1, 0, 1], fout=None, groupname=None, xvg_dir=None):
+    print "Begin Frame Loading"
     frame_num = 1
     if fout == None:
         fout = open("iter%d-%d.ndx"%(start,stop), "w")
+        close = True
     if groupname == None:
         groupname = "group1"
         
@@ -31,7 +33,9 @@ def find_frames_2D(start, stop, bounds=[0, 1, 0, 1], fout=None, groupname=None, 
                 fout.write("%d\n"%frame_num)
                 print "here"
             frame_num += 1
-    fout.close()
+    if close:
+        fout.close()
+    print "Finished Frame Loading"
     
 if __name__ == "__main__":
     par = argparse.ArgumentParser(description="parent set of parameters", add_help=False)
@@ -54,6 +58,8 @@ if __name__ == "__main__":
     
     if not args.xvg_dir == None:
         xvg_file_dir = "%s/%s" % (args.file_dir,args.xvg_dir)
+    else:
+        xvg_file_dir = None
     
     if args.range[0] < 6:
         args.range[0] = 6
@@ -65,8 +71,10 @@ if __name__ == "__main__":
         fout = "%s/%s.ndx"%(args.save_dir,args.fname)
     
     if args.append:
+        print "Appending the File"
         fsave = open(fout,"a")
     else:
+        print "Overwriting the File"
         fsave = open(fout,"w")
     
     if args.step == None:
@@ -81,5 +89,7 @@ if __name__ == "__main__":
             for stop in np.arange(args.range[0]+args.step, args.range[1], args.step):
                 mf.merge(args.range[0], stop, args.file_dir, args.save_dir)     
                 find_frames_2D(args.range[0], stop, bounds=args.bound, fout=fsave, groupname=args.group_name,xvg_dir=xvg_file_dir) 
+    
+    
     fsave.close()
                 
