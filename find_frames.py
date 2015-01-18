@@ -8,18 +8,23 @@ import analysis_scripts.merge_files as mf
 import argparse
 import os
 
-def find_frames_2D(start, stop, bounds=[0, 1, 0, 1], fout=None, groupname=None):
+def find_frames_2D(start, stop, bounds=[0, 1, 0, 1], fout=None, groupname=None, xvg_dir=None):
     frame_num = 1
     if fout == None:
         fout = open("iter%d-%d.ndx"%(start,stop), "w")
     if groupname == None:
         groupname = "group1"
         
+    if xvg_dir == None:
+        xvg_str = ""
+    else:
+        xvg_str = "%s/" % xvg_dir
+        
     fout.write("\n[%s]\n"%groupname)
     for i in np.arange(start, stop+1, 2):
 
-        rc1 = np.loadtxt("iter%d-Q.out"%i)
-        rc2 = np.loadtxt("iter%d-rmsd-closed.xvg"%i,  skiprows=13)
+        rc1 = np.loadtxt("%siter%d-Q.out"%(xvg_str,i))
+        rc2 = np.loadtxt("%siter%d-rmsd-closed.xvg"%(xvg_str,i),  skiprows=13)
         rc2 = rc2[:,1]
         for i in range(np.shape(rc1)[0]):
             if rc1[i]<bounds[1] and rc1[i]>bounds[0] and rc2[i]<bounds[3] and rc2[i]>bounds[2]:
@@ -30,7 +35,8 @@ def find_frames_2D(start, stop, bounds=[0, 1, 0, 1], fout=None, groupname=None):
     
 if __name__ == "__main__":
     par = argparse.ArgumentParser(description="parent set of parameters", add_help=False)
-    par.add_argument("--file_dir", default=os.getcwd(), type=str)
+    par.add_argument("--file_dir", default=os.getcwd(), type=str) #location of the .gro and .w files
+    par.add_argument("--xvg_dir", type=str) #location of .xvg files
     par.add_argument("--range", default=[6,100], nargs=2, type=int) 
     par.add_argument("--step", type=int)
     par.add_argument("--save_dir", default=os.getcwd(), type=str)
@@ -45,6 +51,9 @@ if __name__ == "__main__":
         args.file_dir = file_dir[:-1]
     if args.save_dir[-1] == "/":
         args.save_dir = save_dir[:-1]
+    
+    if not args.xvg_dir == None:
+        xvg_file_dir = "%s/%s" % (args.file_dir,args.xvg_dir)
     
     if args.range[0] < 6:
         args.range[0] = 6
@@ -62,15 +71,15 @@ if __name__ == "__main__":
     
     if args.step == None:
         mf.merge(args.range[0], args.range[1],args.file_dir, args.save_dir)
-        find_frames_2D(args.range[0], args.range[1], bounds=args.bound, fout=fsave, groupname=args.group_name)
+        find_frames_2D(args.range[0], args.range[1], bounds=args.bound, fout=fsave, groupname=args.group_name,xvg_dir=xvg_file_dir)
     else:
         if args.range[0] < args.step:
             for stop in np.arange(args.step, args.range[1], args.step):
                 mf.merge(args.range[0], stop, args.file_dir, args.save_dir)
-                find_frames_2D(args.range[0], stop, bounds=args.bound, fout=fsave, groupname=args.group_name)
+                find_frames_2D(args.range[0], stop, bounds=args.bound, fout=fsave, groupname=args.group_name,xvg_dir=xvg_file_dir)
         else:
             for stop in np.arange(args.range[0]+args.step, args.range[1], args.step):
                 mf.merge(args.range[0], stop, args.file_dir, args.save_dir)     
-                find_frames_2D(args.range[0], stop, bounds=args.bound, fout=fsave, groupname=args.group_name) 
+                find_frames_2D(args.range[0], stop, bounds=args.bound, fout=fsave, groupname=args.group_name,xvg_dir=xvg_file_dir) 
     fsave.close()
                 
