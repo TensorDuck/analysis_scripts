@@ -24,4 +24,4 @@ import merge_files
 import find_frames
 import recipe_log_function
 
-import free_energy_plot_titers
+#import free_energy_plot_titers
