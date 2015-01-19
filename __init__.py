@@ -8,9 +8,9 @@ import matplotlib
 matplotlib.use("Agg")
 
 #import plot_epsilon_native
-import Jac_run_all
 import FRET_experiment
 
+import Jac_run_all
 import plot_depsilon_native
 import pair_distance_calculator
 import plot_function
@@ -22,3 +22,6 @@ import free_energy_plot_1d
 import free_energy_plot_2d
 import merge_files
 import find_frames
+import recipe_log_function
+
+import free_energy_plot_titers

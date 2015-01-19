@@ -7,9 +7,8 @@ import numpy as np
 import model_builder as mdb
 import os as os
 import project_tools.parameter_fitting as pmfit
-from FRET_experiment.MandC2004_hacked import MandC2004hack
+from recipe_log_function import log_function
 import matplotlib.pyplot as plt
-import project_tools.parameter_fitting.FRET.truncated_SVD_FRET as tsvd
 import analysis_scripts.pair_distance_calculator as pdistance
 
 def run_main(T_fit, pairs, spacing, svdt, subfolder="1PB7"):
@@ -24,14 +23,14 @@ def run_main(T_fit, pairs, spacing, svdt, subfolder="1PB7"):
     model = mdb.check_inputs.load_model(cwd, False)
     if svdt:
         model.fitting_solver = "TSVD"
-    rcpmanager = MandC2004hack(os.getcwd())
+    rcpmanager = log_function(os.getcwd())
     pmfit.prepare_newtons_method(model,"FRET",rcpmanager.append_log)
-    '''
+
     #This will make a histogram of all the different iterations and save the data accordingly
     os.chdir(cwd)
     centers_of_bins, normalized_valu, labels = pdistance.histogram_iterations(pairs,spacing,T_fit)
     os.chdir(cwd0)
-    '''
+
     ##Following will estimate the expected cutoff, along with return the boundaries of the cutoff
     newtondir = "%s/iteration_%d/newton" % (cwd,model.iteration)
     os.chdir(newtondir)

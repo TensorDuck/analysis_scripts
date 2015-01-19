@@ -15,7 +15,7 @@ import matplotlib.mpl as mpl
 
 def plot_epsilons(bottom, nameb, modelA):
     
-    pairs = modelA.contacts
+    pairs = modelA.pairs
     num_pairs = len(pairs)
     max_contact = np.max(pairs)
     
