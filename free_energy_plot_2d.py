@@ -92,6 +92,7 @@ def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n,  name, plot_style="scatter", weigh
     cb.set_label(r'Free Energy (kT units)',labelpad=pad)
 
     plt.savefig("%s_%s-%s-%s.png"%(name, label[0], label[1], plot_style))
+    plt.close()
 
 def check_bool(check):
     if check == "True":

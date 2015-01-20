@@ -14,10 +14,7 @@ import FRET_experiment
 import plot_depsilon_native
 import pair_distance_calculator
 import plot_function
-import Jac_run_module
-#import Jac_run_all
-#import Jac_save_module
-#import Jac_save_all
+import JacRunModule
 import quick_jac
 import free_energy_plot_1d
 import free_energy_plot_2d
@@ -26,4 +23,4 @@ import find_frames
 import recipe_log_function
 import gro_reader
 
-#import free_energy_plot_titers
+import free_energy_plot_titers

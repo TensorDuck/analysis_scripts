@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import argparse
 import free_energy_plot_2d as fep
 
-def combine_plot_iterations(start, stop, file_location=None, output_location=None, w=False, nbins=50, axisr=None, axisq=None, rmsd_plot=True, Q_plot=True, scatter_only=False):
+def run_plot_iterations(start, stop, file_location=None, output_location=None, w=False, nbins=50, axisr=None, axisq=None, rmsd_plot=True, Q_plot=True, scatter_only=False):
     print "Starting iteration range from %d to %d" % (start, stop)
     #assumes rc1 = rmsd apo, rc2 = rmsd closed
     cwd = os.getcwd()
@@ -39,8 +39,8 @@ def combine_plot_iterations(start, stop, file_location=None, output_location=Non
             rc2 = f2[:,1]
             rcq = fq
             os.chdir(csd)
-            fep.plot_2D_Free_Energy(rcq, rc2, rcqn, rc2n, "T%d-I%d"%(i,j), "scatter", weights=None, nbins, axisq)
-            fep.plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "T%d-I%d"%(i,j), "scatter", weights=None, nbins, axisr)
+            fep.plot_2D_Free_Energy(rcq, rc2, rcqn, rc2n, "T%d-I%d"%(i,j), "scatter", weights=None, nbins=nbins, axis=axisq,temp=i)
+            fep.plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "T%d-I%d"%(i,j), "scatter", weights=None, nbins=nbins, axis=axisr,temp=i)
             os.chdir(cwd)
             
     for i in np.arange(170, 186, 5):
@@ -52,9 +52,9 @@ def combine_plot_iterations(start, stop, file_location=None, output_location=Non
             rc2 = f2[:,1]
             rcq = fq
             os.chdir(csd)
-            fep.plot_2D_Free_Energy(rcq, rc2, rcqn, rc2n, "T%d-I%d"%(i,j), "scatter", weights=None, nbins, axisq)
-            fep.plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "T%d-I%d"%(i,j), "scatter", weights=None, nbins, axisr)
+            fep.plot_2D_Free_Energy(rcq, rc2, rcqn, rc2n, "T%d-I%d"%(i,j), "scatter", weights=None, nbins=nbins, axis=axisq,temp=i)
+            fep.plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "T%d-I%d"%(i,j), "scatter", weights=None, nbins=nbins, axis=axisr,temp=i)
             os.chdir(cwd)
     
 if __name__ == "__main__":
-    combine_plot_iterations(0, 16)
+    run_plot_iterations(0, 16)
