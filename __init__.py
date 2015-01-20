@@ -22,5 +22,6 @@ import merge_files
 import find_frames
 import recipe_log_function
 import gro_reader
+import find_y
 
 import free_energy_plot_titers

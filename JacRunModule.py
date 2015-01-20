@@ -1,7 +1,7 @@
 """
 This is a script for calculating the jacobin and FRET bins of a protein
 
-It performs all the steps of: calculating Jacobian and new parameters, saving new parameters for the next model, and submitting a job
+It performs all the steps of: calculating Jacobian and new parameters, saving new parameters for the next model, and submitting new simulation job
 
 """
 
@@ -203,7 +203,7 @@ def get_args():
     
     ##Run = For calculating the next step and submitting the PBS job.
     save_sub = sub.add_parser("save", parents=[parser], help="For taking the calculated information from calc and submitting a job with the new parameters")
-    save_sub.add_argument("--pbs", default=True, action="store_false", help="Use if you do not want to submit the job")
+    save_sub.add_argument("--pbs", default=False, action="store_true", help="Use if you do not want to submit the job")
     
     #run_sub = sub.add_parser("run", parents=[calc_sub], help="Run both calc and save blind", conflict_handler="resolve")
     

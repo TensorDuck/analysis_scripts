@@ -57,4 +57,4 @@ def run_plot_iterations(start, stop, file_location=None, output_location=None, w
             os.chdir(cwd)
     
 if __name__ == "__main__":
-    run_plot_iterations(0, 16)
+    run_plot_iterations(0, 16, output_location="plots/same_axis_asDMDMD", axisr=[0, 1, 0 ,1], axisq=[0, 1000, 0, 1])
