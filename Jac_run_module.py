@@ -103,7 +103,7 @@ def run_run_all(args):
         print "Starting temperature %d" % t
         os.chdir("%d"%t)
         iteration = run_main_run(int(t),args)
-        ffit = open("1PB7/iteration_%d/newton/fitting_scale"%iteration).readline().strip()
+        ffit = open("%s/iteration_%d/newton/fitting_scale"%(args.subdir,iteration)).readline().strip()
         if not ffit == "0":
             fit_string += "Temperature %d scaled = True,  by factor = %s\n"%(t,ffit)
         else:
@@ -213,14 +213,7 @@ if __name__ == "__main__":
     elif args.step=="run":
         run_run_all(args)
     
-    print "Subdir is:"
-    print args.subdir
-    print "Temps are:"
-    print args.temps
-    print "fitting_method"
-    print args.fitting_method
-    
-    print args.pairs
+    print "Finished running %s" % args.step
     
     
     
