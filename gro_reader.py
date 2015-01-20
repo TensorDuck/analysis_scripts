@@ -28,10 +28,8 @@ def read(fn):
     line = f.readline().strip()
     cycle = True
     while cycle:
-        #print "The line is"
-        #print line
+        print "Beging Loading frames"
         if line == "%d"%num_atoms:
-            print "Loading frame %d" %(np.shape(xyz)[0]+1)
             xyz = np.append(xyz,load_frame(num_atoms,f), axis=0)
         elif line == "":
             cycle = False
