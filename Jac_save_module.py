@@ -9,13 +9,13 @@ this is
 """
 
 import numpy as np
-#import project_tools.parameter_fitting.FRET.compute_Jacobian as compJ
 import model_builder as mdb
 import os as os
 import project_tools.parameter_fitting as pmfit
-from FRET_experiment.MandC2004_hacked import MandC2004hack
+from analysis_scripts.recipe_log_function import log_function
 from project_tools import simulation
 import matplotlib.pyplot as plt
+
 
 def step_1(sub_folder = "1PB7"):
     cwd = os.getcwd()
@@ -24,22 +24,21 @@ def step_1(sub_folder = "1PB7"):
     log = "%s/modelbuilder.log" % cwd
     model = mdb.check_inputs.load_model(cwd, False)
 
-    rcpmanager = MandC2004hack(os.getcwd())
+    rcpmanager = log_function(os.getcwd())
     append_log = rcpmanager.append_log
     
     pmfit.save_new_parameters(model,"FRET",append_log)
     
 
-def run_main(T_fit):
+def run_main(T_fit, subfolder):
     cwd = os.getcwd()
     cwd0 = os.getcwd()
-    cwd += "/1PB7"
+    cwd += "/%s"%subfolder
     log = "%s/modelbuilder.log" % cwd
     model = mdb.check_inputs.load_model(cwd, False)
 
-    rcpmanager = MandC2004hack(os.getcwd())
+    rcpmanager = log_function(os.getcwd())
     append_log = rcpmanager.append_log
-    #pmfit.prepare_newtons_method(model,"FRET",rcpmanager.append_log)
     pmfit.save_new_parameters(model,"FRET",append_log)
 
 
@@ -63,9 +62,9 @@ def run_main(T_fit):
     return model.iteration-1
 
 if __name__ == "__main__":
-    #T_fit = int(np.loadtxt("fitting_temperature.txt"))
-    #run_main(T_fit)
-    step_1("1PBQ")
+    T_fit = int(np.loadtxt("fitting_temperature.txt"))
+    run_main(T_fit)
+    #step_1("1PBQ")
     print "GOT TO END"
 
 

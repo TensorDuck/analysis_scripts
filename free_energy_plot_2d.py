@@ -9,55 +9,7 @@ from math import ceil
 import os
 import matplotlib.pyplot as plt
 import argparse
-'''
-def combine_plot_iterations(start, stop, file_location, output_location, w=False, nbins=50, axisr=None, axisq=None, rmsd_plot=True, Q_plot=True, scatter_only=False):
-    print "Starting iteration range from %d to %d" % (start, stop)
-    #assumes rc1 = rmsd apo, rc2 = rmsd closed
-    cwd = os.getcwd()
-    rc1n = "rmsd-apo (nm)"
-    rc2n = "rmsd-closed (nm)"
-    rcqn = "Q-1PB7"
-    
-    if file_location == None:
-        cfd = cwd
-    else:
-        cfd = file_location
-    if output_location == None:
-        if not os.path.isdir("plots"):
-            os.mkdir("plots")
-        csd = "%s/plots" % cwd
-    else:
-        csd = output_location
-    
-    #set final matrices, to append all the data onto
-    rc1 = np.array([])
-    rc2 = np.array([])
-    rcq = np.array([])
-    wsum = np.sum(np.loadtxt("%s/iter%d.w"%(cfd,start)))
-    #add weights matrix if necessary
-    if w:
-        weights = np.array([])
-        for i in np.arange(start, stop+1, 2):
-            fw = np.loadtxt("%s/iter%d.w"%(cfd,i))
-            weights = np.append(weights, fw, axis=0)
-            if np.abs(np.sum(fw)-wsum)>1:
-                 print "ERROR, sum of weights changes by more than 1! on iteration %d" % i
-    else:
-        weights = None
-    
-    os.chdir(csd)
-    if Q_plot:
-        plot_2D_Free_Energy(rcq, rc2, rcqn, rc2n, "iter%d-%d"%(start,stop), "scatter", weights, nbins, axisq)
-        if not scatter_only:
-            plot_2D_Free_Energy(rcq, rc2, rcqn, rc2n, "iter%d-%d"%(start,stop), "contour", weights, nbins, axisq)
-    if rmsd_plot:
-        plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(start,stop), "scatter", weights, nbins, axisr)
-        if not scatter_only:
-            plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(start,stop), "contour", weights, nbins, axisr)
-    
-    
-    os.chdir(cwd)
-'''
+
 def combine_iterations_rmsd(start, stop, file_location, output_location, w=False, nbins=50, axisr=None, axisq=None, rmsd_plot=True, Q_plot=True, scatter_only=False, temp=185):
     print "Starting iteration range from %d to %d" % (start, stop)
     #assumes rc1 = rmsd apo, rc2 = rmsd closed
@@ -155,9 +107,9 @@ if __name__=="__main__":
     par.add_argument("--step", type=int)
     par.add_argument("--weight", type=bool, default=True)
     par.add_argument("--bins", type=int, default=50)
-    par.add_argument("--scatter_only", type=str, default="False")
-    par.add_argument("--Q_plot", type=str, default="True")
-    par.add_argument("--rmsd_plot", type=str, default="True")
+    par.add_argument("--scatter_only", action="store_true", default=False)
+    par.add_argument("--Q_plot", action="store_false", default=True)
+    par.add_argument("--rmsd_plot", action="store_false", default=True)
     
     ##the real parser
     parser = argparse.ArgumentParser(description="For Deciding how to plot the results")
@@ -175,9 +127,6 @@ if __name__=="__main__":
 
     args = parser.parse_args()
     
-    Q_plot = check_bool(args.Q_plot)
-    rmsd_plot = check_bool(args.rmsd_plot)
-    scatter_only = check_bool(args.scatter_only)
     if args.method == "same":
         raxis = args.raxis
         qaxis = args.qaxis
@@ -193,16 +142,16 @@ if __name__=="__main__":
     if args.range[0] < 6:
         args.range[0] = 6
         print "Fixing range to lower bound of iteration 6"
-    print scatter_only
+
     if args.step == None:
-        combine_iterations_rmsd(args.range[0], args.range[1], file_location, output_location, w=args.weight, nbins=args.bins, axisr=raxis, axisq=qaxis, rmsd_plot=rmsd_plot, Q_plot=Q_plot, scatter_only=scatter_only )
+        combine_iterations_rmsd(args.range[0], args.range[1], file_location, output_location, w=args.weight, nbins=args.bins, axisr=raxis, axisq=qaxis, rmsd_plot=args.rmsd_plot, Q_plot=args.Q_plot, scatter_only=args.scatter_only )
     else:
         if args.range[0] < args.step:
             for stop in np.arange(args.step, args.range[1], args.step):
-                combine_iterations_rmsd(args.range[0], stop, file_location, output_location, w=args.weight, nbins=args.bins, axisr=raxis, axisq=qaxis, rmsd_plot=rmsd_plot, Q_plot=Q_plot, scatter_only=scatter_only)
+                combine_iterations_rmsd(args.range[0], stop, file_location, output_location, w=args.weight, nbins=args.bins, axisr=raxis, axisq=qaxis, rmsd_plot=args.rmsd_plot, Q_plot=args.Q_plot, scatter_only=args.scatter_only)
         else:
             for stop in np.arange(args.range[0]+args.step, args.range[1], args.step):
-                combine_iterations_rmsd(args.range[0], stop, file_location, output_location, w=args.weight, nbins=args.bins, axisr=raxis, axisq=qaxis, rmsd_plot=rmsd_plot, Q_plot=Q_plot, scatter_only=scatter_only)
+                combine_iterations_rmsd(args.range[0], stop, file_location, output_location, w=args.weight, nbins=args.bins, axisr=raxis, axisq=qaxis, rmsd_plot=args.rmsd_plot, Q_plot=args.Q_plot, scatter_only=args.scatter_only)
         
     
     

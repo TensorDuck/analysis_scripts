@@ -2,7 +2,7 @@ import numpy as np
 import model_builder as mdb
 import os as os
 import project_tools.parameter_fitting as pmfit
-from FRET_experiment.MandC2004_hacked import MandC2004hack
+from analysis_scripts.recipe_log_function import log_function
 
 def run_start():
     T_fit = 160
@@ -17,7 +17,7 @@ def run_start():
 
     model = mdb.check_inputs.load_model(cwd, False)
     model.fitting_solver = "TSVD"
-    rcpmanager = MandC2004hack(os.getcwd())
+    rcpmanager = log_function(os.getcwd())
     pmfit.prepare_newtons_method(model,"FRET",rcpmanager.append_log)
     
 def run_end():

@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 kb = 6.022141*1.380650/(4.184*1000.0)
 
 def make(x, nbins, T):
-    
+    #Calculate the histogram of Q values Scale logarithmacally and for energy in KT
     hist, edges = np.histogram(x, bins=nbins, normed=True)
     coord_center = edges+((edges[1]-edges[0])/2.0)
     coord_center = coord_center[:-1]
@@ -41,7 +41,7 @@ if __name__ == "__main__":
     nbins = 70
     title = "Q-plot-%d"%temperature
     for i in range(2):
-        x = np.loadtxt("Q%d_%s.out"%(temperature,labels[i]))
+        x = np.loadtxt("Q%d_%s.out"%(temperature,labels[i])) #list of Q-values (number of native contacts formed) for every frame
         energy, coord_center = make(x, nbins, temperature)
         energies.append(energy)
         coord_centers.append(coord_center)
