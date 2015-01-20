@@ -20,17 +20,17 @@ class traj(object):
 def make_gro(args):
     distances = pdistance.compute_distances(traj(gread.read(args.file)), args.pairs)
     for i in range(np.shape(args.pairs)[0]):
-        np.savetxt("%s/%s-y%d-%d.out"%(args.savedir, args.save_name, args.pairs[0], args.pairs[1]), distances[:,i])
+        np.savetxt("%s/%s-y%d-%d.out"%(args.savedir, args.save_name, args.pairs[i][0], args.pairs[i][1]), distances[:,i])
 
 def make_xtc(args):
     distances = pdistance.compute_distances(md.load(args.file, top=args.native), args.pairs)
     for i in range(np.shape(args.pairs)[0]):
-        np.savetxt("%s/%s-y%d-%d.out"%(args.savedir, args.save_name, args.pairs[0], args.pairs[1]), distances[:,i])
+        np.savetxt("%s/%s-y%d-%d.out"%(args.savedir, args.save_name, args.pairs[i][0], args.pairs[i][1]), distances[:,i])
 
 def sanitize_args(args):
     ##set the pairs for fitting in the array format for the calculation
     pairs = np.array([[args.pairs[0], args.pairs[1]]])
-    print "Number of pairs is: %d" % len(args.pairs)
+    print "Number of pairs is: %d" % len(args.pairs)/2
     if len(args.pairs)>2:
         for i in np.arange(3, len(args.pairs), 2):
             pairs = np.append(pairs, np.array([[args.pairs[i-1], args.pairs[i]]]), axis=0)
