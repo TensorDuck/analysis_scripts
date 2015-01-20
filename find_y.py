@@ -30,7 +30,7 @@ def make_xtc(args):
 def sanitize_args(args):
     ##set the pairs for fitting in the array format for the calculation
     pairs = np.array([[args.pairs[0], args.pairs[1]]])
-    print "Number of pairs is: %d" % len(args.pairs)/2
+    print "Number of pairs is: %d" % (len(args.pairs)/2)
     if len(args.pairs)>2:
         for i in np.arange(3, len(args.pairs), 2):
             pairs = np.append(pairs, np.array([[args.pairs[i-1], args.pairs[i]]]), axis=0)
