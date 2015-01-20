@@ -20,12 +20,12 @@ class traj(object):
 def make_gro(args):
     distances = pdistance.compute_distances(traj(gread.read(args.file)), args.pairs)
     for i in range(np.shape(args.pairs)[0]):
-        np.savetxt("%s/%s-y.out"%(args.savedir, fname), distances[:,i])
+        np.savetxt("%s/%s-y.out"%(args.savedir, args.save_name), distances[:,i])
 
 def make_xtc(args):
     distances = pdistance.compute_distances(md.load(args.file, top=args.native), args.pairs)
     for i in range(np.shape(args.pairs)[0]):
-        np.savetxt("%s/%s-y.out"%(args.savedir, fname), distances[:,i])
+        np.savetxt("%s/%s-y.out"%(args.savedir, args.save_name), distances[:,i])
 
 def sanitize_args(args):
     ##set the pairs for fitting in the array format for the calculation
