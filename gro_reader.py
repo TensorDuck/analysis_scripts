@@ -27,8 +27,9 @@ def read(fn):
     xyz = np.append(xyz,load_frame(num_atoms,f), axis=0)
     line = f.readline().strip()
     cycle = True
+    print "Beging Loading frames"
     while cycle:
-        print "Beging Loading frames"
+        
         if line == "%d"%num_atoms:
             xyz = np.append(xyz,load_frame(num_atoms,f), axis=0)
         elif line == "":
