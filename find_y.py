@@ -78,6 +78,6 @@ if __name__ == "__main__":
     if args.method == "gro":
         make_gro(args)
     elif args.method == "xtc":
-        calc_xtc(args)
+        make_xtc(args)
     
     
