@@ -108,7 +108,7 @@ def run_save_all(args):
         iteration = run_main_save(t,args)
         #ffit will write out a file detailing which frames are scaled and which are not
         ffit = open("%s/iteration_%d/newton/fitting_scale"%(args.subdir,iteration)).readline().strip()
-        if not ffit == "0":
+        if not float(ffit) == 0:
             fit_string += "Temperature %d scaled = True,  by factor = %s\n"%(t,ffit)
         else:
             fit_string += "Temperature %d scaled = False, by factor = %s\n"%(t,ffit)

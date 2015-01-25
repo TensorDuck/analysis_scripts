@@ -3,6 +3,7 @@ This module contains scripts for analyzing the data for the FRET fitting project
 updated: Dec 2014
 by Justin Chen
 """
+
 #important to set backend for running on the server
 import matplotlib
 matplotlib.use("Agg")
