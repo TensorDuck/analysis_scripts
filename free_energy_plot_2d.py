@@ -9,7 +9,7 @@ from math import ceil
 import os
 import matplotlib.pyplot as plt
 import argparse
-
+'''
 def combine_iterations_rmsd(start, stop, file_location, output_location, w=False, nbins=50, axisr=None, axisq=None, rmsd_plot=True, Q_plot=True, scatter_only=False, temp=185):
     print "Starting iteration range from %d to %d" % (start, stop)
     #assumes rc1 = rmsd apo, rc2 = rmsd closed
@@ -65,7 +65,7 @@ def combine_iterations_rmsd(start, stop, file_location, output_location, w=False
     
     
     os.chdir(cwd)
-
+'''
 def handle_dmdmd(ext1, ext2, args):
     print "Plotting assuming a dmdmd structure"
     #set the necessary variables from args
