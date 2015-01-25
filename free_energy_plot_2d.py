@@ -119,7 +119,6 @@ def handle_dmdmd(ext1, ext2, args):
 def dmdmd_iteration(start, stop, weights, wsum, rc1, rc2, ext1, ext2, cfd):    
     ##subroutine handle_dmdmd 
     if not weights == None:
-        weights = np.array([])
         for i in np.arange(start, stop+1, 2):
             fw = np.loadtxt("%s/iter%d.w"%(cfd,i))
             weights = np.append(weights, fw, axis=0)
