@@ -268,7 +268,7 @@ def get_args():
     #par.add_argument("--qy_plot", action="store_true", default=False, help="use for plotting a Q-FRET Ca distance plot")
     par.add_argument("--handle", type=str, help="specify either dmdmd, vanilla or fret")
     par.add_argument("--temps", type=float, nargs="+", help="specify the temperature for the data, can be an array")
-    par.add_argument("--flow", action="store_true", default=False, help="Use if you want to plot iterations in intervals, i.e. 2-50, 52-60)
+    par.add_argument("--flow", action="store_true", default=False, help="Use if you want to plot iterations in intervals, i.e. 2-50, 52-60")
     
     ##the real parser
     parser = argparse.ArgumentParser(description="For Deciding how to plot the results")
