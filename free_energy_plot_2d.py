@@ -9,63 +9,7 @@ from math import ceil
 import os
 import matplotlib.pyplot as plt
 import argparse
-'''
-def combine_iterations_rmsd(start, stop, file_location, output_location, w=False, nbins=50, axisr=None, axisq=None, rmsd_plot=True, Q_plot=True, scatter_only=False, temp=185):
-    print "Starting iteration range from %d to %d" % (start, stop)
-    #assumes rc1 = rmsd apo, rc2 = rmsd closed
-    cwd = os.getcwd()
-    rc1n = "rmsd-apo (nm)"
-    rc2n = "rmsd-closed (nm)"
-    rcqn = "Q-1PB7"
-    
-    if file_location == None:
-        cfd = cwd
-    else:
-        cfd = file_location
-    if output_location == None:
-        if not os.path.isdir("plots"):
-            os.mkdir("plots")
-        csd = "%s/plots" % cwd
-    else:
-        csd = output_location
-    
-    #set final matrices, to append all the data onto
-    rc1 = np.array([])
-    rc2 = np.array([])
-    rcq = np.array([])
-    wsum = np.sum(np.loadtxt("%s/iter%d.w"%(cfd,start)))
-    #add weights matrix if necessary
-    if w:
-        weights = np.array([])
-        for i in np.arange(start, stop+1, 2):
-            fw = np.loadtxt("%s/iter%d.w"%(cfd,i))
-            weights = np.append(weights, fw, axis=0)
-            if np.abs(np.sum(fw)-wsum)>1:
-                 print "ERROR, sum of weights changes by more than 1! on iteration %d" % i
-    else:
-        weights = None
-    
-    for i in np.arange(start, stop+1, 2):
-        f1 = np.loadtxt("%s/iter%d-rmsd-apo.xvg"%(cfd,i), skiprows=13)
-        f2 = np.loadtxt("%s/iter%d-rmsd-closed.xvg"%(cfd,i), skiprows=13)
-        fq = np.loadtxt("%s/iter%d-Q.out"%(cfd,i))
-        rc1 = np.append(rc1, f1[:,1], axis=0)
-        rc2 = np.append(rc2, f2[:,1], axis=0)
-        rcq = np.append(rcq, fq, axis=0)
-    
-    os.chdir(csd)
-    if Q_plot:
-        plot_2D_Free_Energy(rcq, rc2, rcqn, rc2n, "iter%d-%d"%(start,stop), "scatter", weights, nbins, axisq, temp)
-        if not scatter_only:
-            plot_2D_Free_Energy(rcq, rc2, rcqn, rc2n, "iter%d-%d"%(start,stop), "contour", weights, nbins, axisq, temp)
-    if rmsd_plot:
-        plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(start,stop), "scatter", weights, nbins, axisr, temp)
-        if not scatter_only:
-            plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(start,stop), "contour", weights, nbins, axisr, temp)
-    
-    
-    os.chdir(cwd)
-'''
+
 def handle_dmdmd(ext1, ext2, args):
     print "Plotting assuming a dmdmd structure"
     #set the necessary variables from args
@@ -97,22 +41,18 @@ def handle_dmdmd(ext1, ext2, args):
             fit_range = np.arange(start+step, stop, step)
         ##Do first step, it's unique
         rc1, rc2, weights = dmdmd_iteration(start, step, weights, wsum, rc1, rc2, ext1, ext2, cfd)
-        plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(start,stop), args, weights=weights, temp=args.temps[0])
-        ##if flow flag is set, this will re=initialize the matrices being merged.
-        if args.flow:
-            rc1 = np.array([])
-            rc2 = np.array([])
-            if args.weight:
-                weights = np.array([])
-            else:
-                weights = None
+        plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(start,step), args, weights=weights, temp=args.temps[0])
+        
         ##go through all the possibilities then    
         for i in range(np.shape(fit_range)[0]-1):    
+            ##if flow flag is set, this will re=initialize the matrices being merged.
             if args.flow:
-                rc1 = 0.0
-                rc2 = 0.0
-                weights = 0.0
-                start = fit_range[i]+2
+                rc1 = np.array([])
+                rc2 = np.array([])
+                if args.weight:
+                    weights = np.array([])
+                else:
+                    weights = None
             rc1, rc2, weights = dmdmd_iteration(fit_range[i]+2, fit_range[i+1], weights, wsum, rc1, rc2, ext1, ext2, cfd)
             plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(start,fit_range[i+1]), args, weights=weights, temp=args.temps[0])
 
