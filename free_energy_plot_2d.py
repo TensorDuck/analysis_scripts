@@ -39,7 +39,7 @@ def handle_dmdmd(ext1, ext2, args):
             fit_range = np.arange(step, stop, step)
         else:
             fit_range = np.arange(start+step, stop, step)
-        if not stop==fit_range(np.shape(fit_range)[0]):
+        if not stop==fit_range[-1]:
             fit_range = np.append(fit_range, stop)
         ##Do first step, it's unique
         rc1, rc2, weights = dmdmd_iteration(start, step, weights, wsum, rc1, rc2, ext1, ext2, cfd)
