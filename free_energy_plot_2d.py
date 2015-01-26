@@ -47,8 +47,10 @@ def handle_dmdmd(ext1, ext2, args):
         
         ##go through all the possibilities then    
         for i in range(np.shape(fit_range)[0]-1):    
+            initial = start
             ##if flow flag is set, this will re=initialize the matrices being merged.
             if args.flow:
+                initial = fit_range[i]+2
                 rc1 = np.array([])
                 rc2 = np.array([])
                 if args.weight:
@@ -56,7 +58,7 @@ def handle_dmdmd(ext1, ext2, args):
                 else:
                     weights = None
             rc1, rc2, weights = dmdmd_iteration(fit_range[i]+2, fit_range[i+1], weights, wsum, rc1, rc2, ext1, ext2, cfd)
-            plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(start,fit_range[i+1]), args, weights=weights, temp=args.temps[0])
+            plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(initial,fit_range[i+1]), args, weights=weights, temp=args.temps[0])
 
 def dmdmd_iteration(start, stop, weights, wsum, rc1, rc2, ext1, ext2, cfd):    
     ##subroutine handle_dmdmd 
