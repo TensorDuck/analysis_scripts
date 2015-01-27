@@ -118,7 +118,7 @@ def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300
     
     ##Plot a contour plot   
     if not args.scatter_only:
-        ensure("%s/contour")
+        ensure("%s/contour"%args.save_dir)
         plt.figure()
         plot_style = "contour"
         xc, yc, zc = hist2d.make(rc1, rc2, nbins, nbins, temperature=temp, weight=weights, plot_style=plot_style, free_energy_plot=True, idx_smoothing=3)
