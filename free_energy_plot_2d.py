@@ -10,6 +10,11 @@ import os
 import matplotlib.pyplot as plt
 import argparse
 
+def ensure(fname):
+    if not os.path.isdir(fname):
+        os.mkdir(fname)
+    
+
 def get_empty_arrays(weight):
     #return the empty arrays
     #make weights matrix, None if not weighted
@@ -110,8 +115,10 @@ def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300
         plt.savefig("%s/%s_%s-%s-%s.png"%(args.save_dir, name, rc1n, rc2n, plot_style))
         plt.close()
     
+    
     ##Plot a contour plot   
     if not args.scatter_only:
+        ensure("%s/contour")
         plt.figure()
         plot_style = "contour"
         xc, yc, zc = hist2d.make(rc1, rc2, nbins, nbins, temperature=temp, weight=weights, plot_style=plot_style, free_energy_plot=True, idx_smoothing=3)
@@ -126,7 +133,7 @@ def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300
         pad = 10
         cb.set_label(r'Free Energy (kT units)',labelpad=pad)
 
-        plt.savefig("%s/%s_%s-%s-%s.png"%(args.save_dir, name, rc1n, rc2n, plot_style))
+        plt.savefig("%s/contour/%s_%s-%s-%s.png"%(args.save_dir, name, rc1n, rc2n, plot_style))
         plt.close()
 
 def get_apo(name, args):
