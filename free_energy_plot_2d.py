@@ -10,6 +10,15 @@ import os
 import matplotlib.pyplot as plt
 import argparse
 
+def get_empty_arrays(weight):
+    #return the empty arrays
+    #make weights matrix, None if not weighted
+    if weight:
+        weights = np.array([])
+    else:
+        weights = None
+    return np.array([]), np.array([]), weights
+
 def handle_dmdmd(ext1, ext2, args):
     print "Plotting assuming a dmdmd structure"
     #set the necessary variables from args
@@ -18,17 +27,9 @@ def handle_dmdmd(ext1, ext2, args):
     cfd = args.file_dir
     step = args.step
     #set final matrices, to append all the data onto
-    rc1 = np.array([])
-    rc2 = np.array([])
+    rc1, rc2, weights = get_empty_arrays(args.weight)
     rc1n, rc2n = get_labels(ext1, ext2)
     wsum = np.sum(np.loadtxt("%s/iter%d.w"%(cfd,start)))
-    
-    #make weights matrix, none if not weighted
-    if args.weight:
-        weights = np.array([])
-    else:
-        weights = None
-    
     
     if args.step == None:
         rc1, rc2, weights = dmdmd_iteration(start, stop, weights, wsum, rc1, rc2, ext1, ext2, cfd)
@@ -51,12 +52,7 @@ def handle_dmdmd(ext1, ext2, args):
             ##if flow flag is set, this will re=initialize the matrices being merged.
             if args.flow:
                 initial = fit_range[i]+2
-                rc1 = np.array([])
-                rc2 = np.array([])
-                if args.weight:
-                    weights = np.array([])
-                else:
-                    weights = None
+                rc1, rc2, weights = get_empty_arrays(args.weight)
             rc1, rc2, weights = dmdmd_iteration(fit_range[i]+2, fit_range[i+1], weights, wsum, rc1, rc2, ext1, ext2, cfd)
             plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(initial,fit_range[i+1]), args, weights=weights, temp=args.temps[0])
 
