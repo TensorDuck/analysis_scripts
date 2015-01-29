@@ -136,19 +136,6 @@ def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300
         plt.savefig("%s/contour/%s_%s-%s-%s.png"%(args.save_dir, name, rc1n, rc2n, plot_style))
         plt.close()
 
-def get_apo(name, args):
-    q = np.loadtxt("%s/%s.xvg"%(args.file_dir,name), skiprows=13)
-    return q[:,1]
-    
-def get_weight(name, args):
-    return np.loadtxt("%s/%s.w"%(args.file_dir,name))
-    
-def get_Q(name, args):
-    return np.loadtxt("%s/%s.out"%(args.file_dir,name))
-    
-def get_y(name, args):
-    return np.loadtxt("%s/%s.out"%(args.file_dir,name))
-
 def get_value(name, ext, cfd):
     if ext[-4:] == ".xvg":
         return np.loadtxt("%s/%s%s"%(cfd,name, ext), skiprows=13)[:,1]   

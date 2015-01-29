@@ -148,7 +148,11 @@ def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title):
     linetype = ["-", "--",":"]
     
     fdata = get_FRET_data()
-    fhist, fcenter = histogram_data_normalized(fdata, spacing)
+    if fdata == []:
+        fhist = [0]
+        fcenter= [0]
+    else:
+        fhist, fcenter = histogram_data_normalized(fdata, spacing)
     
     for j in range(np.shape(pairs)[0]):
         plt.figure()
@@ -180,6 +184,7 @@ def get_FRET_data():
              
             fdata = np.loadtxt("%sFRET_trace.dat"%i)
             print "FOUND FRET_data"
+    
     return fdata
 
 def histogram_data_normalized(y, spacing, wgt=None):
@@ -214,7 +219,7 @@ if __name__ == "__main__":
     ran_size = (0,10)    #range of values for the final distance
     #fdata = np.loadtxt("FRET_trace.dat")
     cwd = os.getcwd()
-    os.chdir("1PBQ")
+    os.chdir("1PB7")
     os.chdir("iteration_0")
     centers_of_bins, normalized_valu, temp_directory = histogram_directory(pairs, spacing)
     #os.chdir("histanalysis")
