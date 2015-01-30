@@ -148,7 +148,7 @@ def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title):
     linetype = ["-", "--",":"]
     
     fdata = get_FRET_data()
-    if fdata == []:
+    if len(fdata) == 0:
         fhist = [0]
         fcenter= [0]
     else:
@@ -219,7 +219,7 @@ if __name__ == "__main__":
     ran_size = (0,10)    #range of values for the final distance
     #fdata = np.loadtxt("FRET_trace.dat")
     cwd = os.getcwd()
-    os.chdir("1PB7")
+    os.chdir("1PBQ")
     os.chdir("iteration_0")
     centers_of_bins, normalized_valu, temp_directory = histogram_directory(pairs, spacing)
     #os.chdir("histanalysis")
