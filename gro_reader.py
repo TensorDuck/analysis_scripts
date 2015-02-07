@@ -6,6 +6,11 @@ by Justin Chen
 """
 import numpy as np
 
+class traj(object):
+    def __init__(self, xyz):
+        self.xyz = xyz
+        self.n_atoms = np.shape(xyz)[1]
+
 def load_frame(num_atoms, f):
     xyz_frame = np.zeros((1,num_atoms,3))
     for i in range(num_atoms):

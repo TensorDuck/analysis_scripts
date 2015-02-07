@@ -141,6 +141,12 @@ def plot_iterations(centers_of_bins, normalized_valu, pairs, label, spacing, fit
     
 def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title):
     #Plot every file, different graphs for different pairs. Outputs a picture to the current directory
+    #centers_of_bins are the bin centers (x), given in [j][i], j=pair, i = label
+    #normalized_valu are the normalied histogram values
+    #pairs are the list of pairs being plotted
+    #label is the legend name for the particular value [i]
+    #spacing is the spacing of the histogram, for calculating the FRET data
+    #title is the title fo the plot to make
     cwd = os.getcwd()
     print "Beginning plotting of directory %s" %cwd
     
@@ -174,7 +180,7 @@ def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title):
 
 def get_FRET_data():
     found = False
-    paths = [ "/home/jchen/projects/2014/10_00_14-FRET/", "/home/jc49/work/", ""]
+    paths = [ "/home/jchen/projects/10_00_14-FRET/", "/home/jc49/work/", ""]
     fdata = []
     for i in paths:
         if os.path.isfile("%sFRET_trace.dat"%i) and (not found):
