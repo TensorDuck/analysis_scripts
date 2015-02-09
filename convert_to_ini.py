@@ -1,6 +1,7 @@
 import model_builder.inputs as inp
 import os
 import argparse 
+import numpy as np
 
 def calc_fit_direc(subdir):
 
