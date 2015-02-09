@@ -15,7 +15,6 @@ import project_tools.parameter_fitting as pmfit
 from project_tools import simulation
 
 import analysis_scripts.pair_distance_calculator as pdistance
-from analysis_scripts.recipe_log_function import log_function
 
 def run_calc_all(args):
     original_directory = os.getcwd() #starting directory. Not necessarily the cwd
@@ -47,25 +46,22 @@ def run_main_calc(T_fit, args):
     pairs = args.pairs
     spacing = args.spacing
     subfolder = args.subdir
-    pmfit.FRET.compute_Jacobian.def_temp = T_fit
     
     #internal directory tree here. Assumings everything is arranged a certain way
     cwd = os.getcwd()
     cwd0 = os.getcwd()
     cwd += "/%s" % subfolder
     
-    log = "%s/modelbuilder.log" % cwd
     #load model, and change fitting method if specified
-    model = mdb.inputs.load_model(cwd, False)
+    model, fitopts = mdb.inputs.load_model(args.subdir, False)
     if not args.fitting_method==None:
-        model.fitting_solver = args.fitting_method
+        fitopts["solver"] = args.fitting_method
         
-    rcpmanager = log_function(os.getcwd())
-    pmfit.prepare_newtons_method(model,"FRET",rcpmanager.append_log)
-
+    pmfit.prepare_newtons_method(model, fitopts)
+    
     #This will make a histogram of all the different iterations and save the data accordingly
     os.chdir(cwd)
-    centers_of_bins, normalized_valu, labels = pdistance.histogram_iterations(pairs,spacing,T_fit)
+    centers_of_bins, normalized_valu, labels = pdistance.histogram_iterations(pairs,spacing,T_fit, fitopts)
     os.chdir(cwd0)
 
     ##Following will estimate the expected cutoff, along with return the boundaries of the cutoff
@@ -73,6 +69,8 @@ def run_main_calc(T_fit, args):
     os.chdir(newtondir)
     highvalue, lowvalue = estimate_lambda()
     os.chdir(cwd0)    
+    
+    fitopts["last_completed_task"] = "Finished: Solving_Newtons_Method"
     
     return centers_of_bins, normalized_valu, labels, highvalue, lowvalue
 
@@ -125,17 +123,15 @@ def run_main_save(T_fit, args):
     cwd = os.getcwd()
     cwd0 = os.getcwd()
     cwd += "/%s"%subfolder
-    log = "%s/modelbuilder.log" % cwd
-    model = mdb.inputs.load_model(cwd, False)
+    
+    model, fitopts = mdb.inputs.load_model(args.subdir, False)
     
     #Both parts will fit the Jacobian per Lambda_index.txt
-    rcpmanager = log_function(os.getcwd())
-    append_log = rcpmanager.append_log
-    pmfit.save_new_parameters(model,"FRET",append_log)
+    pmfit.save_new_parameters(model, fitopts)
     
     #args.pbs If true: submit a new job with new parameters, if False, return iteration number
     if args.pbs:
-        model.iteration += 1
+        fitopts.iteration += 1
         newdirec = "%s/iteration_%d" % (cwd, model.iteration)
         
         if not os.path.isdir(newdirec):
@@ -145,14 +141,10 @@ def run_main_save(T_fit, args):
         
         simulation.constant_temp.run_temperature_array(model,T_fit,T_fit,5)
         
-        append_log(model.subdir,"Submitting short_temps iteration %d " % model.iteration)
-        append_log(model.subdir,"  T_min = %d , T_max = %d , dT = %d" % (T_fit, T_fit, 5))
-        append_log(model.subdir,"Starting: Tf_loop_iteration")
-        
         os.chdir(cwd0)
-        open(model.subdir+"/model.info","w").write(model.get_model_info_string())
+        mdb.inputs.save_model(model, fitopts)
         
-        return model.iteration-1
+        return fitopts.iteration-1
     else:
         print "Not submiting pbs jobs"
         return model.iteration
@@ -186,7 +178,7 @@ def sanitize_args(args):
 def get_args():
     ##parent parser for shared parameters
     parser = argparse.ArgumentParser(description="parent set of parameters", add_help=False)
-    parser.add_argument("--subdir", default="1PB7", type=str, help="Sub Directory the model.info file is located in")
+    parser.add_argument("--subdir", default="1PB7", type=str, help="Sub Directory, also the name of the .ini file")
     parser.add_argument("--temps", default=None, type=int, nargs="+", help="Temperature Directories for Fitting. Default=load Temarray.txt")
     parser.add_argument("--cwd", type=str, default=os.getcwd(), help="Directory for fitting")
     parser.add_argument("--pairs", nargs="+",type=int, default=[114,192], help="pairs for FRET fitting")

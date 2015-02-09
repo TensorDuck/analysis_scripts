@@ -9,7 +9,7 @@ import matplotlib
 matplotlib.use("Agg")
 
 #import plot_epsilon_native
-import FRET_experiment
+#import FRET_experiment
 
 
 import plot_depsilon_native
@@ -27,3 +27,6 @@ import find_y
 import histy_dmdmd
 
 import free_energy_plot_titers
+
+##temporary likely
+import convert_to_ini

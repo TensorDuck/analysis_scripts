@@ -10,24 +10,14 @@ import numpy as np
 import mdtraj as md
 import os
 import matplotlib.pyplot as plt
-import matplotlib
 
-def histogram_iterations(pairs,spacing,temperature):
+
+def histogram_iterations(pairs,spacing,temperature, fitopts):
     ##assumes you are in the directory with al lthe iterations.
     cwd = os.getcwd()
     print "Beginning histogramming of the directory %s" % cwd
-    if not os.path.isfile("model.info"):
-        print "NO model.info, need that file to proceed, FAILING"
     
-    f = open("model.info","r")
-    iFound = False
-    iterations = 0
-    while not iFound:
-        if f.readline() == "[ Iteration ]\n":
-            iterations = int(f.readline()[:-1]) + 1
-            iFound = True
-    f.close()
-    
+    iterations = fitopts["iteration"]
     if not os.path.isdir("histanalysis"):
         os.mkdir("histanalysis")
     
