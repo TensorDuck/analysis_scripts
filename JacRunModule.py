@@ -133,7 +133,7 @@ def run_main_save(T_fit, args):
     #args.pbs If true: submit a new job with new parameters, if False, return iteration number
     if args.pbs:
         fitopts["iteration"] += 1
-        newdirec = "%s/iteration_%d" % (cwd, model.iteration)
+        newdirec = "%s/iteration_%d" % (cwd, fitopts["iteration"])
         
         if not os.path.isdir(newdirec):
             os.mkdir(newdirec)
