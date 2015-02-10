@@ -131,7 +131,7 @@ def run_main_save(T_fit, args):
     
     #args.pbs If true: submit a new job with new parameters, if False, return iteration number
     if args.pbs:
-        fitopts.iteration += 1
+        fitopts["iteration"] += 1
         newdirec = "%s/iteration_%d" % (cwd, model.iteration)
         
         if not os.path.isdir(newdirec):
@@ -144,10 +144,10 @@ def run_main_save(T_fit, args):
         os.chdir(cwd0)
         mdb.inputs.save_model(model, fitopts)
         
-        return fitopts.iteration-1
+        return fitopts["iteration"]-1
     else:
         print "Not submiting pbs jobs"
-        return model.iteration
+        return fitopts["iteration"]
         
 def sanitize_args(args):
     original_directory = os.getcwd()
