@@ -65,7 +65,7 @@ def run_main_calc(T_fit, args):
     os.chdir(cwd0)
 
     ##Following will estimate the expected cutoff, along with return the boundaries of the cutoff
-    newtondir = "%s/iteration_%d/newton" % (cwd,model.iteration)
+    newtondir = "%s/iteration_%d/newton" % (cwd,fitopts["iteration"])
     os.chdir(newtondir)
     highvalue, lowvalue = estimate_lambda()
     os.chdir(cwd0)    
