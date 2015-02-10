@@ -17,7 +17,7 @@ def histogram_iterations(pairs,spacing,temperature, fitopts):
     cwd = os.getcwd()
     print "Beginning histogramming of the directory %s" % cwd
     
-    iterations = fitopts["iteration"]
+    iterations = fitopts["iteration"]+1
     if not os.path.isdir("histanalysis"):
         os.mkdir("histanalysis")
     
