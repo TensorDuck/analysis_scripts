@@ -62,6 +62,7 @@ def run_main_calc(T_fit, args):
     #This will make a histogram of all the different iterations and save the data accordingly
     os.chdir(cwd)
     centers_of_bins, normalized_valu, labels = pdistance.histogram_iterations(pairs,spacing,T_fit, fitopts)
+    print labels
     os.chdir(cwd0)
 
     ##Following will estimate the expected cutoff, along with return the boundaries of the cutoff
