@@ -102,7 +102,8 @@ def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300
         plt.figure()
         plot_style = "scatter"
         x, y, z = hist2d.make(rc1, rc2, nbins, nbins, temperature=temp, weight=weights, plot_style=plot_style, free_energy_plot=True, idx_smoothing=3)
-        cp = plt.scatter(x, y, s=10, c=z, marker='o', linewidth=0., vmax=7)
+        cp = plt.scatter(x, y, s=10, c=z, marker='o', linewidth=0.)
+        #vmax=7
         if not axis == None:
             plt.axis(axis)
         plt.xlabel(rc1n, size=16)
