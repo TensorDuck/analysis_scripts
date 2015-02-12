@@ -5,19 +5,25 @@ import argparse
 import os
 
 def merge(start, stop, cfd, csd):
-    fout = open("%s/iter%d-%d.gro"%(csd,start,stop), "w")
-    fwout = open("%s/iter%d-%d.w"%(csd,start,stop), "w")
-    for i in range(start, stop+1, 2):
-        fin = open("%s/iter%d.gro"%(cfd,i),"r")
-        fwin = open("%s/iter%d.w"%(cfd,i),"r")
-        for lines in fin:
-            fout.write(lines)
-        for lines in fwin:
-            fwout.write(lines)
-        fin.close()
-        fwin.close()
-    fout.close()
-    fwout.close()
+    fout_name = "%s/iter%d-%d.gro"%(csd,start,stop)
+    fwout_name = "%s/iter%d-%d.w"%(csd,start,stop)
+    
+    if os.path.isfile(fout_name) and os.path.isfile(fwout_name):
+        print "Merged file already exists, aborting"
+    else:
+        fout = open(fout_name, "w")
+        fwout = open(fwout_name, "w")
+        for i in range(start, stop+1, 2):
+            fin = open("%s/iter%d.gro"%(cfd,i),"r")
+            fwin = open("%s/iter%d.w"%(cfd,i),"r")
+            for lines in fin:
+                fout.write(lines)
+            for lines in fwin:
+                fwout.write(lines)
+            fin.close()
+            fwin.close()
+        fout.close()
+        fwout.close()
     
 if __name__ == "__main__":
     

@@ -123,7 +123,7 @@ def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300
         plt.figure()
         plot_style = "contour"
         xc, yc, zc = hist2d.make(rc1, rc2, nbins, nbins, temperature=temp, weight=weights, plot_style=plot_style, free_energy_plot=True, idx_smoothing=3)
-        cp = plt.contourf(xc, yc, zc, 13)
+        cp = plt.contourf(xc, yc, zc, 20)
         plt.contour(xc, yc, zc, cp.levels, colors='k', hold='on')
         if not axis == None:
             plt.axis(axis)

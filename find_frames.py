@@ -26,7 +26,7 @@ def find_frames_2D(start, stop, bounds=[0, 1, 0, 1], fout=None, groupname=None, 
     fout.write("\n[%s]\n"%groupname)
     for i in np.arange(start, stop+1, 2):
 
-        rc1 = np.loadtxt("%siter%d-Q.out"%(xvg_str,i))
+        rc1 = np.loadtxt("%siter%d-Qclosed.out"%(xvg_str,i))
         rc2 = np.loadtxt("%siter%d-rmsd-closed.xvg"%(xvg_str,i),  skiprows=13)
         rc2 = rc2[:,1]
         for i in range(np.shape(rc1)[0]):
@@ -60,10 +60,6 @@ if __name__ == "__main__":
         xvg_file_dir = "%s/%s" % (args.file_dir,args.xvg_dir)
     else:
         xvg_file_dir = None
-    
-    if args.range[0] < 6:
-        args.range[0] = 6
-        print "Fixing range to lower bound of iteration 6"
     
     if args.fname == None:
         fout = "%s/iter%d-%d-frames.ndx"%(args.save_dir,args.range[0],args.range[1])
