@@ -30,7 +30,11 @@ def plot_Q(energies, coord_centers, label, title):
     plt.title(title)
     for i in range(np.shape(label)[0]):
         plt.plot(coord_centers[i], energies[i], alpha=0.75, linewidth=2, linestyle=linetype[i/6], color=colors[i], label="%s"%label[i], marker="o")
+        savearray = np.array([coord_centers[i], energies[i]])
+        savearray = savearray.transpose()
+        np.savetxt("%s-%s.dat"%(title,label[i]), savearray)
     plt.legend()
+    plt.grid(b=True, which='major', color='k', linestyle='--')
     plt.savefig("%s.png"%title)
 
 if __name__ == "__main__":
