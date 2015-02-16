@@ -27,8 +27,9 @@ def find_frames_2D(start, stop, bounds=[0, 1, 0, 1], fout=None, groupname=None, 
     for i in np.arange(start, stop+1, 2):
 
         rc1 = np.loadtxt("%siter%d-Qclosed.out"%(xvg_str,i))
-        rc2 = np.loadtxt("%siter%d-rmsd-closed.xvg"%(xvg_str,i),  skiprows=13)
-        rc2 = rc2[:,1]
+        #rc2 = np.loadtxt("%siter%d-rmsd-closed.xvg"%(xvg_str,i),  skiprows=13)
+        #rc2 = rc2[:,1]
+        rc2 = np.loadtxt("%siter%d-y114-192.out"%(xvg_str,i))
         for i in range(np.shape(rc1)[0]):
             if rc1[i]<bounds[1] and rc1[i]>bounds[0] and rc2[i]<bounds[3] and rc2[i]>bounds[2]:
                 fout.write("%d\n"%frame_num)
