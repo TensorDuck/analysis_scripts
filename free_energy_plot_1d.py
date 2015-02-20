@@ -19,7 +19,7 @@ def make(x, nbins, T):
     energy *= T
     return energy, coord_center
     
-def plot_Q(energies, coord_centers, label, title): 
+def plot_Q(energies, coord_centers, label, title, axis=None): 
     plt.figure()
 
     colors = ["b","g","r","c","m","y","b","g","r","c","m","y","b","g","r","c","m","y","b","g","r","c","m","y"]
@@ -27,7 +27,7 @@ def plot_Q(energies, coord_centers, label, title):
     
     plt.xlabel("Q", fontsize=20)
     plt.ylabel("F",fontsize=20)
-    plt.title(title)
+    plt.title(title, fontsize=20)
     for i in range(np.shape(label)[0]):
         plt.plot(coord_centers[i], energies[i], alpha=0.75, linewidth=2, linestyle=linetype[i/6], color=colors[i], label="%s"%label[i], marker="o")
         savearray = np.array([coord_centers[i], energies[i]])
@@ -35,6 +35,8 @@ def plot_Q(energies, coord_centers, label, title):
         np.savetxt("%s-%s.dat"%(title,label[i]), savearray)
     plt.legend()
     plt.grid(b=True, which='major', color='k', linestyle='--')
+    if not axis == None:
+        plt.axis(axis,fontsize=20)
     plt.savefig("%s.png"%title)
 
 if __name__ == "__main__":

@@ -90,7 +90,7 @@ def get_labels(ext1, ext2):
     labels = {"-Qclosed.out":"Q closed", "-y114-192.out":"y between 115-193 (nm)", "-rmsd-closed.xvg":"rmsd-closed (nm)", "-rmsd-apo.xvg":"rmsd-apo (nm)"}
     return labels[ext1], labels[ext2]
    
-def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300,):
+def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300):
     print "Starting the Plot"
     nbins = args.bins
     if args.method == "arb":

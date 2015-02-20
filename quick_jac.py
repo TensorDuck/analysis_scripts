@@ -7,32 +7,43 @@ from analysis_scripts.recipe_log_function import log_function
 from analysis_scripts.JacRunModule import estimate_lambda
 
 def run_start(args):
-    T_fit = args.T_fit
-    print pmfit.FRET.compute_Jacobian.def_temp
-    pmfit.FRET.compute_Jacobian.def_temp = T_fit
-    print pmfit.FRET.compute_Jacobian.def_temp
+    #internal directory tree here. Assumings everything is arranged a certain way
     cwd = os.getcwd()
     cwd0 = os.getcwd()
     cwd += "/%s" % args.subdir
+    
+    #load model, and change fitting method if specified
+    model, fitopts = mdb.inputs.load_model(args.subdir, False)
+        
+    pmfit.prepare_newtons_method(model, fitopts)
+    newtondir = "%s/iteration_%d/newton" % (cwd,fitopts["iteration"])
+    os.chdir(newtondir)
+    print "estimating the value of lambda from singular values"
+    svf = np.loadtxt("singular_values.dat") 
+    index = 0
+    num = np.shape(svf)[0]
+    lowvalue = np.min(svf)
+    highvalue = np.min(svf)
+    for i in range(num-1):
+        if (svf[i]< 0.01 and svf[i]/svf[i+1] > 1000) or svf[i+1]<10**-12:
+            index = num - 1 - i
+            highvalue = svf[i]
+            lowvalue = svf[i+1]   
+    open("Lambda_index.txt","w").write("%d"%index)    
 
-    log = "%s/modelbuilder.log" % cwd
-
-    model = mdb.inputs.load_model(cwd, False)
-    model.fitting_solver = "TSVD"
-    rcpmanager = log_function(os.getcwd())
-    pmfit.prepare_newtons_method(model,"FRET",rcpmanager.append_log)
+    os.chdir(cwd0)    
     
 def run_end(args):
+    subfolder = args.subdir
     cwd = os.getcwd()
     cwd0 = os.getcwd()
-    cwd += "/%s" % args.subdir
-    log = "%s/modelbuilder.log" % cwd
-    model = mdb.inputs.load_model(cwd, False)
-
-    rcpmanager = log_function(os.getcwd())
-    append_log = rcpmanager.append_log
-    #pmfit.prepare_newtons_method(model,"FRET",rcpmanager.append_log)
-    pmfit.save_new_parameters(model,"FRET",append_log)
+    cwd += "/%s"%subfolder
+    
+    model, fitopts = mdb.inputs.load_model(args.subdir, False)
+    
+    #Both parts will fit the Jacobian per Lambda_index.txt
+    pmfit.save_new_parameters(model, fitopts)
+    
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="parent set of parameters", add_help=False)
@@ -46,7 +57,7 @@ if __name__ == "__main__":
     run_start(args)
     
     os.chdir("%s/%s/iteration_0/newton" % (cwd, args.subdir))
-    estimate_lambda()
+    #estimate_lambda()
     
     os.chdir(cwd)
     run_end(args)

@@ -52,6 +52,7 @@ def hist_y(args):
         print np.shape(normalized_value)
         os.chdir(args.savedir)
         pdistance.plot_it(centers_of_bins, normalized_value, args.pairs, label, args.spacing, title)
+        np.savetxt("%s-data.dat"%title, np.array([bincenters, hist]).transpose())
         os.chdir(cwd)
             
     # plot Q free Energy
@@ -69,7 +70,7 @@ def hist_y(args):
     titleQ = "%s_fep" % args.save_name
     labelQ = ["T=%d"%args.temperature]
     os.chdir(args.savedir)
-    fep1.plot_Q(energies, coord_centers, labelQ, titleQ)
+    fep1.plot_Q(energies, coord_centers, labelQ, titleQ, axis=[0, 1000, 0, 6])
     os.chdir(cwd)
                
 def get_qy(args):

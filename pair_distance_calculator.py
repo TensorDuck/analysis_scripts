@@ -162,7 +162,7 @@ def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title):
             plt.plot(centers_of_bins[j][i], normalized_valu[j][i], alpha=0.75, linewidth=2, linestyle=linetype[i/6], color=colors[i], label="%s"%label[i], marker="o")
             maxvalue = find_max(maxvalue, np.max(normalized_valu[j][i]))
             maxcenter = find_max(maxcenter, np.max(centers_of_bins[j][i]))
-        plt.axis([0,int(maxcenter*1.5)+1, 0, maxvalue*1.2],fontisze=20) 
+        plt.axis([0,int(maxcenter*1.5)+1, 0, maxvalue*1.2],fontsize=20) 
         plt.legend()
         plt.savefig("%s-Pair-%d-%d.png"% (title, pairs[j][0]+1, pairs[j][1]+1))
 

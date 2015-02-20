@@ -14,7 +14,7 @@ def direc_run(args):
     for temp in args.temps:
         for i in np.arange(args.iterations[0], args.iterations[1]+1, 1):
             fwd = "%s/%d/%s/iteration_%d/%d_0"% (args.filedir, temp, args.subdir, i, temp) 
-            pairs = np.loadtxt("%s/%s"%(fwd, args.pairs_name))
+            pairs = np.loadtxt("%s/%s"%(fwd, args.pairs_name), skiprows=1)[:,0:2]
             params = np.loadtxt("%s/%s"%(fwd, args.mparams_name))
             y = pairs[:,0]
             x = pairs[:,1]
@@ -33,7 +33,7 @@ def direc_run(args):
     
     
 def single_run(args):
-    pairs = np.loadtxt(args.pairs_name)
+    pairs = np.loadtxt(args.pairs_name, skiprows=1)[:,0:2]
     params = np.loadtxt(args.mparams_name)
     
     y = pairs[:,0]
@@ -63,6 +63,7 @@ def plot_it(x,y,z,title, args):
     if args.center:
         zmin = 2*center-(zmax)
     
+    z[z>zmax] = zmax #for setting all above a certain value mapped to the maximum value, for ease of plotting
     
     plt.figure()
     cp = plt.scatter(x, y, s=5, c=z, cmap=ctype, marker='o', linewidth=0., vmin=zmin, vmax=zmax)
@@ -91,7 +92,7 @@ def get_args():
     par = argparse.ArgumentParser(description="parent set of parameters", add_help=False)
     par.add_argument("--filedir", default=os.getcwd(), type=str, help="Starting location")
     par.add_argument("--mparams_name", default="model_params", type=str, help="name of the model_params file(s)")
-    par.add_argument("--pairs_name", default="pairs.dat", type=str, help="name of the file containing the contact pairs")
+    par.add_argument("--pairs_name", default="pairwise_params", type=str, help="name of the file containing the contact pairs")
     par.add_argument("--zmin", default=None, type=float, help="minimum value of z for color mapping")
     par.add_argument("--zmax", default=None, type=float, help="maximum value of z for color mapping")
     par.add_argument("--ctype", default="jet", type=str, help="type of color-map to use")
