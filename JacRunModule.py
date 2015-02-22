@@ -85,7 +85,7 @@ def estimate_lambda():
     lowvalue = np.min(svf)
     highvalue = np.min(svf)
     for i in range(num-1):
-        if svf[i]/svf[i+1] > 1000:
+        if svf[i]< 0.01 and svf[i]/svf[i+1] > 1000:
             index = num - 1 - i
             highvalue = svf[i]
             lowvalue = svf[i+1]   
