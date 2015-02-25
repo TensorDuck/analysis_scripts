@@ -140,7 +140,7 @@ def run_main_save(T_fit, args):
         
         os.chdir(newdirec)
         
-        simulation.constant_temp.run_temperature_array(model,T_fit,T_fit,5)
+        simulation.constant_temp.run_temperature_array(model,fitopts,T_fit,T_fit,5)
         
         os.chdir(cwd0)
         mdb.inputs.save_model(model, fitopts)

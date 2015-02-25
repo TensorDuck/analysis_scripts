@@ -12,12 +12,12 @@ def calc_fit_direc(subdir, iters):
     for i in seq:
         os.chdir("%d"%i)
         model, fitopt = inp.load_model(subdir)
-        fitopt["data_type"] = "FRET"
-        fitopt["solver"] = "TSVD"
-        fitopt["T_fit"] = i
-        FRET_pairs = [[115, 193]]
-        fitopt["spacing"] = 0.1
-        fitopt["iteration"] = iters
+        fitopt["walltime"] = "16:00:00"
+        #fitopt["solver"] = "TSVD"
+        #fitopt["T_fit"] = i
+        #FRET_pairs = [[115, 193]]
+        #fitopt["spacing"] = 0.1
+        #fitopt["iteration"] = iters
         inp.save_model(model, fitopt)
         os.chdir(cwd)
 
