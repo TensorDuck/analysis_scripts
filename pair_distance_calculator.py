@@ -149,7 +149,7 @@ def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title):
         fcenter= [0]
     else:
         fhist, fcenter = histogram_data_normalized(fdata, spacing)
-    
+
     for j in range(np.shape(pairs)[0]):
         plt.figure()
         maxvalue = 0.0
@@ -215,7 +215,7 @@ if __name__ == "__main__":
     ran_size = (0,10)    #range of values for the final distance
     #fdata = np.loadtxt("FRET_trace.dat")
     cwd = os.getcwd()
-    os.chdir("1PBQ")
+    os.chdir("1PB7")
     os.chdir("iteration_0")
     centers_of_bins, normalized_valu, temp_directory = histogram_directory(pairs, spacing)
     #os.chdir("histanalysis")
