@@ -39,12 +39,12 @@ def calc_reset_direc(subdir, iters, mparams, pparams):
 def calc_initial_direc(subdir, iters, t_fit):
 
     model, fitopt = inp.load_model(subdir)
-    fitopt["data_type"] = "FRET"
+    #fitopt["data_type"] = "FRET"
     fitopt["solver"] = "TSVD"
     fitopt["t_fit"] = t_fit
-    fitopt["fret_pairs"] = [[115, 193]]
-    fitopt["spacing"] = 0.1
-    fitopt["iteration"] = iters
+    #fitopt["fret_pairs"] = [[115, 193]]
+    #fitopt["spacing"] = 0.1
+    #fitopt["iteration"] = iters
     inp.save_model(model, fitopt)
     
     

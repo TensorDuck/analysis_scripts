@@ -22,6 +22,7 @@ def run_start(args):
     svf = np.loadtxt("singular_values.dat") 
     index = 0
     num = np.shape(svf)[0]
+    """
     lowvalue = np.min(svf)
     highvalue = np.min(svf)
     for i in range(num-1):
@@ -29,6 +30,18 @@ def run_start(args):
             index = num - 1 - i
             highvalue = svf[i]
             lowvalue = svf[i+1]   
+
+    for i in range(num):
+        if svf[i] <0.01:
+            index = num - i
+    """
+    go = True
+    i = 0
+    while (go and i <= num):
+        if svf[i] < 0.01:
+            index = num -i
+            go = False
+        i += 1
     open("Lambda_index.txt","w").write("%d"%index)    
 
     os.chdir(cwd0)    

@@ -84,11 +84,15 @@ def estimate_lambda():
     num = np.shape(svf)[0]
     lowvalue = np.min(svf)
     highvalue = np.min(svf)
-    for i in range(num-1):
-        if svf[i]< 0.01 and svf[i]/svf[i+1] > 1000:
-            index = num - 1 - i
-            highvalue = svf[i]
-            lowvalue = svf[i+1]   
+    go = True
+    i = 0 
+    while (go and i <= num):
+        if svf[i] < 0.01:
+            index = num -i
+            go = False
+            lowvalue = svf[i]
+            highvalue = svf[i-1]
+        i += 1
     open("Lambda_index.txt","w").write("%d"%index)
     return highvalue, lowvalue
 
