@@ -86,7 +86,7 @@ def handle_dmaps(ext1, ext2, args):
     start = args.range[0]
     stop = args.range[1]
     cfd = args.file_dir
-    if hasattr(args,step):
+    if hasattr(step, args):
         step = args.step
     else:
         step = 1
