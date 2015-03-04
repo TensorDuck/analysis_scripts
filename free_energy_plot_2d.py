@@ -79,7 +79,28 @@ def dmdmd_iteration(start, stop, weights, wsum, rc1, rc2, ext1, ext2, cfd):
         rc2 = np.append(rc2, f2, axis=0)
     
     return rc1, rc2, weights
+
+
+def handle_dmaps(ext1, ext2, args):
+    #set the necessary variables from args
+    start = args.range[0]
+    stop = args.range[1]
+    cfd = args.file_dir
+    if hasattr(args,step):
+        step = args.step
+    else:
+        step = 1
+    #set final matrices, to append all the data onto
+    rc1, rc2, weights = get_empty_arrays(args.weight)
+    rc1n, rc2n = get_labels(ext1, ext2)
     
+    
+    for i in np.arange(start, stop+step, step):
+        rc1 = get_value("iter%d"%i, ext1, cfd)
+        rc2 = get_value("iter%d"%i, ext2, cfd)
+        weights = np.loadtxt("%s/iter%d.w"%(cfd,i))
+        plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d"%i, args, weights=weights, temp=args.temps[0])
+   
 def handle_fret(args):
     pass
     
@@ -230,7 +251,7 @@ if __name__=="__main__":
     
     #if args.dir_structure ==  
     #keys of different methods, asign it to the handle which is then called to do the rest
-    handlers = {"dmdmd":handle_dmdmd, "fret":handle_fret, "vanilla":handle_vanilla}  
+    handlers = {"dmdmd":handle_dmdmd, "fret":handle_fret, "vanilla":handle_vanilla, "dmaps":handle_dmaps}  
     names = {"Q":"-Qclosed.out", "A":"-rmsd-apo.xvg", "C":"-rmsd-closed.xvg", "Y":"-y114-192.out"}
     
     handle = handlers[args.handle]
