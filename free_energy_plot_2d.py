@@ -86,10 +86,7 @@ def handle_dmaps(ext1, ext2, args):
     start = args.range[0]
     stop = args.range[1]
     cfd = args.file_dir
-    if hasattr(step, args):
-        step = args.step
-    else:
-        step = 1
+    step = args.step
     #set final matrices, to append all the data onto
     rc1, rc2, weights = get_empty_arrays(args.weight)
     rc1n, rc2n = get_labels(ext1, ext2)
