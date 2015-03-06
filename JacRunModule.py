@@ -68,14 +68,19 @@ def run_main_calc(T_fit, args):
     ##Following will estimate the expected cutoff, along with return the boundaries of the cutoff
     newtondir = "%s/iteration_%d/newton" % (cwd,fitopts["iteration"])
     os.chdir(newtondir)
-    highvalue, lowvalue = estimate_lambda()
+    # Use truncate value from fitopts, otherwise use default of 0.01
+    if "truncate_value" in fitopts:
+        trunc = fitopts["truncate_value"]
+    else:
+        trunc = 0.01    
+    highvalue, lowvalue = estimate_lambda(trunc)
     os.chdir(cwd0)    
     
     fitopts["last_completed_task"] = "Finished: Solving_Newtons_Method"
     
     return centers_of_bins, normalized_valu, labels, highvalue, lowvalue
 
-def estimate_lambda():
+def estimate_lambda(trunc):
     #will read the singular values file and find where a alrge jump exists
     #assumes singular_values.dat is in the directory this is run in
     print "estimating the value of lambda from singular values"    
@@ -87,7 +92,7 @@ def estimate_lambda():
     go = True
     i = 0 
     while (go and i <= num):
-        if svf[i] < 0.01:
+        if svf[i] < trunc:
             index = num -i
             go = False
             lowvalue = svf[i]
