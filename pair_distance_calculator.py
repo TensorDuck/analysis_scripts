@@ -23,6 +23,11 @@ def histogram_iterations(pairs,spacing,temperature, fitopts):
     
     opd = "%s/histanalysis" %cwd
     
+    if "y_shift" in fitopts:
+	yshift = fitopts["y_shift"]
+    else:
+        yshift = 0.0
+
     centers_of_bins = [] 
     normalized_valu = []
     labels = []
@@ -45,7 +50,7 @@ def histogram_iterations(pairs,spacing,temperature, fitopts):
             num_calculated += 1
             os.chdir("iteration_%d/%d_0"%(i,temperature))
             traj = md.load("traj.xtc", top="Native.pdb")
-            compdist = compute_distances(traj, pairs)
+            compdist = compute_distances(traj, pairs, yshift=yshift)
             for j in range(np.shape(compdist)[1]): ##for each pair
                 print "Calculating pair %s" % str(pairs[j]) 
                 hist, centers = histogram_data_normalized(compdist[:,j], spacing)
@@ -66,7 +71,7 @@ def histogram_iterations(pairs,spacing,temperature, fitopts):
 
 
 
-def histogram_directory(pairs, spacing):
+def histogram_directory(pairs, spacing, yshift=0.0):
     ##assumes you are in diretory with short_temps.txt
     cwd = os.getcwd()
     print "Beginning histogramming of the directory %s" % cwd
@@ -77,7 +82,7 @@ def histogram_directory(pairs, spacing):
         os.mkdir("histanalysis")
     
     opd = "%s/histanalysis" %cwd
-    
+
     temp_directory = np.loadtxt("short_temps", str)
     ##Final matrices. The indices are as follows:
     ##first index = pair
@@ -94,7 +99,7 @@ def histogram_directory(pairs, spacing):
         print "Starting the analysis for directory %s" % temp_directory[i]
         os.chdir(temp_directory[i])
         traj = md.load("traj.xtc", top="Native.pdb")
-        compdist = compute_distances(traj, pairs)
+        compdist = compute_distances(traj, pairs, yshift=yshift)
         for j in range(np.shape(compdist)[1]):
             print "Calculating pair %s" % str(pairs[j])
             hist, centers = histogram_data_normalized(compdist[:,j], spacing)
@@ -199,8 +204,12 @@ def histogram_data(y, spacing, wgt=None):
     bincenters = edges[:-1]
     return hist, bincenters
 
-def compute_distances(traj, prs):
-    return md.compute_distances(traj, prs, periodic=False)
+def compute_distances(traj, prs, yshift=0.0):
+    distances = md.compute_distances(traj, prs, periodic=False)
+    print distances
+    distances += yshift
+    print distances
+    return distances
 
 def find_max(cmax, nmax):
     if cmax < nmax:
@@ -213,11 +222,12 @@ if __name__ == "__main__":
     pairs = np.array([[114,192]])  ##FRET Probes
     spacing = 0.1   # bin spacings
     ran_size = (0,10)    #range of values for the final distance
+    yshift = 0.2
     #fdata = np.loadtxt("FRET_trace.dat")
     cwd = os.getcwd()
-    os.chdir("1PB7")
+    os.chdir("1PBQ")
     os.chdir("iteration_0")
-    centers_of_bins, normalized_valu, temp_directory = histogram_directory(pairs, spacing)
+    centers_of_bins, normalized_valu, temp_directory = histogram_directory(pairs, spacing, yshift=yshift)
     #os.chdir("histanalysis")
     #np.savetxt("FRET_trace.dat", fdata)
     os.chdir("histanalysis")

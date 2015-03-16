@@ -36,15 +36,16 @@ def calc_reset_direc(subdir, iters, mparams, pparams):
         inp.save_model(model, fitopt)
         os.chdir(cwd)
 
-def calc_initial_direc(subdir, iters, t_fit):
+def calc_initial_direc(subdir, iters, t_fit, trunc):
 
     model, fitopt = inp.load_model(subdir)
     #fitopt["data_type"] = "FRET"
-    fitopt["solver"] = "TSVD"
+    #fitopt["solver"] = "TSVD"
     fitopt["t_fit"] = t_fit
     #fitopt["fret_pairs"] = [[115, 193]]
     #fitopt["spacing"] = 0.1
     #fitopt["iteration"] = iters
+    fitopt["truncate_value"] = trunc
     inp.save_model(model, fitopt)
     
     
@@ -58,10 +59,11 @@ if __name__ == "__main__":
     parser.add_argument("--t_fit", default=130, type=int)
     parser.add_argument("--mparams", default="model_params", type=str)
     parser.add_argument("--pparams", default="pairwise_params", type=str)
+    parser.add_argument("--trunc", default="0.01", type=str)
     args = parser.parse_args()
     
     if args.method == "initial":
-        calc_initial_direc(args.subdir, args.iteration, args.t_fit)
+        calc_initial_direc(args.subdir, args.iteration, args.t_fit, args.trunc)
     elif args.method =="fit":
         calc_fit_direc(args.subdir, args.iteration)
     elif args.method == "reset":

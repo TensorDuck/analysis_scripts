@@ -73,7 +73,7 @@ def run_main_calc(T_fit, args):
         trunc = fitopts["truncate_value"]
     else:
         trunc = 0.01    
-    highvalue, lowvalue = estimate_lambda(trunc)
+    highvalue, lowvalue, lambda_index = estimate_lambda(trunc)
     os.chdir(cwd0)    
     
     fitopts["last_completed_task"] = "Finished: Solving_Newtons_Method"
@@ -99,7 +99,7 @@ def estimate_lambda(trunc):
             highvalue = svf[i-1]
         i += 1
     open("Lambda_index.txt","w").write("%d"%index)
-    return highvalue, lowvalue
+    return highvalue, lowvalue, index
 
 
 def run_save_all(args):
