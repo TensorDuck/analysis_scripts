@@ -94,6 +94,10 @@ def histogram_directory(pairs, spacing, yshift=0.0):
         normalized_valu.append([])
     
     #Begin looping over the temps, then the pairs, to histogram, and then write into files.
+    try:
+        temp_terms = np.shape(temp_directory)[0]
+    except IndexError:
+        temp_directory = np.array([temp_directory])
     
     for i in range(np.shape(temp_directory)[0]):
         print "Starting the analysis for directory %s" % temp_directory[i]
