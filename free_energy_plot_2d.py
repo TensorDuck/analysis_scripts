@@ -98,14 +98,23 @@ def handle_dmaps(ext1, ext2, args):
         weights = np.loadtxt("%s/iter%d.w"%(cfd,i))
         plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d"%i, args, weights=weights, temp=args.temps[0])
    
-def handle_fret(args):
-    pass
+def handle_fret(ext1, ext2, args):
+    temperatures = args.temps
+    iteration_range = args.range
+    cfd = args.file_dir
+    rc1n, rc2n = get_labels(ext1, ext2)
+    for T in temperatures:
+        for j in np.arange(iteration_range[0], iteration_range[1]+1, 1):
+            rc1 = get_value("T%dI%d"%(T,j), ext1, cfd)
+            rc1 = get_value("T%dI%d"%(T,j), ext2, cfd)
+            plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "Temp-%d-Iter-%d"%(T, j+1), args, temp=T)
+    
     
 def handle_vanilla(args):
     pass
 
 def get_labels(ext1, ext2):
-    labels = {"-Qclosed.out":"Q closed", "-y114-192.out":"y between 115-193 (nm)", "-rmsd-closed.xvg":"rmsd-closed (nm)", "-rmsd-apo.xvg":"rmsd-apo (nm)"}
+    labels = {"-Qclosed.out":"Q closed", "-y114-192.out":"y between 115-193 (nm)", "-rmsd-closed.xvg":"rmsd-closed (nm)", "-rmsd-apo.xvg":"rmsd-apo (nm)", "-comA.xvg":"Lobe Center Distances (nm)"}
     return labels[ext1], labels[ext2]
    
 def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300):
@@ -156,8 +165,8 @@ def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300
         plt.close()
 
 def get_value(name, ext, cfd):
-    if ext[-9:] == "-comA.xvg":
-        return np.loadtxt("%s/%s%s"%(cfd,name, ext), skiprows=22)[:,1]   
+    if ext == "-comA.xvg":
+        return np.loadtxt("%s/%s%s"%(cfd, name, ext), skiprows=22)[:,1]   
     elif ext[-4:] == ".xvg":
         return np.loadtxt("%s/%s%s"%(cfd,name, ext), skiprows=13)[:,1]   
     elif ext[-4:] == ".out":
@@ -216,7 +225,7 @@ def get_args():
     par.add_argument("--bins", type=int, default=50, help="Number of bins in each axis for binning data")
     par.add_argument("--scatter_only", action="store_true", default=False, help="use for plotting only a scatter plot")
     par.add_argument("--contour_only", action="store_true", default=False, help="use for plotting only a contour plot")
-    par.add_argument("--plot_type", type=str, default="QC", help="specify the type of plot in xy format; default QC. C=RMSD-closed, A=RMSD-apo, Q=Q, Y=FRET probe distance")
+    par.add_argument("--plot_type", type=str, default="QC", help="specify the type of plot in xy format; default QC. C=RMSD-closed, A=RMSD-apo, Q=Q, Y=FRET probe distance, L=Lobes center distance)
     #par.add_argument("--Q_plot", action="store_true", default=False, help="use for plotting a Q-rmsd plot")
     #par.add_argument("--rmsd_plot", action="store_true", default=False, help="use for plotting a rmsd apo-rmsd closed plot")
     #par.add_argument("--qy_plot", action="store_true", default=False, help="use for plotting a Q-FRET Ca distance plot")
@@ -251,7 +260,7 @@ if __name__=="__main__":
     #if args.dir_structure ==  
     #keys of different methods, asign it to the handle which is then called to do the rest
     handlers = {"dmdmd":handle_dmdmd, "fret":handle_fret, "vanilla":handle_vanilla, "dmaps":handle_dmaps}  
-    names = {"Q":"-Qclosed.out", "A":"-rmsd-apo.xvg", "C":"-rmsd-closed.xvg", "Y":"-y114-192.out"}
+    names = {"Q":"-Qclosed.out", "A":"-rmsd-apo.xvg", "C":"-rmsd-closed.xvg", "Y":"-y114-192.out", "L":"-comA.xvg"}
     
     handle = handlers[args.handle]
     rcn1 = names[args.plot_type[0]]
