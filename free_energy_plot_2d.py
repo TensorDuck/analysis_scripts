@@ -212,6 +212,11 @@ def sanitize_args(args):
             args.axis = [a1[0], a1[1], a2[0], a2[1]]
     
     os.chdir(original_directory)
+    
+    ##make directories if they do not exist
+    if not os.path.isdir(args.save_dir):
+        os.mkdir(args.save_dir)
+    
     return args
     
     
