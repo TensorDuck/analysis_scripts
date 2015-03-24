@@ -35,14 +35,11 @@ def run_start(args):
         if svf[i] <0.01:
             index = num - i
     """
-    go = True
-    i = 0
-    while (go and i <= num):
-        if svf[i] < 0.01:
-            index = num -i
-            go = False
-        i += 1
-    open("Lambda_index.txt","w").write("%d"%index)    
+    if "truncate_value" in fitopts:
+        trunc = fitopts["truncate_value"]
+    else:
+        trunc = 0.01    
+    highvalue, lowvalue, lambda_index = estimate_lambda(trunc)      
 
     os.chdir(cwd0)    
     

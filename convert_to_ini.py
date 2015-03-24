@@ -59,7 +59,7 @@ if __name__ == "__main__":
     parser.add_argument("--t_fit", default=130, type=int)
     parser.add_argument("--mparams", default="model_params", type=str)
     parser.add_argument("--pparams", default="pairwise_params", type=str)
-    parser.add_argument("--trunc", default="0.01", type=str)
+    parser.add_argument("--trunc", default=0.01, type=float)
     args = parser.parse_args()
     
     if args.method == "initial":

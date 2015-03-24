@@ -91,7 +91,7 @@ def estimate_lambda(trunc):
     highvalue = np.min(svf)
     go = True
     i = 0 
-    while (go and i <= num):
+    while (go and i < num):
         if svf[i] < trunc:
             index = num -i
             go = False

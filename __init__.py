@@ -27,6 +27,7 @@ import find_y
 import histy_dmdmd
 import plot_epsilons
 import find_last_crossing
+import make_index
 
 ##temporary likely
 import convert_to_ini

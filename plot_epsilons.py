@@ -33,6 +33,8 @@ def direc_run(args):
     
     
 def single_run(args):
+    cwd = os.getcwd()
+    
     pairs = np.loadtxt(args.pairs_name, skiprows=1)[:,0:2]
     params = np.loadtxt(args.mparams_name)
     
