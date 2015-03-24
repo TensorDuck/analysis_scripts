@@ -106,7 +106,7 @@ def handle_fret(ext1, ext2, args):
     for T in temperatures:
         for j in np.arange(iteration_range[0], iteration_range[1]+1, 1):
             rc1 = get_value("T%dI%d"%(T,j), ext1, cfd)
-            rc1 = get_value("T%dI%d"%(T,j), ext2, cfd)
+            rc2 = get_value("T%dI%d"%(T,j), ext2, cfd)
             plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "Temp-%d-Iter-%d"%(T, j+1), args, temp=T)
     
     
