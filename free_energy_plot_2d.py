@@ -71,7 +71,7 @@ def dmdmd_iteration(start, stop, weights, wsum, rc1, rc2, ext1, ext2, cfd):
                  print "ERROR, sum of weights changes by more than 1! on iteration %d" % i
     else:
         weights = None
-    #loop through and combine al lthe data from every iteration.
+    #loop through and combine all the data from every iteration.
     for i in np.arange(start, stop+1, 2):
         f1 = get_value("iter%d"%i, ext1, cfd)
         f2 = get_value("iter%d"%i, ext2, cfd)
@@ -156,7 +156,9 @@ def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300
         plt.close()
 
 def get_value(name, ext, cfd):
-    if ext[-4:] == ".xvg":
+    if ext[-9:] == "-comA.xvg":
+        return np.loadtxt("%s/%s%s"%(cfd,name, ext), skiprows=22)[:,1]   
+    elif ext[-4:] == ".xvg":
         return np.loadtxt("%s/%s%s"%(cfd,name, ext), skiprows=13)[:,1]   
     elif ext[-4:] == ".out":
         return np.loadtxt("%s/%s%s"%(cfd,name, ext))
