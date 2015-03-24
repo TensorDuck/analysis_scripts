@@ -225,7 +225,7 @@ def get_args():
     par.add_argument("--bins", type=int, default=50, help="Number of bins in each axis for binning data")
     par.add_argument("--scatter_only", action="store_true", default=False, help="use for plotting only a scatter plot")
     par.add_argument("--contour_only", action="store_true", default=False, help="use for plotting only a contour plot")
-    par.add_argument("--plot_type", type=str, default="QC", help="specify the type of plot in xy format; default QC. C=RMSD-closed, A=RMSD-apo, Q=Q, Y=FRET probe distance, L=Lobes center distance)
+    par.add_argument("--plot_type", type=str, default="QC", help="specify the type of plot in xy format; default QC. C=RMSD-closed, A=RMSD-apo, Q=Q, Y=FRET probe distance, L=Lobes center distance")
     #par.add_argument("--Q_plot", action="store_true", default=False, help="use for plotting a Q-rmsd plot")
     #par.add_argument("--rmsd_plot", action="store_true", default=False, help="use for plotting a rmsd apo-rmsd closed plot")
     #par.add_argument("--qy_plot", action="store_true", default=False, help="use for plotting a Q-FRET Ca distance plot")
