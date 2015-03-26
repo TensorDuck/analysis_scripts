@@ -86,6 +86,7 @@ def get_qy(args):
         all_Q = np.append(all_Q, Q, axis=0)
         all_w = np.append(all_w, w, axis=0)
     
+    all_y = all_y + args.y_shift
     return all_y, all_Q, all_w
         
 def sanitize_args(args):
@@ -123,6 +124,7 @@ def get_args():
     parser.add_argument("--QQ", type=int, nargs="+", default=[800, 900], help="range of Q values to cutoff and use")
     parser.add_argument("--Qspacing", type=int, default=10, help="bin size for Q")
     parser.add_argument("--temperature", type=float, default=170, help="temperature of simulation")
+    parser.add_argument("--y_shift", type=float, default=0.2, help="Specify the y-shift to the FRET distance data")
     ##The Real Parser
     par = argparse.ArgumentParser(description="Options for finding the pair distance values of a trajectory", parents=[parser])
     
