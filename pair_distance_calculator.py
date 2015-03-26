@@ -229,7 +229,7 @@ if __name__ == "__main__":
     yshift = 0.2
     #fdata = np.loadtxt("FRET_trace.dat")
     cwd = os.getcwd()
-    os.chdir("1PBQ")
+    os.chdir("1PB7")
     os.chdir("iteration_0")
     centers_of_bins, normalized_valu, temp_directory = histogram_directory(pairs, spacing, yshift=yshift)
     #os.chdir("histanalysis")
