@@ -9,7 +9,7 @@ import os as os
 import argparse
 import mdtraj as md
 
-import analysis_scripts.gro_reader as gread
+
 import analysis_scripts.pair_distance_calculator as pdistance
 
 class traj(object):
@@ -18,7 +18,7 @@ class traj(object):
         self.n_atoms = np.shape(xyz)[1]
 
 def make_gro(args):
-    distances = pdistance.compute_distances(traj(gread.read(args.file)), args.pairs)
+    distances = pdistance.compute_distances(md.load(args.file), args.pairs)
     for i in range(np.shape(args.pairs)[0]):
         np.savetxt("%s/%s-y%d-%d.out"%(args.savedir, args.save_name, args.pairs[i][0], args.pairs[i][1]), distances[:,i])
 

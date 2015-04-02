@@ -198,6 +198,8 @@ def sanitize_args(args):
         pass
     elif args.handle == "vanilla":
         pass
+    elif args.handle == "dmaps":
+        pass
     else:
         print "ERROR: NO DIRECTORY STUCTURE SPECIFIED, NO DEFAULT AVAILABLE"
     
