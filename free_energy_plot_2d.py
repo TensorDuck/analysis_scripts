@@ -48,7 +48,7 @@ def handle_dmdmd(ext1, ext2, args):
         if not stop==fit_range[-1]:
             fit_range = np.append(fit_range, stop)
         ##Do first step, it's unique
-        rc1, rc2, weights = dmdmd_iteration(start, step, weights, wsum, rc1, rc2, ext1, ext2, cfd)
+        rc1, rc2, weights = dmdmd_iteration(start, fit_range[0], weights, wsum, rc1, rc2, ext1, ext2, cfd)
         plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(start,step), args, weights=weights, temp=args.temps[0])
         
         ##go through all the possibilities then    

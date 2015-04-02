@@ -138,7 +138,7 @@ def plot_iterations(centers_of_bins, normalized_valu, pairs, label, spacing, fit
     plot_it(centers_of_bins, normalized_valu, pairs, label_string, spacing, "T-%d-Iter-%d"%(fit_temp, np.max(label)-1))
        
     
-def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title):
+def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title, axis=None):
     #Plot every file, different graphs for different pairs. Outputs a picture to the current directory
     #centers_of_bins are the bin centers (x), given in [j][i], j=pair, i = label
     #normalized_valu are the normalied histogram values
@@ -171,7 +171,10 @@ def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title):
             plt.plot(centers_of_bins[j][i], normalized_valu[j][i], alpha=0.75, linewidth=2, linestyle=linetype[i/6], color=colors[i], label="%s"%label[i], marker="o")
             maxvalue = find_max(maxvalue, np.max(normalized_valu[j][i]))
             maxcenter = find_max(maxcenter, np.max(centers_of_bins[j][i]))
-        plt.axis([0,int(maxcenter*1.5)+1, 0, maxvalue*1.2],fontsize=20) 
+        if axis == None:
+            plt.axis([0,int(maxcenter*1.5)+1, 0, maxvalue*1.2],fontsize=20) 
+        else:
+            plt.axis(axis)
         plt.legend()
         plt.savefig("%s-Pair-%d-%d.png"% (title, pairs[j][0]+1, pairs[j][1]+1))
 
