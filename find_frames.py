@@ -8,12 +8,20 @@ import analysis_scripts.merge_files as mf
 import argparse
 import os
 
-def find_frames_2D(start, stop, bounds=[0, 1, 0, 1], fout=None, groupname=None, xvg_dir=None):
+import analysis_scripts.free_energy_plot2d as fep
+
+def find_frames_2D(start, stop, bounds=[0, 1, 0, 1], fout=None, groupname=None, xvg_dir=None, plot_type="QY"):
     print "Begin Frame Loading"
+    
+    #load the extensions
+    names = {"Q":"-Qclosed.out", "A":"-rmsd-apo.xvg", "C":"-rmsd-closed.xvg", "Y":"-y114-192.out", "L":"-comA.xvg"}
+    ext1 = names[plot_type[0]]
+    ext2 = names[plot_type[1]]
+    
     frame_num = 1
     close = False
     if fout == None:
-        fout = open("iter%d-%d.ndx"%(start,stop), "w")
+        fout = open("iter%d-%d-%s.ndx"%(start,stop,plot_type), "w")
         close = True
     if groupname == None:
         groupname = "group1"
@@ -21,15 +29,15 @@ def find_frames_2D(start, stop, bounds=[0, 1, 0, 1], fout=None, groupname=None, 
     if xvg_dir == None:
         xvg_str = ""
     else:
-        xvg_str = "%s/" % xvg_dir
+        xvg_str = xvg_dir
         
     fout.write("\n[%s]\n"%groupname)
     for i in np.arange(start, stop+1, 2):
 
-        rc1 = np.loadtxt("%siter%d-Qclosed.out"%(xvg_str,i))
+        rc1 = fep.get_value("iter%d"%i, ext1, xvg_str) 
         #rc2 = np.loadtxt("%siter%d-rmsd-closed.xvg"%(xvg_str,i),  skiprows=13)
         #rc2 = rc2[:,1]
-        rc2 = np.loadtxt("%siter%d-y114-192.out"%(xvg_str,i))
+        rc2 = fep.get_value("iter%d"%i, ext2, xvg_str)
         for i in range(np.shape(rc1)[0]):
             if rc1[i]<bounds[1] and rc1[i]>bounds[0] and rc2[i]<bounds[3] and rc2[i]>bounds[2]:
                 fout.write("%d\n"%frame_num)
@@ -49,8 +57,11 @@ if __name__ == "__main__":
     par.add_argument("--fname", type=str)
     par.add_argument("--append", default=False, type=bool)
     par.add_argument("--group_name", type=str)
+    par.add_argument("--plot_type", type=str, default="QC", help="specify the type of plot in xy format; default QC. C=RMSD-closed, A=RMSD-apo, Q=Q, Y=FRET probe distance, L=Lobes center distance")
     
     args = par.parse_args()
+    
+    
     
     if args.file_dir[-1] == "/":
         args.file_dir = file_dir[:-1]
@@ -80,18 +91,35 @@ if __name__ == "__main__":
     
     if args.step == None:
         mf.merge(args.range[0], args.range[1],args.file_dir, args.save_dir)
-        find_frames_2D(args.range[0], args.range[1], bounds=args.bound, fout=fsave, groupname=args.group_name,xvg_dir=xvg_file_dir)
+        find_frames_2D(args.range[0], args.range[1], bounds=args.bound, fout=fsave, groupname=args.group_name,xvg_dir=xvg_file_dir, plot_type=args.plot_type)
     else:
         if args.range[0] < args.step:
             for stop in np.arange(args.step, args.range[1], args.step):
                 mf.merge(args.range[0], stop, args.file_dir, args.save_dir)
-                find_frames_2D(args.range[0], stop, bounds=args.bound, fout=fsave, groupname=args.group_name,xvg_dir=xvg_file_dir)
+                find_frames_2D(args.range[0], stop, bounds=args.bound, fout=fsave, groupname=args.group_name,xvg_dir=xvg_file_dir, plot_type=args.plot_type)
         else:
             for stop in np.arange(args.range[0]+args.step, args.range[1], args.step):
                 mf.merge(args.range[0], stop, args.file_dir, args.save_dir)     
-                find_frames_2D(args.range[0], stop, bounds=args.bound, fout=fsave, groupname=args.group_name,xvg_dir=xvg_file_dir) 
+                find_frames_2D(args.range[0], stop, bounds=args.bound, fout=fsave, groupname=args.group_name,xvg_dir=xvg_file_dir, plot_type=args.plot_type) 
+    #load the extensions
+    names = {"Q":"-Qclosed.out", "A":"-rmsd-apo.xvg", "C":"-rmsd-closed.xvg", "Y":"-y114-192.out", "L":"-comA.xvg"}
+    ext1 = names[args.plot_type[0]]
+    ext2 = names[args.plot_type[1]]
     
-    finfo.write("[%s] is for a range of %5.2f < Q <%5.2f and %5.2f < rmsd(nm) < %5.2f\n"%(args.group_name,args.bound[0],args.bound[1],args.bound[2],args.bound[3]))
+    label1, label2 = fep.get_labels(ext1, ext2)
+    finfo.write("[%s] is for a range of %5.2f < %s <%5.2f and %5.2f < %s < %5.2f\n"%(args.group_name,args.bound[0],ext1,args.bound[1],args.bound[2],ext2,args.bound[3]))
     finfo.close() 
     fsave.close()
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
                 

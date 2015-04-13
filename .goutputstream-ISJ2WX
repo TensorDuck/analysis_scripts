@@ -1,0 +1,78 @@
+"""
+Package for organizing and maintaining plotting funtions using some customized format
+"""
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def return_max(cmax, nmax):
+    if cmax < nmax:
+        return nmax
+    else:
+        return cmax
+
+def plot_simple(x, y, label, title, xaxis_label, yaxis_label, axis=None):
+    """plot_simple is for a simple x-y plot with the dots connected.  """    
+    
+    #specify generic color order for use
+    colors = ["b","g","r","c","m","y","b","g","r","c","m","y","b","g","r","c","m","y","b","g","r","c","m","y"]
+    linetype = ["-", "--",":"]
+    
+    plt.figure()
+    maxvalue = 0.0
+    maxcenter = 0.0
+    
+    #plot it!
+    for i in range(np.shape(label)[0]):
+        plt.plot(x[i], y[i], alpha=0.75, linewidth=2, linestyle=linetype[i/6], color=colors[i], label="%s"%label[i], marker="o")
+        maxvalue = return_max(maxvalue, np.max(y[i]))
+        maxcenter = return_max(maxcenter, np.max(x[i]))
+    
+    #specify the axis size, labels, etc.
+    if axis == None:
+        plt.axis([0,int(maxcenter*1.5)+1, 0, maxvalue*1.2],fontsize=20) 
+    else:
+        plt.axis(axis)
+    plt.legend()
+    plt.xlabel(xaxis_label, fontsize=25)
+    plt.ylabel(yaxis_label,fontsize=25)
+    plt.title(title, fontsize=25)
+    
+    plt.show()
+    
+    plt.savefig("%s.png"%title)
+
+def plot_error_bar(x, y, label, title, xaxis_label, yaxis_label, xerr=None, yerr=None, axis=None):
+    """plot_simple is for a simple x-y plot with the dots connected.  """    
+    
+    #specify generic color order for use
+    colors = ["b","g","r","c","m","y","b","g","r","c","m","y","b","g","r","c","m","y","b","g","r","c","m","y"]
+    linetype = ["-", "--",":"]
+    
+    #initialize stuff, specify starting maxvalue and maxcenter for determining axis size.
+    plt.figure()
+    maxvalue = 0.0
+    maxcenter = 0.0
+    
+    #plot it!
+    for i in range(np.shape(label)[0]):
+        #plt.errorbar(x[i], y[i], xerr=xerr, yerr=yerr, linewidth=2, alpha=0.75, linestyle=linetype[i/6], color=colors[i], label="%s"%label[i], marker="o")
+        plt.errorbar(x[i], y[i], xerr=xerr, yerr=yerr, linewidth=2, alpha=0.75, linestyle=linetype[i/6], color=colors[i], label="%s"%label[i])
+        maxvalue = return_max(maxvalue, np.max(y[i]))
+        maxcenter = return_max(maxcenter, np.max(x[i]))
+    
+    #specify the axis size, labels, etc.
+    if axis == None:
+        plt.axis([0,int(maxcenter*1.5)+1, 0, maxvalue*1.2],fontsize=20) 
+    else:
+        plt.axis(axis)
+    plt.legend()
+    plt.xlabel(xaxis_label, fontsize=25)
+    plt.ylabel(yaxis_label,fontsize=25)
+    plt.title(title, fontsize=25)
+    
+    plt.show()
+    
+    plt.savefig("%s.png"%title)
+
+

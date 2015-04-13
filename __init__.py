@@ -28,6 +28,8 @@ import histy_dmdmd
 import plot_epsilons
 import find_last_crossing
 import make_index
+import boot_strap_method
+import plot_package
 
 ##temporary likely
 import convert_to_ini
