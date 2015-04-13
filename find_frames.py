@@ -8,7 +8,7 @@ import analysis_scripts.merge_files as mf
 import argparse
 import os
 
-import analysis_scripts.free_energy_plot2d as fep
+import analysis_scripts.free_energy_plot_2d as fep
 
 def find_frames_2D(start, stop, bounds=[0, 1, 0, 1], fout=None, groupname=None, xvg_dir=None, plot_type="QY"):
     print "Begin Frame Loading"
