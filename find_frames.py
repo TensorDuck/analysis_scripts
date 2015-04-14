@@ -75,7 +75,7 @@ if __name__ == "__main__":
     
     if args.fname == None:
         fout = "%s/iter%d-%d-%s-frames.ndx"%(args.save_dir,args.range[0],args.range[1], args.plot_type)
-        finf = "%s/iter%d-%d-%s-info.txt"%(args.save_dir,args.range[0],args.range[1], ags.plot_type)
+        finf = "%s/iter%d-%d-%s-info.txt"%(args.save_dir,args.range[0],args.range[1], args.plot_type)
     else:
         fout = "%s/%s.ndx"%(args.save_dir,args.fname)
         finf = "%s/%s-info.txt"%(args.save_dir,args.fname)
