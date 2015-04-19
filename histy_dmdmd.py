@@ -16,7 +16,7 @@ from analysis_scripts.gro_reader import traj
 
 kb = 6.022141*1.380650/(4.184*1000.0)
 
-def hist_y(args):
+def handle_dmdmd(args):
     cwd = os.getcwd()
     
     #Load every array
@@ -26,6 +26,34 @@ def hist_y(args):
     
     os.chdir(cwd)
     
+    hist_y(all_y, all_Q, all_w, args)
+    
+
+def handle_dmaps(args):
+    cwd = os.getcwd()
+    
+    #Load every array
+    os.chdir(args.filedir)
+    
+    all_y = np.array([]) # FRET Probe C-alpha distance
+    all_Q = np.array([]) # corresponding Q values
+    all_w = np.array([]) # corresponding weights (.w) to the files
+    
+    for i in np.arange(args.iters[0], args.iters[1]+1, args.iters[2]):
+        y = np.loadtxt("%s/iter%d-y114-192.out" % i)
+        Q = np.loadtxt("%s/iter%d-Qclosed.out" % i)
+        w = np.loadtxt("%s/iter%d.w" % i)
+        all_y = np.append(all_y, y, axis=0)
+        all_Q = np.append(all_Q, Q, axis=0)
+        all_w = np.append(all_w, w, axis=0)
+    
+    os.chdir(cwd)
+    all_y = all_y + args.y_shift
+    
+    hist_y(all_y, all_Q, all_w, args)
+
+def hist_y(all_y, all_Q, all_w, args):    
+    cwd = os.getcwd()
     # Plot Q
     for Q_bound in args.QQ:
         q_larger = all_Q >= Q_bound
@@ -88,6 +116,8 @@ def get_qy(args):
     
     all_y = all_y + args.y_shift
     return all_y, all_Q, all_w
+
+
         
 def sanitize_args(args):
     ##set the pairs for fitting in the array format for the calculation
@@ -115,7 +145,7 @@ def get_args():
     ##parent parser for shared parameters
     parser = argparse.ArgumentParser(description="parent set of parameters", add_help=False)
     parser.add_argument("--filedir", type=str, default=os.getcwd(), help="File, either .gro or .xtc")
-    parser.add_argument("--savedir", type=str, default="%s/plots"%os.getcwd(), help="Directory for saving the outputted data")
+    parser.add_argument("--savedir", type=str, default="%s/hist_plots"%os.getcwd(), help="Directory for saving the outputted data")
     parser.add_argument("--pairs", nargs="+",type=int, default=[114,192], help="pairs for computing the y-distance")
     parser.add_argument("--save_name", type=str, default="plot", help="Name of file to be saved in")
     parser.add_argument("--spacing", type=float, default=0.1, help="spacing in nm for histogramming data")
@@ -125,6 +155,7 @@ def get_args():
     parser.add_argument("--Qspacing", type=int, default=10, help="bin size for Q")
     parser.add_argument("--temperature", type=float, default=170, help="temperature of simulation")
     parser.add_argument("--y_shift", type=float, default=0.2, help="Specify the y-shift to the FRET distance data")
+    parser.add_argument("--handle", type=str, default="dmdmd", help="Specify the directory structure")
     ##The Real Parser
     par = argparse.ArgumentParser(description="Options for finding the pair distance values of a trajectory", parents=[parser])
     
@@ -146,7 +177,10 @@ if __name__ == "__main__":
     print args.iters
     print args.QQ
     
-    hist_y(args)
+    handlers = {"dmdmd":handle_dmdmd, "dmaps":handle_dmaps}
+    
+    handle = handlers(args.handle)
+    handle(args)
     
         
     
