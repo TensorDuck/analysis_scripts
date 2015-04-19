@@ -40,9 +40,9 @@ def handle_dmaps(args):
     all_w = np.array([]) # corresponding weights (.w) to the files
     
     for i in np.arange(args.iters[0], args.iters[1]+1, args.iters[2]):
-        y = np.loadtxt("%s/iter%d-y114-192.out" % i)
-        Q = np.loadtxt("%s/iter%d-Qclosed.out" % i)
-        w = np.loadtxt("%s/iter%d.w" % i)
+        y = np.loadtxt("iter%d-y114-192.out" % i)
+        Q = np.loadtxt("iter%d-Qclosed.out" % i)
+        w = np.loadtxt("iter%d.w" % i)
         all_y = np.append(all_y, y, axis=0)
         all_Q = np.append(all_Q, Q, axis=0)
         all_w = np.append(all_w, w, axis=0)
