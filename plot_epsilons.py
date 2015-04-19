@@ -42,6 +42,7 @@ def single_run(args):
     y = pairs[:,0]
     x = pairs[:,1]
     os.chdir(args.savedir)
+    plot_spread(params, args.title, args)
     plot_it(x,y, params, args.title, args)
     os.chdir(cwd)
 
