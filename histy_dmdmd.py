@@ -179,7 +179,7 @@ if __name__ == "__main__":
     
     handlers = {"dmdmd":handle_dmdmd, "dmaps":handle_dmaps}
     
-    handle = handlers[args]
+    handle = handlers[args.handle]
     handle(args)
     
         
