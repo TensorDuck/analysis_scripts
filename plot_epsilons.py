@@ -21,6 +21,7 @@ def direc_run(args):
             title = "T%d-I%d" % (temp, i)
             os.chdir(args.savedir)
             plot_it(x,y, params, title, args)
+            plot_spread(params, title, args)
             os.chdir(cwd)
             if np.max(params) > maxz:
                 maxz = np.max(params)
@@ -43,6 +44,14 @@ def single_run(args):
     os.chdir(args.savedir)
     plot_it(x,y, params, args.title, args)
     os.chdir(cwd)
+
+def plot_spread(epsilons, title, args):
+    plt.figure()
+    plt.hist(epsilons, 50, alpha=0.75)
+    plt.xlabel("epsilon",fontsize=20)
+    plt.ylabel("number",fontsize=20)
+    plt.title("spread of epsilons", fontsize=20)
+    plt.savefig("%s_spread.png"%title)
 
 def plot_it(x,y,z,title, args):
     ctype = args.ctype
