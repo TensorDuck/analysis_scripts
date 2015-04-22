@@ -249,7 +249,7 @@ def sanitize_args(args):
 def get_args():
     ##Parent parser for universal parameters
     par = argparse.ArgumentParser(description="parent set of parameters", add_help=False)
-    par.add_argument("--file_dir", default="%s/analysis"%os.getcwd(), type=str, help="location of files for analysis")
+    par.add_argument("--file_dir", default=os.getcwd(), type=str, help="location of files for analysis")
     par.add_argument("--range", default=[6,100], nargs=2, type=int, help="Range of iterations to plot for")
     par.add_argument("--step", type=int, help="Use for specifying what step-size to take in iterations for plotting")
     par.add_argument("--no_weight", dest="weight", action="store_false", default=True, help="Use if frames don't have a weight in a .w file")
