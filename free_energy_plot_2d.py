@@ -240,7 +240,7 @@ def sanitize_args(args):
         if args.handle=="vanilla":
             raise IOError("Must specify file name")
     elif len(args.file_names)==1:
-        args.file_names.append(args.names[0])
+        args.file_names.append(args.file_names[0])
         
         
     return args
