@@ -183,10 +183,10 @@ def get_value(name, ext, cfd):
         return np.loadtxt("%s/%s%s"%(cfd,name, ext))
     elif ext == "ev1":
         values = np.loadtxt("%s/%s.ev"%(cfd,name))
-        return values[:,0]
+        return values[:,1]
     elif ext == "ev2":
         values = np.loadtxt("%s/%s.ev"%(cfd,name))
-        return values[:,1] 
+        return values[:,2] 
     else:
         print "ERROR: COULD NOT DETERMINE FILE TYPE, RETURNING NONE"
         return None
