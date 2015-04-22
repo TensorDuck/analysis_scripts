@@ -19,6 +19,7 @@ def run_analysis(args):
     elif args.method == "multi":
         data_set = get_multi_data_set(args)
     
+    data_set = data_set + args.yshift
     #array for plotting
     x = []
     y = []
@@ -140,6 +141,7 @@ def get_args():
     ##gro, for running on a .gro file
     single_sub = sub.add_parser("single", parents=[parser], help="Use option 'single' for analyzing data from a single file")
     single_sub.add_argument("--file", type=str, help="Specify the file to use located inside the filedir")
+    single_sub.add_argument("--yshift", default=0, type=float, help="specify the y-shift to the data")
     
     ##xtc, for running on a compressed .xtc file
     multi_sub = sub.add_parser("multi", parents=[parser], help="Use option 'multi' for analyzing data from multiple files")
@@ -149,6 +151,7 @@ def get_args():
     combine_sub = sub.add_parser("combine", parents=[parser], help="Use to combine the results form multiple error analysis results")
     combine_sub.add_argument("--names", nargs="+", type=str)
     combine_sub.add_argument("--filedir", type=str, default=os.getcwd(), help="location of files for analysis")
+    
     
     args = par.parse_args()
     

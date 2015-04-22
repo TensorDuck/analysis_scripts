@@ -110,11 +110,21 @@ def handle_fret(ext1, ext2, args):
             plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "Temp-%d-Iter-%d"%(T, j+1), args, temp=T)
     
     
-def handle_vanilla(args):
-    pass
+def handle_vanilla(ext1, ext2, args):
+    temperature = args.temps[0]
+    iteration_range = args.range
+    cfd = args.file_dir
+    
+    rc1 = get_value(args.file_names[0], ext1, cfd)
+    rc2 = get_value(args.file_names[1], ext2, cfd)
+    
+    rc1n, rc2n = get_labels(ext1, ext2)
+    
+    plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n,  args.save_name, args, temp=temperature)
+    
 
 def get_labels(ext1, ext2):
-    labels = {"-Qclosed.out":"Q closed", "-y114-192.out":"y between 115-193 (nm)", "-rmsd-closed.xvg":"rmsd-closed (nm)", "-rmsd-apo.xvg":"rmsd-apo (nm)", "-comA.xvg":"Lobe Center Distances (nm)"}
+    labels = {"-Qclosed.out":"Q closed", "-y114-192.out":"y between 115-193 (nm)", "-rmsd-closed.xvg":"rmsd-closed (nm)", "-rmsd-apo.xvg":"rmsd-apo (nm)", "-comA.xvg":"Lobe Center Distances (nm)", "ev1":"DC1", "ev2":"DC2"}
     return labels[ext1], labels[ext2]
    
 def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300):
@@ -171,6 +181,12 @@ def get_value(name, ext, cfd):
         return np.loadtxt("%s/%s%s"%(cfd,name, ext), skiprows=13)[:,1]   
     elif ext[-4:] == ".out":
         return np.loadtxt("%s/%s%s"%(cfd,name, ext))
+    elif ext == "ev1":
+        values = np.loadtxt("%s/%s.ev"%(cfd,name))
+        return values[:,0]
+    elif ext == "ev2":
+        values = np.loadtxt("%s/%s.ev"%(cfd,name))
+        return values[:,1] 
     else:
         print "ERROR: COULD NOT DETERMINE FILE TYPE, RETURNING NONE"
         return None
@@ -219,6 +235,14 @@ def sanitize_args(args):
     if not os.path.isdir(args.save_dir):
         os.mkdir(args.save_dir)
     
+    ##make names at least a length 2 list
+    if len(args.file_names)==0:
+        if args.handle=="vanilla":
+            raise IOError("Must specify file name")
+    elif len(args.file_names)==1:
+        args.file_names.append(args.names[0])
+        
+        
     return args
     
     
@@ -232,14 +256,13 @@ def get_args():
     par.add_argument("--bins", type=int, default=50, help="Number of bins in each axis for binning data")
     par.add_argument("--scatter_only", action="store_true", default=False, help="use for plotting only a scatter plot")
     par.add_argument("--contour_only", action="store_true", default=False, help="use for plotting only a contour plot")
-    par.add_argument("--plot_type", type=str, default="QC", help="specify the type of plot in xy format; default QC. C=RMSD-closed, A=RMSD-apo, Q=Q, Y=FRET probe distance, L=Lobes center distance")
-    #par.add_argument("--Q_plot", action="store_true", default=False, help="use for plotting a Q-rmsd plot")
-    #par.add_argument("--rmsd_plot", action="store_true", default=False, help="use for plotting a rmsd apo-rmsd closed plot")
-    #par.add_argument("--qy_plot", action="store_true", default=False, help="use for plotting a Q-FRET Ca distance plot")
+    par.add_argument("--plot_type", type=str, default="QC", help="specify the type of plot in xy format; default QC. C=RMSD-closed, A=RMSD-apo, Q=Q, Y=FRET probe distance, L=Lobes center distance, 1=DC1, 2=DC2")
     par.add_argument("--handle", type=str, help="specify either dmdmd, vanilla or fret")
     par.add_argument("--temps", type=float, nargs="+", help="specify the temperature for the data, can be an array")
     par.add_argument("--flow", action="store_true", default=False, help="Use if you want to plot iterations in intervals, i.e. 2-50, 52-60")
-    
+    ##for just handle: vanilla
+    par.add_argument("--file_names", nargs="+", type=str, help="Specify the specific names of the DC containing files") ##for handle vanilla
+    par.add_argument("--save_name", type=str, default="fep", help="Specify the specific names of the DC containing files") ##for handle vanilla
     ##the real parser
     parser = argparse.ArgumentParser(description="For Deciding how to plot the results")
     sub = parser.add_subparsers(dest="method")
@@ -247,9 +270,6 @@ def get_args():
     ##For defining an axis all the Q and Rs should be plotted on
     same_sub = sub.add_parser("same", parents=[par], help="for plotting all the plots on the same axis specified by 'raxis', 'qaxis'")
     same_sub.add_argument("--axis", nargs=4, type=float, help="specify axis. Defaults set for supported plot_type")
-    #same_sub.add_argument("--rraxis", default=[0,8.5,0,8.5], nargs=4, type=float)
-    #same_sub.add_argument("--qraxis", default=[0, 1000, 0, 8.5], nargs=4, type=float)
-    #same_sub.add_argument("--qyaxis", default=[0, 1000, 0, 50], nargs=4, type=float)
     same_sub.add_argument("--save_dir", default="%s/same_axis"%os.getcwd(), type=str, help="directory for saving the plots")
         
     
@@ -267,7 +287,7 @@ if __name__=="__main__":
     #if args.dir_structure ==  
     #keys of different methods, asign it to the handle which is then called to do the rest
     handlers = {"dmdmd":handle_dmdmd, "fret":handle_fret, "vanilla":handle_vanilla, "dmaps":handle_dmaps}  
-    names = {"Q":"-Qclosed.out", "A":"-rmsd-apo.xvg", "C":"-rmsd-closed.xvg", "Y":"-y114-192.out", "L":"-comA.xvg"}
+    names = {"Q":"-Qclosed.out", "A":"-rmsd-apo.xvg", "C":"-rmsd-closed.xvg", "Y":"-y114-192.out", "L":"-comA.xvg", "1":"ev1", "2":"ev2"}
     
     handle = handlers[args.handle]
     rcn1 = names[args.plot_type[0]]

@@ -74,7 +74,7 @@ def hist_y(all_y, all_Q, all_w, args):
         normalized_value = [[hist]]
         centers_of_bins = [[bincenters]]
         label = ["Q>%d" % Q_bound]
-        title = "%s-Q>%d" % (args.save_name, Q_bound)
+        title = "%s-Q-%d" % (args.save_name, Q_bound)
         
         print "Shape of the data is:"
         print np.shape(normalized_value)
