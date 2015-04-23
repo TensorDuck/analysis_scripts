@@ -261,7 +261,7 @@ def get_args():
     par.add_argument("--temps", type=float, nargs="+", help="specify the temperature for the data, can be an array")
     par.add_argument("--flow", action="store_true", default=False, help="Use if you want to plot iterations in intervals, i.e. 2-50, 52-60")
     ##for just handle: vanilla
-    par.add_argument("--file_names", nargs="+", type=str, help="Specify the specific names of the DC containing files") ##for handle vanilla
+    par.add_argument("--file_names", nargs="+", type=str, default=[], help="Specify the specific names of the DC containing files") ##for handle vanilla
     par.add_argument("--save_name", type=str, default="fep", help="Specify the specific names of the DC containing files") ##for handle vanilla
     ##the real parser
     parser = argparse.ArgumentParser(description="For Deciding how to plot the results")
