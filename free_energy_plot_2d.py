@@ -138,7 +138,7 @@ def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300
     if not args.contour_only:
         plt.figure()
         plot_style = "scatter"
-        x, y, z = hist2d.make(rc1, rc2, nbins, nbins, temperature=temp, weight=weights, plot_style=plot_style, free_energy_plot=True, idx_smoothing=3)
+        x, y, z = hist2d.make(rc1, rc2, nbins, nbins, temperature=temp, weight=weights, plot_style=plot_style, free_energy_plot=True, idx_smoothing=1)
         cp = plt.scatter(x, y, s=10, c=z, marker='o', linewidth=0.)
         #vmax=7
         if not axis == None:
@@ -159,7 +159,7 @@ def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300
         ensure("%s/contour"%args.save_dir)
         plt.figure()
         plot_style = "contour"
-        xc, yc, zc = hist2d.make(rc1, rc2, nbins, nbins, temperature=temp, weight=weights, plot_style=plot_style, free_energy_plot=True, idx_smoothing=3)
+        xc, yc, zc = hist2d.make(rc1, rc2, nbins, nbins, temperature=temp, weight=weights, plot_style=plot_style, free_energy_plot=True, idx_smoothing=1)
         cp = plt.contourf(xc, yc, zc, 20)
         plt.contour(xc, yc, zc, cp.levels, colors='k', hold='on')
         if not axis == None:
