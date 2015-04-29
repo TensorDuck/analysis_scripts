@@ -46,7 +46,7 @@ if __name__ == "__main__":
         print "Fixing range to lower bound of iteration 6"
         
     if args.step == None:
-        merge(args.range[0], args.range[1])
+        merge(args.range[0], args.range[1], args.file_dir, args.save_dir)
     else:
         if args.range[0] < args.step:
             for stop in np.arange(args.step, args.range[1], args.step):
