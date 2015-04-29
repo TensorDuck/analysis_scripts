@@ -10,7 +10,7 @@ import numpy as np
 import mdtraj as md
 import os
 import matplotlib.pyplot as plt
-
+import argparse
 
 def histogram_iterations(pairs,spacing,temperature, fitopts):
     ##assumes you are in the directory with al lthe iterations.
@@ -124,7 +124,40 @@ def histogram_directory(pairs, spacing, yshift=0.0):
     print "Completed histogramming and file writing for directory %s" % cwd   
     return centers_of_bins, normalized_valu, temp_directory
     
-
+def histogram_multi(args):
+    cwd = os.getcwd()
+    names = args.names
+    spacing = args.spacing
+    
+    fwd = args.filedir
+    swd = args.savedir
+    
+    centers_of_bins = [] 
+    normalized_valu = []
+    for i in args.pairs:
+        centers_of_bins.append([])
+        normalized_valu.append([])
+    
+    for name in names:
+        if name[-3:] == "xtc":
+            traj_name = md.load("%s/%s"%(fwd, name), top="%s/%s" %(fwd, args.native))
+        if name[-3:] == "gro":
+            traj_name = md.load("%s/%s"%(fwd, name))
+        else:
+            raise IOError("Specified file etension not found!")
+        compdist = compute_distances(traj_name, args.pairs, yshift=args.y_shift)
+        for j in range(np.shape(compdist)[1]):
+            print "Calculating pair %s" % str(args.pairs[j])
+            hist, centers = histogram_data_normalized(compdist[:,j], spacing)
+            centers_of_bins[j].append(centers)
+            normalized_valu[j].append(hist)
+    
+    os.chdir(args.savedir)
+    plot_it(centers_of_bins, normalized_valu, args.pairs, args.labels, args.spacing, args.title)
+    os.chdir(cwd)
+    
+    
+    
 def plot_directory(centers_of_bins, normalized_valu, pairs, temp_directory, spacing):
     for i in np.arange(np.shape(temp_directory)[0]):
         temp_directory[i] = "T=" + temp_directory[i][:-2]
@@ -223,24 +256,86 @@ def find_max(cmax, nmax):
         return nmax
     else:
         return cmax
+
+
+def sanitize_args(args):
+    ##set the pairs for fitting in the array format for the calculation
+    pairs = np.array([[args.pairs[0], args.pairs[1]]])
+    #print "Number of pairs is: %d" % (len(args.pairs)/2)
+    if len(args.pairs)>2:
+        for i in np.arange(3, len(args.pairs), 2):
+            pairs = np.append(pairs, np.array([[args.pairs[i-1], args.pairs[i]]]), axis=0)
+    args.pairs = pairs
+    
+    ##sets the save_name to the file's name if it is not specified
+    if args.save_name == None:
+        args.save_name = "hist%d-%d"%(args.iters[0],args.iters[1])
+        print "No save name specified, defaulting to %s" % args.save_name
+    
+    if not os.path.isdir(args.savedir):
+        os.mkdir(args.savedir)
+    
+    if args.method == "multi":
+        if not len(args.labels) == len(args.names):
+            if len(args.labels) < len(args.names):
+                for i in range(len(args.names)-len(args.labels)):
+                     args.labels.append(args.names[len(args.labels)+i][:-4])
+                else:
+                    print "More labels than names, dropping the ones not corresponding to a file"
+
+    return args
+        
+def get_args():
+    ##parent parser for shared parameters
+    parser = argparse.ArgumentParser(description="parent set of parameters", add_help=False)
+    parser.add_argument("--filedir", type=str, default=os.getcwd(), help="File, either .gro or .xtc")
+    parser.add_argument("--savedir", type=str, default="%s/hist_plots"%os.getcwd(), help="Directory for saving the outputted data")
+    parser.add_argument("--pairs", nargs="+",type=int, default=[114,192], help="pairs for computing the y-distance")
+    parser.add_argument("--save_name", type=str, default="plot", help="Name of file to be saved in")
+    parser.add_argument("--spacing", type=float, default=0.1, help="spacing in nm for histogramming data")
+    #parser.add_argument("--ran_size", type=float, nargs=2, default=(0,10), help="range of y values to plot")
+    parser.add_argument("--iters", type=int, nargs=3, default=[6, 8, 2], help="range of iter files to consider")
+    parser.add_argument("--QQ", type=int, nargs="+", default=[800, 900], help="range of Q values to cutoff and use")
+    parser.add_argument("--Qspacing", type=int, default=10, help="bin size for Q")
+    parser.add_argument("--temperature", type=float, default=170, help="temperature of simulation")
+    parser.add_argument("--y_shift", type=float, default=0, help="Specify the y-shift to the FRET distance data")
+    ##The Real Parser
+    
+    par = argparse.ArgumentParser(description="For deciding which method pair distances will be calculated and made")
+    sub = par.add_subparsers(dest="method")
+    
+    multi_sub = sub.add_parser("multi", parents=[parser], help="for plotting an arbitrary set of files")
+    multi_sub.add_argument("--names", type=str, nargs="+", help="Specify names of all the files")
+    multi_sub.add_argument("--labels", type=str, nargs="+", help="Specify labels of all the files")
+    multi_sub.add_argument("--title", type=str, nargs="+", help="Specify title displayed on the plot")
+    multi_sub.add_argument("--native", type=str, help="specify the location of the native.pdb file for use in the filedir")
+     
+    direc_sub = sub.add_parser("directory", parents=[parser], help="for plotting out a directory from regular MD simulations")
+    direc_sub.add_argument("--ran_size", type=float, nargs=2, default=(0,10), help="specify plotting range")
+    
+    
+    args = par.parse_args()
+
+    args = sanitize_args(args)
+    
+    return args
     
 
 if __name__ == "__main__":
-    pairs = np.array([[114,192]])  ##FRET Probes
-    spacing = 0.1   # bin spacings
-    ran_size = (0,10)    #range of values for the final distance
-    yshift = 0.2
-    #fdata = np.loadtxt("FRET_trace.dat")
-    cwd = os.getcwd()
-    os.chdir("1PB7")
-    os.chdir("iteration_0")
-    centers_of_bins, normalized_valu, temp_directory = histogram_directory(pairs, spacing, yshift=yshift)
-    #os.chdir("histanalysis")
-    #np.savetxt("FRET_trace.dat", fdata)
-    os.chdir("histanalysis")
-    plot_directory(centers_of_bins, normalized_valu, pairs, temp_directory, spacing)
-    os.chdir(cwd)
     
+    args = get_args()
+    
+    if args.method == "directory":
+        cwd = os.getcwd()
+        os.chdir("1PB7")
+        os.chdir("iteration_0")
+        centers_of_bins, normalized_valu, temp_directory = histogram_directory(args.pairs, args.spacing, yshift=args.y_shift)
+        os.chdir("histanalysis")
+        plot_directory(centers_of_bins, normalized_valu, args.pairs, temp_directory, args.spacing)
+        os.chdir(cwd)
+        
+    elif args.method == "multi":
+        histogram_multi(args)
     
     
     

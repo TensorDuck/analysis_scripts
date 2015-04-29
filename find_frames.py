@@ -18,7 +18,7 @@ def find_frames_2D(start, stop, bounds=[0, 1, 0, 1], fout=None, groupname=None, 
     ext1 = names[plot_type[0]]
     ext2 = names[plot_type[1]]
     
-    frame_num = 1
+    frame_num = 1 ##verified on April 28, 2015- frame counting starts from 1
     close = False
     if fout == None:
         fout = open("iter%d-%d-%s.ndx"%(start,stop,plot_type), "w")

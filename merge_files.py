@@ -3,6 +3,7 @@ Simple method for merging files together for the results from a dmdmd simulation
 """
 import argparse
 import os
+import numpy as np
 
 def merge(start, stop, cfd, csd):
     fout_name = "%s/iter%d-%d.gro"%(csd,start,stop)
