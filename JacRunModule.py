@@ -115,11 +115,14 @@ def run_save_all(args):
         os.chdir("%d"%t)
         iteration = run_main_save(t,args)
         #ffit will write out a file detailing which frames are scaled and which are not
-        ffit = open("%s/iteration_%d/newton/fitting_scale"%(args.subdir,iteration)).readline().strip()
+        fit_data_file = open("%s/iteration_%d/newton/fitting_scale"%(args.subdir,iteration))
+        ffit = fit_data_file.readline().strip()
+        eps_average = fit_data_file.readline().strip()
         if not float(ffit) == 1:
-            fit_string += "Temperature %d scaled = True,  by factor = %s\n"%(t,ffit)
+            fit_string += "Temperature %d scaled = True,  by factor = %s"%(t,ffit)
         else:
-            fit_string += "Temperature %d scaled = False, by factor = %s\n"%(t,ffit)
+            fit_string += "Temperature %d scaled = False, by factor = %s"%(t,ffit)
+        fit_string += ", eps_average = %s\n" % eps_average
         os.chdir(args.cwd)
     
     f = open("Fitting_damping_%d.txt"%iteration,"w")
@@ -194,6 +197,7 @@ def get_args():
     parser.add_argument("--pairs", nargs="+",type=int, default=[114,192], help="pairs for FRET fitting")
     parser.add_argument("--fitting_method", default=None, type=str, help="Choose either TSVD (def) or Levenberg")
     parser.add_argument("--spacing", type=float, default=0.1, help="spacing for binning the simulated and experimental FRET data")
+    parser.add_argument("--fret_data", type=str, default="den", help="specify the type of FRET data using. Either den=Denoised or obs=Observed")
     
     ##The Real Parser
     par = argparse.ArgumentParser(description="Options for Jac_run_module. Use --cwd for analysis on not the current working directory")

@@ -27,7 +27,7 @@ def histogram_iterations(pairs,spacing,temperature, fitopts):
 	yshift = fitopts["y_shift"]
     else:
         yshift = 0.0
-
+    
     centers_of_bins = [] 
     normalized_valu = []
     labels = []
@@ -163,15 +163,15 @@ def plot_directory(centers_of_bins, normalized_valu, pairs, temp_directory, spac
         temp_directory[i] = "T=" + temp_directory[i][:-2]
     plot_it(centers_of_bins, normalized_valu, pairs, temp_directory, spacing, "ProbDist")
 
-def plot_iterations(centers_of_bins, normalized_valu, pairs, label, spacing, fit_temp):
+def plot_iterations(centers_of_bins, normalized_valu, pairs, label, spacing, fit_temp, fretdata=None):
     label_string = []
     for i in label:
         label_string.append("Iter=%d" % i)
         
-    plot_it(centers_of_bins, normalized_valu, pairs, label_string, spacing, "T-%d-Iter-%d"%(fit_temp, np.max(label)-1))
+    plot_it(centers_of_bins, normalized_valu, pairs, label_string, spacing, "T-%d-Iter-%d"%(fit_temp, np.max(label)-1), fretdata=None)
        
     
-def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title, axis=None):
+def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title, axis=None, fretdata=None):
     #Plot every file, different graphs for different pairs. Outputs a picture to the current directory
     #centers_of_bins are the bin centers (x), given in [j][i], j=pair, i = label
     #normalized_valu are the normalied histogram values
@@ -185,7 +185,7 @@ def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title, axis
     colors = ["b","g","r","c","m","y","b","g","r","c","m","y","b","g","r","c","m","y","b","g","r","c","m","y"]
     linetype = ["-", "--",":"]
     
-    fdata = get_FRET_data()
+    fdata = get_FRET_data(fretdata)
     if len(fdata) == 0:
         fhist = [0]
         fcenter= [0]
@@ -213,17 +213,21 @@ def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title, axis
 
     print "Finished plotting the directory"
 
-def get_FRET_data():
+def get_FRET_data(fret_type):
+    if fret_type == None:
+        name = "FRET_trace.dat"
+    else:
+        name = "FRET_trace_obs.dat"
     found = False
     paths = [ "/home/jchen/projects/10_00_14-FRET/", "/home/jc49/work/", ""]
     fdata = []
     for i in paths:
-        if os.path.isfile("%sFRET_trace.dat"%i) and (not found):
+        if os.path.isfile("%s%s"%(i,name)) and (not found):
             found = True
             print "here is the data"
-            print np.loadtxt("%sFRET_trace.dat"%i)
+            print np.loadtxt("%s%s"%(i,name))
              
-            fdata = np.loadtxt("%sFRET_trace.dat"%i)
+            fdata = np.loadtxt("%s%s"%(i,name))
             print "FOUND FRET_data"
     
     return fdata
@@ -299,6 +303,7 @@ def get_args():
     parser.add_argument("--Qspacing", type=int, default=10, help="bin size for Q")
     parser.add_argument("--temperature", type=float, default=170, help="temperature of simulation")
     parser.add_argument("--y_shift", type=float, default=0, help="Specify the y-shift to the FRET distance data")
+    parser.add_argument("--fret_data", type=str, default=None, help="specify the type of FRET data using. Either den=Denoised or obs=Observed")
     ##The Real Parser
     
     par = argparse.ArgumentParser(description="For deciding which method pair distances will be calculated and made")
