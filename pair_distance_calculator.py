@@ -214,10 +214,11 @@ def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title, axis
     print "Finished plotting the directory"
 
 def get_FRET_data(fret_type):
-    if fret_type == None:
-        name = "FRET_trace.dat"
-    else:
+    if fret_type == "obs":
         name = "FRET_trace_obs.dat"
+    else:
+        name = "FRET_trace.dat"
+        
     found = False
     paths = [ "/home/jchen/projects/10_00_14-FRET/", "/home/jc49/work/", ""]
     fdata = []

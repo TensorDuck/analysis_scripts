@@ -33,7 +33,7 @@ def run_calc_all(args):
         centers_of_bins, normalized_valu, labels, highvalue, lowvalue = run_main_calc(t, args)
         #Calcualte and Plot the histograms
         os.chdir(owd)
-        pdistance.plot_iterations(centers_of_bins, normalized_valu, args.pairs, labels, args.spacing, t)
+        pdistance.plot_iterations(centers_of_bins, normalized_valu, args.pairs, labels, args.spacing, t, fretdata=args.fret_data)
         os.chdir(args.cwd)
         #write the cutoff into a file for easy access
         fsv.write("The Cutoff occurs between singular values: %.3e and %.3e\n" % (highvalue, lowvalue))
