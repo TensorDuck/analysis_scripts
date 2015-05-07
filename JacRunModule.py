@@ -125,7 +125,7 @@ def run_save_all(args):
         fit_string += ", eps_average = %s\n" % eps_average
         os.chdir(args.cwd)
     
-    f = open("Fitting_damping_%d.txt"%iteration,"w")
+    f = open("fitting_info_%d.txt"%iteration,"w")
     f.write(fit_string)
     f.close()
     os.chdir(original_directory)
