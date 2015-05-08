@@ -139,21 +139,29 @@ def histogram_multi(args):
         normalized_valu.append([])
     
     for name in names:
-        if name[-3:] == "xtc":
-            traj_name = md.load("%s/%s"%(fwd, name), top="%s/%s" %(fwd, args.native))
-        if name[-3:] == "gro":
-            traj_name = md.load("%s/%s"%(fwd, name))
-        else:
-            raise IOError("Specified file etension not found!")
-        compdist = compute_distances(traj_name, args.pairs, yshift=args.y_shift)
-        for j in range(np.shape(compdist)[1]):
-            print "Calculating pair %s" % str(args.pairs[j])
-            hist, centers = histogram_data_normalized(compdist[:,j], spacing)
-            centers_of_bins[j].append(centers)
-            normalized_valu[j].append(hist)
+        if name[-3:] == "dat":
+            trace_data = np.loadtxt(name)
+            for j in range(np.shape(args.pairs)[0]):
+                print "Calculating pair %s" % str(args.pairs[j])
+                hist, centers = histogram_data_normalized(trace_data, spacing)
+                centers_of_bins[j].append(centers)
+                normalized_valu[j].append(hist)
+        else:    
+            if name[-3:] == "xtc":
+                traj_name = md.load("%s/%s"%(fwd, name), top="%s/%s" %(fwd, args.native))
+            if name[-3:] == "gro":
+                traj_name = md.load("%s/%s"%(fwd, name))
+            else:
+                raise IOError("Specified file etension not found!")
+            compdist = compute_distances(traj_name, args.pairs, yshift=args.y_shift)
+            for j in range(np.shape(compdist)[1]):
+                print "Calculating pair %s" % str(args.pairs[j])
+                hist, centers = histogram_data_normalized(compdist[:,j], spacing)
+                centers_of_bins[j].append(centers)
+                normalized_valu[j].append(hist)
     
     os.chdir(args.savedir)
-    plot_it(centers_of_bins, normalized_valu, args.pairs, args.labels, args.spacing, args.title)
+    plot_it(centers_of_bins, normalized_valu, args.pairs, args.labels, args.spacing, args.title, fretdata = args.fret_data)
     os.chdir(cwd)
     
     
@@ -168,7 +176,7 @@ def plot_iterations(centers_of_bins, normalized_valu, pairs, label, spacing, fit
     for i in label:
         label_string.append("Iter=%d" % i)
         
-    plot_it(centers_of_bins, normalized_valu, pairs, label_string, spacing, "T-%d-Iter-%d"%(fit_temp, np.max(label)-1), fretdata=None)
+    plot_it(centers_of_bins, normalized_valu, pairs, label_string, spacing, "T-%d-Iter-%d"%(fit_temp, np.max(label)-1), fretdata=fretdata)
        
     
 def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title, axis=None, fretdata=None):
