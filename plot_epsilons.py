@@ -77,12 +77,26 @@ def plot_it(x,y,z,title, args):
     
     z[z>zmax] = zmax #for setting all above a certain value mapped to the maximum value, for ease of plotting
     
+    #make the array
+    #set edges
+    edges = np.array([0])
+    edges = np.append(edges, np.arange(0.5, args.max_residue, 1.0))
+    edges = np.append(edges, args.max_residue)
+    residues = np.zeros((args.max_residue+1, args.max_residue+1))
+    
+    for i in range(np.shape(z)[0]):
+        residues[x.astype(int)[i], y.astype(int)[i]] = z[i]
+        residues[y.astype(int)[i], x.astype(int)[i]] = z[i]
+    
+    residues_masked = np.ma.masked_where(residues==0, residues)
+    
     plt.figure()
-    cp = plt.scatter(x, y, s=5, c=z, cmap=ctype, marker='o', linewidth=0., vmin=zmin, vmax=zmax)
-    cp = plt.scatter(y, x, s=5, c=z, cmap=ctype, marker='o', linewidth=0., vmin=zmin, vmax=zmax)
-    max_value = max([np.max(x), np.max(y)])
-    plt.axis([0, max_value, 0, max_value])
-    cb = plt.colorbar(cp)
+    qmesh = plt.pcolormesh(edges, edges, residues_masked, vmin=zmin, vmax=zmax, cmap=ctype)
+    #cp = plt.scatter(x, y, s=5, c=z, cmap=ctype, marker='o', linewidth=0., vmin=zmin, vmax=zmax)
+    #cp = plt.scatter(y, x, s=5, c=z, cmap=ctype, marker='o', linewidth=0., vmin=zmin, vmax=zmax)
+
+    plt.axis([0, args.max_residue, 0, args.max_residue])
+    cb = plt.colorbar(qmesh)
     cb.set_label("epsilons", size=16)
     plt.xlabel("i", size=18)
     plt.ylabel("j", size=18)
@@ -110,6 +124,7 @@ def get_args():
     par.add_argument("--ctype", default="jet", type=str, help="type of color-map to use")
     par.add_argument("--center", default=False, action="store_true")
     par.add_argument("--log", default=False, action="store_true")
+    par.add_argument("--max_residue", default=292, type=int)
     parser = argparse.ArgumentParser(description="For Deciding how to plot the results")
     sub = parser.add_subparsers(dest="method")
     

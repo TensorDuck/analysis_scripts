@@ -42,9 +42,11 @@ def plot_simple(x, y, label, title, xaxis_label, yaxis_label, axis=None):
     plt.ylabel(yaxis_label,fontsize=25)
     plt.title(title, fontsize=25)
     
+    plt.savefig("%s.png"%title)
+    
     plt.show()
     
-    plt.savefig("%s.png"%title)
+    
 
 def plot_error_bar(x, y, label, title, xaxis_label, yaxis_label, xerr=None, yerr=None, axis=None):
     """plot_simple is for a simple x-y plot with the dots connected.  """    
