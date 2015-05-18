@@ -24,6 +24,7 @@ def handle_dmdmd(args):
     
     all_y, all_Q, all_w = get_qy(args)
     
+    all_y = all_y + args.y_shift
     os.chdir(cwd)
     
     hist_y(all_y, all_Q, all_w, args)
