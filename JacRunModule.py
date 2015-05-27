@@ -18,28 +18,40 @@ import analysis_scripts.pair_distance_calculator as pdistance
 
 def run_calc_all(args):
     original_directory = os.getcwd() #starting directory. Not necessarily the cwd
-    owd = "%s/histograms" % args.cwd
-    
+
     os.chdir(args.cwd)
-    fsv = open("cutoffs.txt", "w") #File for writing if the cutoff SV's
+    owd = "%s/histograms" % os.getcwd()
     
-    if not os.path.isdir(owd):
-        os.mkdir(owd)
-        
-    for t in args.temps:
-        #Analyze and get the new histograms
-        print "Starting analysis on temperature %d" % t
-        os.chdir("%d"%t)
-        centers_of_bins, normalized_valu, labels, highvalue, lowvalue = run_main_calc(t, args)
+    if args.single:
+        print "Starting Calc on one temperature"
+        centers_of_bins, normalized_valu, labels, highvalue, lowvalue = run_main_calc(temps[0], args)
         #Calcualte and Plot the histograms
         os.chdir(owd)
-        pdistance.plot_iterations(centers_of_bins, normalized_valu, args.pairs, labels, args.spacing, t, fretdata=args.fret_data)
+        pdistance.plot_iterations(centers_of_bins, normalized_valu, args.pairs, labels, args.spacing, temps[0], fretdata=args.fret_data)
         os.chdir(args.cwd)
-        #write the cutoff into a file for easy access
-        fsv.write("The Cutoff occurs between singular values: %.3e and %.3e\n" % (highvalue, lowvalue))
-    fsv.close()
+        print "Finished Calc on one temperature"
+    else:
+        print "Starting Calc on all temperatures"
+        fsv = open("cutoffs.txt", "w") #File for writing if the cutoff SV's
+        
+        if not os.path.isdir(owd):
+            os.mkdir(owd)
+            
+        for t in args.temps:
+            #Analyze and get the new histograms
+            print "Starting analysis on temperature %d" % t
+            os.chdir("%d"%t)
+            centers_of_bins, normalized_valu, labels, highvalue, lowvalue = run_main_calc(t, args)
+            #Calcualte and Plot the histograms
+            os.chdir(owd)
+            pdistance.plot_iterations(centers_of_bins, normalized_valu, args.pairs, labels, args.spacing, t, fretdata=args.fret_data)
+            os.chdir(args.cwd)
+            #write the cutoff into a file for easy access
+            fsv.write("The Cutoff occurs between singular values: %.3e and %.3e\n" % (highvalue, lowvalue))
+        fsv.close()
+        print "Finished Calc on all temperatures"
     os.chdir(original_directory)
-    print "Finished all temperatures"
+    
 
 def run_main_calc(T_fit, args):
     #calculate for a temperature directory. Loads the arguments into the variables here
@@ -108,28 +120,34 @@ def run_save_all(args):
     
     #move to the cwd, and begin saving everything
     os.chdir(args.cwd)
-    
-    for t in args.temps:
-        #Cycle through temperatures, and calculate the ite
-        print "Starting temperature %d" % t
-        os.chdir("%d"%t)
-        iteration = run_main_save(t,args)
-        #ffit will write out a file detailing which frames are scaled and which are not
-        fit_data_file = open("%s/iteration_%d/newton/fitting_scale"%(args.subdir,iteration))
-        ffit = fit_data_file.readline().strip()
-        eps_average = fit_data_file.readline().strip()
-        if not float(ffit) == 1:
-            fit_string += "Temperature %d scaled = True,  by factor = %s"%(t,ffit)
-        else:
-            fit_string += "Temperature %d scaled = False, by factor = %s"%(t,ffit)
-        fit_string += ", eps_average = %s\n" % eps_average
-        os.chdir(args.cwd)
-    
-    f = open("fitting_info_%d.txt"%iteration,"w")
-    f.write(fit_string)
-    f.close()
+    if args.single:
+        print "Starting Save on one temperature"
+        iteration = run_main_save(temps[0],args)
+        print "Finished Save on one temperature"
+    else:
+        print "Running Save on all temperatures"
+        for t in args.temps:
+            #Cycle through temperatures, and calculate the ite
+            print "Starting temperature %d" % t
+            os.chdir("%d"%t)
+            iteration = run_main_save(t,args)
+            #ffit will write out a file detailing which frames are scaled and which are not
+            fit_data_file = open("%s/iteration_%d/newton/fitting_scale"%(args.subdir,iteration))
+            ffit = fit_data_file.readline().strip()
+            eps_average = fit_data_file.readline().strip()
+            if not float(ffit) == 1:
+                fit_string += "Temperature %d scaled = True,  by factor = %s"%(t,ffit)
+            else:
+                fit_string += "Temperature %d scaled = False, by factor = %s"%(t,ffit)
+            fit_string += ", eps_average = %s\n" % eps_average
+            os.chdir(args.cwd)
+        
+        f = open("fitting_info_%d.txt"%iteration,"w")
+        f.write(fit_string)
+        f.close()
+        print "Finished Save on all temperatures"
     os.chdir(original_directory)
-    print "Finished all temperatures"
+    
         
 def run_main_save(T_fit, args):
     subfolder = args.subdir
@@ -184,6 +202,9 @@ def sanitize_args(args):
         f = open("fitting.txt","r")
         args.fitting_method = f.readline().strip()
         f.close()
+    if args.single:
+        if not len(temps) == 1:
+            raise IOError("There are too many temperatures specified with the single-flag. Either speciy only one temperature in temps, or do not use the single flag")
     
     os.chdir(original_directory)
     return args
@@ -198,6 +219,7 @@ def get_args():
     parser.add_argument("--fitting_method", default=None, type=str, help="Choose either TSVD (def) or Levenberg")
     parser.add_argument("--spacing", type=float, default=0.1, help="spacing for binning the simulated and experimental FRET data")
     parser.add_argument("--fret_data", type=str, default="den", help="specify the type of FRET data using. Either den=Denoised or obs=Observed")
+    parser.add_argument("--single", default=False, action="store_true", help="Specify you are working with only one temperature or file")
     
     ##The Real Parser
     par = argparse.ArgumentParser(description="Options for Jac_run_module. Use --cwd for analysis on not the current working directory")
