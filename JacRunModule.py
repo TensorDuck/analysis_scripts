@@ -24,10 +24,20 @@ def run_calc_all(args):
     
     if args.single:
         print "Starting Calc on one temperature"
-        centers_of_bins, normalized_valu, labels, highvalue, lowvalue = run_main_calc(temps[0], args)
-        #Calcualte and Plot the histograms
-        os.chdir(owd)
-        pdistance.plot_iterations(centers_of_bins, normalized_valu, args.pairs, labels, args.spacing, temps[0], fretdata=args.fret_data)
+        model, fitopts = mdb.inputs.load_model(args.subdir, False)
+        
+        pmfit.prepare_newtons_method(model, fitopts)
+        newtondir = "%s/iteration_%d/newton" % (args.subdir,fitopts["iteration"])
+        os.chdir(newtondir)
+        print "estimating the value of lambda from singular values"
+        svf = np.loadtxt("singular_values.dat") 
+        index = 0
+        num = np.shape(svf)[0]
+        if "truncate_value" in fitopts:
+            trunc = fitopts["truncate_value"]
+        else:
+            trunc = 0.01    
+        highvalue, lowvalue, lambda_index = estimate_lambda(trunc)    
         os.chdir(args.cwd)
         print "Finished Calc on one temperature"
     else:
@@ -122,7 +132,7 @@ def run_save_all(args):
     os.chdir(args.cwd)
     if args.single:
         print "Starting Save on one temperature"
-        iteration = run_main_save(temps[0],args)
+        iteration = run_main_save(args.temps[0],args)
         print "Finished Save on one temperature"
     else:
         print "Running Save on all temperatures"
@@ -203,7 +213,7 @@ def sanitize_args(args):
         args.fitting_method = f.readline().strip()
         f.close()
     if args.single:
-        if not len(temps) == 1:
+        if not len(args.temps) == 1:
             raise IOError("There are too many temperatures specified with the single-flag. Either speciy only one temperature in temps, or do not use the single flag")
     
     os.chdir(original_directory)
@@ -220,6 +230,7 @@ def get_args():
     parser.add_argument("--spacing", type=float, default=0.1, help="spacing for binning the simulated and experimental FRET data")
     parser.add_argument("--fret_data", type=str, default="den", help="specify the type of FRET data using. Either den=Denoised or obs=Observed")
     parser.add_argument("--single", default=False, action="store_true", help="Specify you are working with only one temperature or file")
+    parser.add_argument("--title", default="", type=str, help="specify a title for save files for certain auto-generated files. Generally not needed")
     
     ##The Real Parser
     par = argparse.ArgumentParser(description="Options for Jac_run_module. Use --cwd for analysis on not the current working directory")

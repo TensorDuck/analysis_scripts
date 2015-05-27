@@ -164,7 +164,9 @@ def histogram_multi(args):
     plot_it(centers_of_bins, normalized_valu, args.pairs, args.labels, args.spacing, args.title, fretdata = args.fret_data)
     os.chdir(cwd)
     
-    
+
+def plot_single(centers_of_bins, normalized_valu, pairs, title, temperature, spacing, fretdata=None):
+    plot_it(centers_of_bins, normalized_valu, pairs, "T = %d"%temperature, spacing, title, fretdata=fretdata)   
     
 def plot_directory(centers_of_bins, normalized_valu, pairs, temp_directory, spacing):
     for i in np.arange(np.shape(temp_directory)[0]):
