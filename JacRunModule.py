@@ -230,7 +230,7 @@ def get_args():
     parser.add_argument("--spacing", type=float, default=0.1, help="spacing for binning the simulated and experimental FRET data")
     parser.add_argument("--fret_data", type=str, default="den", help="specify the type of FRET data using. Either den=Denoised or obs=Observed")
     parser.add_argument("--single", default=False, action="store_true", help="Specify you are working with only one temperature or file")
-    parser.add_argument("--title", default="", type=str, help="specify a title for save files for certain auto-generated files. Generally not needed")
+    parser.add_argument("--title", default="test", type=str, help="specify a title for save files for certain auto-generated files. Generally not needed")
     
     ##The Real Parser
     par = argparse.ArgumentParser(description="Options for Jac_run_module. Use --cwd for analysis on not the current working directory")

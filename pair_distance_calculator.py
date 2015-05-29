@@ -36,17 +36,34 @@ def histogram_iterations(pairs,spacing,temperature, fitopts):
         centers_of_bins.append([])
         normalized_valu.append([])
     ##get original data
-    labels.append(0)
+
+    #check for all the zeroeth order files
+    one_file_found = False
+    one_file_notfound = False
     for j in range(np.shape(pairs)[0]):
-        data = np.loadtxt("T%d_0-pair%d-%d.dat"%(temperature,pairs[j][0]+1, pairs[j][1]+1)) 
-        centers_of_bins[j].append(data[:,0])
-        normalized_valu[j].append(data[:,1])
+        if os.path.isfile("T%d_0-pair%d-%d.dat"%(temperature,pairs[j][0]+1, pairs[j][1]+1)):
+            one_file_found = True
+        else:
+            one_file_notfound = True
+    #if all zeroeth iteration files found, start the iteration count at 0 for those, and load, otherwise, start others at 0 and continue
+    if one_file_found and (not one_file_notfound):
+        for j in range(np.shape(pairs)[0]):
+            data = np.loadtxt("T%d_0-pair%d-%d.dat"%(temperature,pairs[j][0]+1, pairs[j][1]+1)) 
+            centers_of_bins[j].append(data[:,0])
+            normalized_valu[j].append(data[:,1])
+        labels.append(0)
+        start_iteration = 1  
+        num_calculated = 1
+    else:
+        print "Warning, some files missing, skipping and assuming no zeroeth order files exist"
+        start_iteration = 0
+        num_calculated = 0
+
     ##start histogram analysis
-    num_calculated = 1
     for i in range(iterations):
         if (i > iterations-4) or (i%4==0):
             print "Starting histogram analysis"
-            labels.append(i+1)
+            labels.append(i+start_iteration)
             num_calculated += 1
             os.chdir("iteration_%d/%d_0"%(i,temperature))
             traj = md.load("traj.xtc", top="Native.pdb")
