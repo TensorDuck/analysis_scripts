@@ -80,7 +80,7 @@ def hist_y(all_y, all_Q, all_w, args):
         print "Shape of the data is:"
         print np.shape(normalized_value)
         os.chdir(args.savedir)
-        pdistance.plot_it(centers_of_bins, normalized_value, args.pairs, label, args.spacing, title)
+        pdistance.plot_it(centers_of_bins, normalized_value, args.pairs, label, args.spacing, title, axis=args.axis)
         np.savetxt("%s-data.dat"%title, np.array([bincenters, hist]).transpose())
         os.chdir(cwd)
             
@@ -157,6 +157,7 @@ def get_args():
     parser.add_argument("--temperature", type=float, default=170, help="temperature of simulation")
     parser.add_argument("--y_shift", type=float, default=0.2, help="Specify the y-shift to the FRET distance data")
     parser.add_argument("--handle", type=str, default="dmdmd", help="Specify the directory structure")
+    parser.add_argument("--axis", type=float, default=None, nargs=4, help="Specify the axis in 'x0 x1 y0 y1' format")
     ##The Real Parser
     par = argparse.ArgumentParser(description="Options for finding the pair distance values of a trajectory", parents=[parser])
     
