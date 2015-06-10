@@ -20,9 +20,9 @@ ticadim = 10
 feat = coor.featurizer(topology)
 
 pair = []
-cutoff = 5
+cutoff = 4
 start = 5
-stop = 287
+stop = 288
 for i in np.arange(start, stop, 1):
     for j in np.arange(i+1, stop, cutoff):
         pair.append([i, j])
