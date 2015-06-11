@@ -11,7 +11,7 @@ def run_plot(lag_times, collected_eigenvalues, eigen_number):
     pltpkg.plot_simple(lag_times, collected_eigenvalues, title, "lag time", "eigenvalue") 
     
     ##save a txt file of all eigenvalues it's found, as well as the figure
-    np.savetxt("lag-sequence-eigen-%d.dat"%eigen_number, np.array(lag_times, collected_eigenvalues).transpose())
+    np.savetxt("lag-sequence-eigen-%d.dat"%eigen_number, np.array([lag_times, collected_eigenvalues]).transpose())
 
 
 topology = "Native.pdb"
