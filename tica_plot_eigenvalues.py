@@ -52,7 +52,7 @@ collected_eigenvalues=[]
 for i in range(ticadim):
     collected_eigenvalues.append([])
 #debugging
-lag_times = 1000 
+lag_times = [10000] 
 for i in lag_times:
     tica_obj = coor.tica(X1, stride=1, lag=i, dim=ticadim)
     outputs = tica_obj.get_output()[0]
