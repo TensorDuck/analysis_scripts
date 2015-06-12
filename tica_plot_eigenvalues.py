@@ -23,6 +23,12 @@ pair = []
 cutoff = 4
 start = 5
 stop = 288
+##debug
+cutoff = 10
+start = 10
+stop = 50
+##debugg
+
 for i in np.arange(start, stop, 1):
     for j in np.arange(i+1, stop, cutoff):
         pair.append([i, j])
