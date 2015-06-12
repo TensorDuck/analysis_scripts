@@ -8,7 +8,7 @@ import analysis_scripts.plot_package as pltpkg
 
 def run_plot(lag_times, collected_eigenvalues, eigen_number):
     title = "lag-plot-eigenvalue-%d" % eigen_number
-    pltpkg.plot_simple(lag_times, collected_eigenvalues, title, "lag time", "eigenvalue") 
+    pltpkg.plot_simple(lag_times, collected_eigenvalues,["Eigenumber=%d"%eigen_number], title, "lag time", "eigenvalue") 
     
     ##save a txt file of all eigenvalues it's found, as well as the figure
     np.savetxt("lag-sequence-eigen-%d.dat"%eigen_number, np.array([lag_times, collected_eigenvalues]).transpose())
@@ -51,6 +51,8 @@ print lag_times
 collected_eigenvalues=[]
 for i in range(ticadim):
     collected_eigenvalues.append([])
+#debugging
+lag_times = 1000 
 for i in lag_times:
     tica_obj = coor.tica(X1, stride=1, lag=i, dim=ticadim)
     outputs = tica_obj.get_output()[0]
