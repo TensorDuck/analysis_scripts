@@ -63,7 +63,7 @@ def Jacobian_test(qij, hist, F_indices, t_indices):
 	(N_total_traj, npairs) = np.shape(qij)
 	
 	qi = np.zeros((nstates, npairs))
-	
+	qi_count = np.zeros(nstates)
 	##PRINT THINGS FOR DEBUGGING
 	print F_indices
 	print np.shape(F_indices)
@@ -74,17 +74,22 @@ def Jacobian_test(qij, hist, F_indices, t_indices):
 	# Q values for all frames starting in a particular bin
 	for idx, F_bin_location in enumerate(F_indices[:-1]):
 		qi[F_bin_location,:] += (qij[idx,:] + qij[idx+1,:])
+	    qi_count[F_bin_location] += 1
 	
+	#normalize the average value for the pair sum starting in state i
+	for i in range(np.shape(qi)[0]):
+	    qi[i,:] /= float(qi_count[i])
+	    
 	Jacobian = np.zeros((nbins, npairs))
 	for idx, t_bin_location in enumerate(t_indices):
 		# Add q values for specific transition
 		Jacobian[t_bin_location, :] += (qij[idx,:] + qij[idx+1,:])
 		
 		# Index for q value of all transitions starting at state i
-		state_i_idx = np.floor(idx/nbins)
+		state_i_idx = np.floor(t_bin_location/nbins)
 		
 		# Subtract q values for all starting at state i
-		Jacobian[t_bin_location, :] -= (qi[state_i_idx,:] + qi[state_i_idx+1,:])
+		Jacobian[t_bin_location, :] -= qi[state_i_idx,:] 
 		
 	Jacobian /= (2*N_total_traj)
 		
