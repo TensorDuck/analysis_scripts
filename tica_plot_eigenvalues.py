@@ -24,9 +24,9 @@ cutoff = 4
 start = 5
 stop = 288
 ##debug
-cutoff = 10
-start = 10
-stop = 50
+#cutoff = 10
+#start = 10
+#stop = 50
 ##debugg
 
 for i in np.arange(start, stop, 1):
@@ -57,8 +57,9 @@ print lag_times
 collected_eigenvalues=[]
 for i in range(ticadim):
     collected_eigenvalues.append([])
-#debugging
-lag_times = [10000] 
+#debug
+#lag_times = [10000] 
+#debugg
 for i in lag_times:
     tica_obj = coor.tica(X1, stride=1, lag=i, dim=ticadim)
     outputs = tica_obj.get_output()[0]
