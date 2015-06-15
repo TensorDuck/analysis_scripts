@@ -81,13 +81,15 @@ def Jacobian_test(qij, hist, F_indices, t_indices):
 	    qi[i,:] /= float(qi_count[i])
 	    
 	Jacobian = np.zeros((nbins, npairs))
-	N_trans = N_total_traj - 1
 	for idx, t_bin_location in enumerate(t_indices):
-		# Add q values for specific transition, normalize by total transitions
-		Jacobian[t_bin_location, :] += (qij[idx,:] + qij[idx+1,:])
-	Jacobian /= N_trans
+		# Add q values for specific transition
+		Jacobian[t_bin_location, :] += (qij[idx,:] + qij[idx+1,:])	
 	
-	for idx, t_bin_location in enumerate(t_indices):	
+	# Normalize by i bin count
+	for i in range(np.shape(Jacobian)[0]):
+		Jacobian[i,:] /= (2*qi_count[np.floor(i/nbins)])
+		
+	for idx, t_bin_location in enumerate(t_indices):
 		# Index for q value of all transitions starting at state i
 		state_i_idx = np.floor(t_bin_location/nbins)
 		
