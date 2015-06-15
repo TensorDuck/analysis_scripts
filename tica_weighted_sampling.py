@@ -38,9 +38,10 @@ def run_sampling(args):
         sampled_frames[i,:] = X1[selected_frames[i],:]
     
     ##debug
-    for i in sampled_frames:
-        if i == 0:
-            print "ERROR, distance too short, something not written"
+    for j in sampled_frames:
+        for i in j:
+            if i == 0:
+                print "ERROR, distance too short, something not written"
     ##debugg
     
     tica_obj = coor.tica(sampled_frames, stride=1, lag=i, dim=ticadim)
