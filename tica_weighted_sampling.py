@@ -26,7 +26,7 @@ def run_sampling(args):
     feat.add_distances_ca()
     X1 = coor.load(fn, feat, stride=1)
     
-    sampled_frames=np.array((num_sample_frames,np.shape(X1)[1]))
+    sampled_frames=np.zeros((num_sample_frames,np.shape(X1)[1]))
     
     selected_frames = np.random.choice(np.shape(X1)[0], size=num_sample_frames, replace=True, p=weights)
     
@@ -37,6 +37,11 @@ def run_sampling(args):
         ##debugg
         sampled_frames[i,:] = X1[selected_frames[i],:]
     
+    ##debug
+    for i in sampled_frames:
+        if i == 0:
+            print "ERROR, distance too short, something not written"
+    ##debugg
     
     tica_obj = coor.tica(sampled_frames, stride=1, lag=i, dim=ticadim)
     outputs = tica_obj.get_output()[0]
