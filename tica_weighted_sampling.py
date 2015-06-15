@@ -31,6 +31,10 @@ def run_sampling(args):
     selected_frames = np.random.choice(np.shape(X1)[0], size=num_sample_frames, replace=True, p=weights)
     
     for i in range(num_sample_frames):
+        ##debug
+        print np.shape(sampled_frames)
+        print np.shape(X1)
+        ##debugg
         sampled_frames[i,:] = X1[selected_frames[i],:]
     
     
