@@ -44,7 +44,7 @@ def run_sampling(args):
                 print "ERROR, distance too short, something not written"
     ##debugg
     
-    tica_obj = coor.tica(sampled_frames, stride=1, lag=i, dim=ticadim)
+    tica_obj = coor.tica(sampled_frames, stride=1, lag=1, dim=ticadim)
     outputs = tica_obj.get_output()[0]
     eigen = tica_obj.eigenvalues
     np.savetxt("output.dat", outputs)
