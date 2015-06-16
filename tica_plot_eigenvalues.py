@@ -37,8 +37,8 @@ print np.shape(pair)
 
 pairs = np.array(pair)
 
-#feat.add_distances(pairs)
-feat.add_distances_ca()
+feat.add_distances(pairs)
+#feat.add_distances_ca()
 X1 = coor.load("traj.xtc", feat, stride=1)
 
 #traj = md.load("traj.xtc", top="Native.pdb")
