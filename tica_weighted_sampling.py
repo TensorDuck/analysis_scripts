@@ -35,8 +35,8 @@ def run_sampling(args):
     
     for i in range(num_sample_frames):
         ##debug
-        print np.shape(sampled_frames)
-        print np.shape(X1)
+        #print np.shape(sampled_frames)
+        #print np.shape(X1)
         ##debugg
         sampled_frames[i,:] = X1[selected_frames[i],:]
     
@@ -50,9 +50,10 @@ def run_sampling(args):
     tica_obj = coor.tica(sampled_frames, stride=1, lag=1, dim=ticadim)
     outputs = tica_obj.get_output()[0]
     eigen = tica_obj.eigenvalues
+    print "saving files"
     np.savetxt("output.dat", outputs)
     np.savetxt("eigenvalues.dat", eigen)
-
+    print "files saved"
         
     
 

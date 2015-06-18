@@ -22,7 +22,7 @@ def run_plotting(args):
     else:
         time_ratio = np.log(np.abs(eigenvalue))
         for idx, ev in enumerate(eigenvalue):
-            if not ev > 0:
+            if not ev > 0:q
                 time_ratio[idx] = -time_ratio[idx]
     time_scale = -1.0 / time_ratio 
     time_scale *= time_lags
