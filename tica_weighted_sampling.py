@@ -50,6 +50,9 @@ def run_sampling(args):
         for i in j:
             if i == 0:
                 print "ERROR, distance too short, something not written"
+                f = open("log.txt", "w")
+                f.write("ERROR, distance too short, something not written")
+                f.close()
     ##debugg
     time5 = time.clock()
     print "Took %f minutes to go through the debug check" % ((time5-time4)/60.0)
