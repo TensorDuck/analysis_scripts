@@ -31,6 +31,8 @@ def run_plotting(args):
     plt.plot(time_lags, time_scale, 'ok')
     plt.xlabel("Time Lag (%s)"%unit_string, fontsize=20)
     plt.ylabel("Time scale (%s)"%unit_string, fontsize=20)
+    if not args.axis == None:
+        plt.axis(args.axis)
     plt.savefig("%s" %args.title)
     plt.show()
 
@@ -39,6 +41,7 @@ def get_args():
     parser.add_argument("--file", type=str, help="Select a file where x-column is time-lag and y-column is eigenvalue")
     parser.add_argument("--time_scale", type=float, default=0.0005, help="Specify time value for one data step in ns")
     parser.add_argument("--title", type=str, help="Specify time value for one data step in ns")
+    parser.add_argument("--axis", nargs=4, type=float, help="Specify time value for one data step in ns")
    
     args = parser.parse_args()
     
