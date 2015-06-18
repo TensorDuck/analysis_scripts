@@ -13,7 +13,7 @@ def run_plotting(args):
     ##multiply in time_lags information for the scale
     try:
         time_lags *= args.time_scale
-        unit_string = "nm"
+        unit_string = "ns"
     except:
         unit_string = "arb"
     test = np.array([eigenvalue<0])
@@ -37,7 +37,7 @@ def run_plotting(args):
 def get_args():
     parser = argparse.ArgumentParser(description="Select a file")
     parser.add_argument("--file", type=str, help="Select a file where x-column is time-lag and y-column is eigenvalue")
-    parser.add_argument("--time_scale", type=float, default=0.5, help="Specify time value for one data step in ns")
+    parser.add_argument("--time_scale", type=float, default=0.0005, help="Specify time value for one data step in ns")
     parser.add_argument("--title", type=str, help="Specify time value for one data step in ns")
    
     args = parser.parse_args()
