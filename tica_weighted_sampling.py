@@ -3,8 +3,11 @@ Does so by taking a random sampling of the points
 """
 
 import numpy as np
-import pyemma
-import pyemma.coordinates as coor
+try:
+    import pyemma
+    import pyemma.coordinates as coor
+except:
+    print "pyemma not loaded, tica methods will fail!"
 import mdtraj as md
 import time
 import analysis_scripts.plot_package as pltpkg
