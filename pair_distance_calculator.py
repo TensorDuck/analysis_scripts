@@ -346,7 +346,7 @@ def get_args():
      
     direc_sub = sub.add_parser("directory", parents=[parser], help="for plotting out a directory from regular MD simulations")
     direc_sub.add_argument("--ran_size", type=float, nargs=2, default=(0,10), help="specify plotting range")
-    direc_sub.add_argument("--subdir", type=string, default="1PB7", help="subdir name")
+    direc_sub.add_argument("--subdir", type=str, default="1PB7", help="subdir name")
     
     
     args = par.parse_args()
