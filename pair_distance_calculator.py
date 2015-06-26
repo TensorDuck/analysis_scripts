@@ -332,6 +332,7 @@ def get_args():
     parser.add_argument("--temperature", type=float, default=170, help="temperature of simulation")
     parser.add_argument("--y_shift", type=float, default=0, help="Specify the y-shift to the FRET distance data")
     parser.add_argument("--fret_data", type=str, default=None, help="specify the type of FRET data using. Either den=Denoised or obs=Observed")
+    
     ##The Real Parser
     
     par = argparse.ArgumentParser(description="For deciding which method pair distances will be calculated and made")
@@ -345,6 +346,7 @@ def get_args():
      
     direc_sub = sub.add_parser("directory", parents=[parser], help="for plotting out a directory from regular MD simulations")
     direc_sub.add_argument("--ran_size", type=float, nargs=2, default=(0,10), help="specify plotting range")
+    direc_sub.add_argument("--subdir", type=string, default="1PB7", help="subdir name")
     
     
     args = par.parse_args()
@@ -360,7 +362,7 @@ if __name__ == "__main__":
     
     if args.method == "directory":
         cwd = os.getcwd()
-        os.chdir("1PB7")
+        os.chdir(args.subdir)
         os.chdir("iteration_0")
         centers_of_bins, normalized_valu, temp_directory = histogram_directory(args.pairs, args.spacing, yshift=args.y_shift)
         os.chdir("histanalysis")

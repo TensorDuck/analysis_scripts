@@ -30,7 +30,6 @@ import find_last_crossing
 import make_index
 import boot_strap_method
 import plot_package
-import tica_weighted_sampling
 
 ##temporary likely
 import convert_to_ini
