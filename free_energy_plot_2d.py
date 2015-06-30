@@ -278,6 +278,7 @@ def get_args():
     ##for just handle: vanilla
     par.add_argument("--file_names", nargs="+", type=str, default=[], help="Specify the specific names of the DC containing files") ##for handle vanilla
     par.add_argument("--save_name", type=str, default="fep", help="Specify the specific names of the DC containing files") ##for handle vanilla
+    par.add_argument("--real_name", type=bool, default=False, action="store_true", help="Specify files given are the real names of the files") ##for handle vanilla
     ##the real parser
     parser = argparse.ArgumentParser(description="For Deciding how to plot the results")
     sub = parser.add_subparsers(dest="method")
