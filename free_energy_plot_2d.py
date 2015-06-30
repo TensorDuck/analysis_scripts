@@ -178,13 +178,14 @@ def get_value(name, ext, cfd):
     if ext[-4:] == ".xvg":
         count = 0
         go = True
-        f = open(name, "r")
+        f = open("%s/%s%s"%(cfd,name, ext), "r")
         while go:
             first = f.readline()[0]
             if first == "#" or first == "@":
                 count += 1
             else:
                 go = False
+        f.close()
         return np.loadtxt("%s/%s%s"%(cfd,name, ext), skiprows=count)[:,1]   
     elif ext[-4:] == ".out":
         return np.loadtxt("%s/%s%s"%(cfd,name, ext))
