@@ -175,12 +175,17 @@ def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300
         plt.close()
 
 def get_value(name, ext, cfd):
-    if ext == "-comA.xvg":
-        return np.loadtxt("%s/%s%s"%(cfd, name, ext), skiprows=22)[:,1]
-    if ext == "-gyrate.xvg":
-        return np.loadtxt("%s/%s%s"%(cfd, name, ext), skiprows=25)[:,1]      
-    elif ext[-4:] == ".xvg":
-        return np.loadtxt("%s/%s%s"%(cfd,name, ext), skiprows=13)[:,1]   
+    if ext[-4:] == ".xvg":
+        count = 0
+        go = True
+        f = open(name, "r")
+        while go:
+            first = f.readline()[0]
+            if first == "#" or first == "@":
+                count += 1
+            else:
+                go = False
+        return np.loadtxt("%s/%s%s"%(cfd,name, ext), skiprows=count)[:,1]   
     elif ext[-4:] == ".out":
         return np.loadtxt("%s/%s%s"%(cfd,name, ext))
     elif ext == "ev0":
