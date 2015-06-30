@@ -115,9 +115,9 @@ def handle_vanilla(ext1, ext2, args):
     iteration_range = args.range
     cfd = args.file_dir
     
-        rc1 = get_value(args.file_names[0], ext1, cfd)
-        rc2 = get_value(args.file_names[1], ext2, cfd)        
-    
+    rc1 = get_value(args.file_names[0], ext1, cfd)
+    rc2 = get_value(args.file_names[1], ext2, cfd)        
+
     rc1n, rc2n = get_labels(ext1, ext2)
     
     plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n,  args.save_name, args, temp=temperature)
