@@ -124,7 +124,7 @@ def handle_vanilla(ext1, ext2, args):
     
 
 def get_labels(ext1, ext2):
-    labels = {"-Qclosed.out":"Q closed", "-y114-192.out":"y between 115-193 (nm)", "-rmsd-closed.xvg":"rmsd-closed (nm)", "-rmsd-apo.xvg":"rmsd-apo (nm)", "-comA.xvg":"Lobe Center Distances (nm)","ev0":"DC0", "ev1":"DC1", "ev2":"DC2", "-gyrate.xvg":"Rg (nm)", "-rmsd.xvg":"RMSD (nm)}
+    labels = {"-Qclosed.out":"Q closed", "-y114-192.out":"y between 115-193 (nm)", "-rmsd-closed.xvg":"rmsd-closed (nm)", "-rmsd-apo.xvg":"rmsd-apo (nm)", "-comA.xvg":"Lobe Center Distances (nm)","ev0":"DC0", "ev1":"DC1", "ev2":"DC2", "-gyrate.xvg":"Rg (nm)", "-rmsd.xvg":"RMSD (nm)"}
     return labels[ext1], labels[ext2]
    
 def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300):
