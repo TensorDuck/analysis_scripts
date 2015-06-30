@@ -124,7 +124,7 @@ def handle_vanilla(ext1, ext2, args):
     
 
 def get_labels(ext1, ext2):
-    labels = {"-Qclosed.out":"Q closed", "-y114-192.out":"y between 115-193 (nm)", "-rmsd-closed.xvg":"rmsd-closed (nm)", "-rmsd-apo.xvg":"rmsd-apo (nm)", "-comA.xvg":"Lobe Center Distances (nm)","ev0":"DC0", "ev1":"DC1", "ev2":"DC2"}
+    labels = {"-Qclosed.out":"Q closed", "-y114-192.out":"y between 115-193 (nm)", "-rmsd-closed.xvg":"rmsd-closed (nm)", "-rmsd-apo.xvg":"rmsd-apo (nm)", "-comA.xvg":"Lobe Center Distances (nm)","ev0":"DC0", "ev1":"DC1", "ev2":"DC2", "-gyrate.xvg":"Rg"}
     return labels[ext1], labels[ext2]
    
 def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300):
@@ -176,7 +176,9 @@ def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300
 
 def get_value(name, ext, cfd):
     if ext == "-comA.xvg":
-        return np.loadtxt("%s/%s%s"%(cfd, name, ext), skiprows=22)[:,1]   
+        return np.loadtxt("%s/%s%s"%(cfd, name, ext), skiprows=22)[:,1]
+    if ext == "-gyrate.xvg":
+        return np.loadtxt("%s/%s%s"%(cfd, name, ext), skiprows=25)[:,1]      
     elif ext[-4:] == ".xvg":
         return np.loadtxt("%s/%s%s"%(cfd,name, ext), skiprows=13)[:,1]   
     elif ext[-4:] == ".out":
@@ -259,7 +261,7 @@ def get_args():
     par.add_argument("--bins", type=int, default=50, help="Number of bins in each axis for binning data")
     par.add_argument("--scatter_only", action="store_true", default=False, help="use for plotting only a scatter plot")
     par.add_argument("--contour_only", action="store_true", default=False, help="use for plotting only a contour plot")
-    par.add_argument("--plot_type", type=str, default="QC", help="specify the type of plot in xy format; default QC. C=RMSD-closed, A=RMSD-apo, Q=Q, Y=FRET probe distance, L=Lobes center distance,0=DC0, 1=DC1, 2=DC2")
+    par.add_argument("--plot_type", type=str, default="QC", help="specify the type of plot in xy format; default QC. C=RMSD-closed, A=RMSD-apo, Q=Q, Y=FRET probe distance, L=Lobes center distance,0=DC0, 1=DC1, 2=DC2, R=Rg")
     par.add_argument("--handle", type=str, help="specify either dmdmd, vanilla or fret")
     par.add_argument("--temps", type=float, nargs="+", help="specify the temperature for the data, can be an array")
     par.add_argument("--flow", action="store_true", default=False, help="Use if you want to plot iterations in intervals, i.e. 2-50, 52-60")
@@ -290,7 +292,7 @@ if __name__=="__main__":
     #if args.dir_structure ==  
     #keys of different methods, asign it to the handle which is then called to do the rest
     handlers = {"dmdmd":handle_dmdmd, "fret":handle_fret, "vanilla":handle_vanilla, "dmaps":handle_dmaps}  
-    names = {"Q":"-Qclosed.out", "A":"-rmsd-apo.xvg", "C":"-rmsd-closed.xvg", "Y":"-y114-192.out", "L":"-comA.xvg", "1":"ev1", "2":"ev2", "0":"ev0"}
+    names = {"Q":"-Qclosed.out", "A":"-rmsd-apo.xvg", "C":"-rmsd-closed.xvg", "Y":"-y114-192.out", "L":"-comA.xvg", "1":"ev1", "2":"ev2", "0":"ev0", "R":"-gyrate.xvg"}
     
     handle = handlers[args.handle]
     rcn1 = names[args.plot_type[0]]
