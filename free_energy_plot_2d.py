@@ -115,8 +115,13 @@ def handle_vanilla(ext1, ext2, args):
     iteration_range = args.range
     cfd = args.file_dir
     
-    rc1 = get_value(args.file_names[0], ext1, cfd)
-    rc2 = get_value(args.file_names[1], ext2, cfd)
+    if not args.real_name:
+        rc1 = get_value(args.file_names[0], ext1, cfd)
+        rc2 = get_value(args.file_names[1], ext2, cfd)
+    else:
+        rc1 = get_value(args.file_names[0], "", cfd)
+        rc2 = get_value(args.file_names[1], "", cfd)
+        
     
     rc1n, rc2n = get_labels(ext1, ext2)
     
