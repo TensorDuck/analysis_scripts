@@ -115,13 +115,8 @@ def handle_vanilla(ext1, ext2, args):
     iteration_range = args.range
     cfd = args.file_dir
     
-    if not args.real_name:
         rc1 = get_value(args.file_names[0], ext1, cfd)
-        rc2 = get_value(args.file_names[1], ext2, cfd)
-    else:
-        rc1 = get_value(args.file_names[0], "", cfd)
-        rc2 = get_value(args.file_names[1], "", cfd)
-        
+        rc2 = get_value(args.file_names[1], ext2, cfd)        
     
     rc1n, rc2n = get_labels(ext1, ext2)
     
@@ -278,7 +273,6 @@ def get_args():
     ##for just handle: vanilla
     par.add_argument("--file_names", nargs="+", type=str, default=[], help="Specify the specific names of the DC containing files") ##for handle vanilla
     par.add_argument("--save_name", type=str, default="fep", help="Specify the specific names of the DC containing files") ##for handle vanilla
-    par.add_argument("--real_name", default=False, action="store_true", help="Specify files given are the real names of the files") ##for handle vanilla
     ##the real parser
     parser = argparse.ArgumentParser(description="For Deciding how to plot the results")
     sub = parser.add_subparsers(dest="method")
