@@ -257,7 +257,9 @@ def sanitize_args(args):
     elif len(args.file_names)==1:
         args.file_names.append(args.file_names[0])
         
-        
+    ##load data in args.extra
+    if not args.extra == None:
+        args.extra = np.loadtxt("args.extra")
     return args
     
     
@@ -275,7 +277,7 @@ def get_args():
     par.add_argument("--handle", type=str, help="specify either dmdmd, vanilla or fret")
     par.add_argument("--temps", type=float, nargs="+", help="specify the temperature for the data, can be an array")
     par.add_argument("--flow", action="store_true", default=False, help="Use if you want to plot iterations in intervals, i.e. 2-50, 52-60")
-    par.add_argument("--extra", type=str, default="fep", help="Specify a file containing extra xy formatted data to plot") ##for handle vanilla
+    par.add_argument("--extra", type=str, default=None, help="Specify a file containing extra xy formatted data to plot") ##for handle vanilla
     ##for just handle: vanilla
     par.add_argument("--file_names", nargs="+", type=str, default=[], help="Specify the specific names of the DC containing files") ##for handle vanilla
     par.add_argument("--save_name", type=str, default="fep", help="Specify the specific names of the DC containing files") ##for handle vanilla
