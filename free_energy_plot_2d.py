@@ -259,7 +259,7 @@ def sanitize_args(args):
         
     ##load data in args.extra
     if not args.extra == None:
-        args.extra = np.loadtxt("args.extra")
+        args.extra = np.loadtxt(args.extra)
     return args
     
     
