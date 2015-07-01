@@ -38,7 +38,7 @@ def handle_dmdmd(ext1, ext2, args):
     
     if args.step == None:
         rc1, rc2, weights = dmdmd_iteration(start, stop, weights, wsum, rc1, rc2, ext1, ext2, cfd)
-        plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(start,stop), args, weights=weights, temp=args.temps[0])
+        plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(start,stop), args, weights=weights, temp=args.temps[0], extra=args.extra)
     else:
         ##multiple increments, set an array of things to go through and plot
         if start < step:
@@ -49,7 +49,7 @@ def handle_dmdmd(ext1, ext2, args):
             fit_range = np.append(fit_range, stop)
         ##Do first step, it's unique
         rc1, rc2, weights = dmdmd_iteration(start, fit_range[0], weights, wsum, rc1, rc2, ext1, ext2, cfd)
-        plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(start,fit_range[0]), args, weights=weights, temp=args.temps[0])
+        plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(start,fit_range[0]), args, weights=weights, temp=args.temps[0], extra=args.extra)
         
         ##go through all the possibilities then    
         for i in range(np.shape(fit_range)[0]-1):    
@@ -59,7 +59,7 @@ def handle_dmdmd(ext1, ext2, args):
                 initial = fit_range[i]+2
                 rc1, rc2, weights = get_empty_arrays(args.weight)
             rc1, rc2, weights = dmdmd_iteration(fit_range[i]+2, fit_range[i+1], weights, wsum, rc1, rc2, ext1, ext2, cfd)
-            plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(initial,fit_range[i+1]), args, weights=weights, temp=args.temps[0])
+            plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(initial,fit_range[i+1]), args, weights=weights, temp=args.temps[0], extra=args.extra)
 
 def dmdmd_iteration(start, stop, weights, wsum, rc1, rc2, ext1, ext2, cfd):    
     ##subroutine handle_dmdmd 
@@ -96,7 +96,7 @@ def handle_dmaps(ext1, ext2, args):
         rc1 = get_value("iter%d"%i, ext1, cfd)
         rc2 = get_value("iter%d"%i, ext2, cfd)
         weights = np.loadtxt("%s/iter%d.w"%(cfd,i))
-        plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d"%i, args, weights=weights, temp=args.temps[0])
+        plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d"%i, args, weights=weights, temp=args.temps[0], extra=args.extra)
    
 def handle_fret(ext1, ext2, args):
     temperatures = args.temps
@@ -107,7 +107,7 @@ def handle_fret(ext1, ext2, args):
         for j in np.arange(iteration_range[0], iteration_range[1]+1, 1):
             rc1 = get_value("T%dI%d"%(T,j), ext1, cfd)
             rc2 = get_value("T%dI%d"%(T,j), ext2, cfd)
-            plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "Temp-%d-Iter-%d"%(T, j+1), args, temp=T)
+            plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "Temp-%d-Iter-%d"%(T, j+1), args, temp=T, extra=args.extra)
     
     
 def handle_vanilla(ext1, ext2, args):
@@ -120,14 +120,14 @@ def handle_vanilla(ext1, ext2, args):
 
     rc1n, rc2n = get_labels(ext1, ext2)
     
-    plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n,  args.save_name, args, temp=temperature)
+    plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n,  args.save_name, args, temp=temperature, extra=args.extra)
     
 
 def get_labels(ext1, ext2):
     labels = {"-Qclosed.out":"Q closed", "-y114-192.out":"y between 115-193 (nm)", "-rmsd-closed.xvg":"rmsd-closed (nm)", "-rmsd-apo.xvg":"rmsd-apo (nm)", "-comA.xvg":"Lobe Center Distances (nm)","ev0":"DC0", "ev1":"DC1", "ev2":"DC2", "-gyrate.xvg":"Rg (nm)", "-rmsd.xvg":"RMSD (nm)"}
     return labels[ext1], labels[ext2]
    
-def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300):
+def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300, extra=None):
     print "Starting the Plot"
     nbins = args.bins
     if args.method == "arb":
@@ -140,6 +140,8 @@ def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300
         plot_style = "scatter"
         x, y, z = hist2d.make(rc1, rc2, nbins, nbins, temperature=temp, weight=weights, plot_style=plot_style, free_energy_plot=True, idx_smoothing=1)
         cp = plt.scatter(x, y, s=10, c=z, marker='o', linewidth=0.)
+        if not extra == None:
+            plt.plot(extra[:,0], extra[:,1], 'ok')
         #vmax=7
         if not axis == None:
             plt.axis(axis)
@@ -162,6 +164,8 @@ def plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, name, args, weights=None, temp=300
         xc, yc, zc = hist2d.make(rc1, rc2, nbins, nbins, temperature=temp, weight=weights, plot_style=plot_style, free_energy_plot=True, idx_smoothing=1)
         cp = plt.contourf(xc, yc, zc, 20)
         plt.contour(xc, yc, zc, cp.levels, colors='k', hold='on')
+        if not extra == None:
+            plt.plot(extra[:,0], extra[:,1], 'ok')
         if not axis == None:
             plt.axis(axis)
         plt.xlabel(rc1n, size=16)
@@ -271,6 +275,7 @@ def get_args():
     par.add_argument("--handle", type=str, help="specify either dmdmd, vanilla or fret")
     par.add_argument("--temps", type=float, nargs="+", help="specify the temperature for the data, can be an array")
     par.add_argument("--flow", action="store_true", default=False, help="Use if you want to plot iterations in intervals, i.e. 2-50, 52-60")
+    par.add_argument("--extra", type=str, default="fep", help="Specify a file containing extra xy formatted data to plot") ##for handle vanilla
     ##for just handle: vanilla
     par.add_argument("--file_names", nargs="+", type=str, default=[], help="Specify the specific names of the DC containing files") ##for handle vanilla
     par.add_argument("--save_name", type=str, default="fep", help="Specify the specific names of the DC containing files") ##for handle vanilla
