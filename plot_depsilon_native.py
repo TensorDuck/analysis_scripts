@@ -22,8 +22,8 @@ def plot_epsilons(bottom, nameb, modelA):
     colmax = np.max(np.abs(bottom))
     colmin = -1 * colmax
     
-    x = np.arange(1, np.max(pairs), 1)
-    y = np.arange(1, np.max(pairs), 1)
+    x = np.arange(1, np.max(pairs)+1, 1)
+    y = np.arange(1, np.max(pairs)+1, 1)
     square = np.zeros((max_contact,max_contact))
     
     for i in range(num_pairs):
