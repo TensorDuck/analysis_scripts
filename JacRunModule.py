@@ -119,7 +119,7 @@ def estimate_lambda(trunc):
             lowvalue = svf[i]
             highvalue = svf[i+1]
         i += 1
-    open("Lambda_index.txt","w").write("%d"%index)
+    open("Lambda_index.txt","w").write("%d"%i)
     return highvalue, lowvalue, index
 
 
