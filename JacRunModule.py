@@ -106,7 +106,8 @@ def estimate_lambda(trunc):
     #will read the singular values file and find where a alrge jump exists
     #assumes singular_values.dat is in the directory this is run in
     print "estimating the value of lambda from singular values"    
-    svf = np.loadtxt("lambdas.dat") 
+    lvalues = np.loadtxt("lambdas.dat") 
+    svf = np.loadtxt("singular_values.dat")
     index = 0
     max_search = np.shape(svf)[0]
     lowvalue = np.min(svf)
@@ -114,7 +115,7 @@ def estimate_lambda(trunc):
     go = True
     i = 0 
     while (go and i < max_search):
-        if svf[i+1] > trunc:
+        if test_truncate(lvalues[i], svf, trunc):
             go = False
             lowvalue = svf[i]
             highvalue = svf[i+1]
@@ -122,7 +123,16 @@ def estimate_lambda(trunc):
     open("Lambda_index.txt","w").write("%d"%(i-1))
     return highvalue, lowvalue, index
 
-
+def test_truncate(lam, svf, trunc):
+    for i in in range(np.shape(svf)[0]-1):
+        if svf[i] < lam and svf[i+1] >= lamb:
+            high = svf[i+1]
+            low = svf[i]
+    if high >= trunc and low <trunc:
+        return True
+    else:
+        return False
+        
 def run_save_all(args):
     original_directory = os.getcwd() #starting directory. Not necessarily the cwd
     fit_string = ""
