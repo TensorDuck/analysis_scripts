@@ -124,7 +124,7 @@ def estimate_lambda(trunc):
     return highvalue, lowvalue, index
 
 def test_truncate(lam, svf, trunc):
-    for i in in range(np.shape(svf)[0]-1):
+    for i in range(np.shape(svf)[0]-1):
         if svf[i] < lam and svf[i+1] >= lamb:
             high = svf[i+1]
             low = svf[i]
