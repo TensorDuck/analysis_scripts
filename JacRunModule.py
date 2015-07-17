@@ -94,7 +94,7 @@ def run_main_calc(T_fit, args):
     if "truncate_value" in fitopts:
         trunc = fitopts["truncate_value"]
     else:
-        trunc = 0.01    
+        trunc = 0.1    
     highvalue, lowvalue, lambda_index = estimate_lambda(trunc)
     os.chdir(cwd0)    
     
