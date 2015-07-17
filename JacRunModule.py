@@ -124,7 +124,7 @@ def estimate_lambda(trunc):
     return highvalue, lowvalue, index
 
 def test_truncate(lam, svf, trunc):
-    if svf[i] > lam:
+    if svf[0] > lam:
         return False
     elif svf[np.shape(svf)[0]-1] < lam:
         raise IOError("Larges singular value is smaller than the truncate value, consider changing")
