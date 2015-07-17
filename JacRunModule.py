@@ -36,7 +36,7 @@ def run_calc_all(args):
         if "truncate_value" in fitopts:
             trunc = fitopts["truncate_value"]
         else:
-            trunc = 0.01    
+            trunc = 0.1    
         highvalue, lowvalue, lambda_index = estimate_lambda(trunc)    
         os.chdir(args.cwd)
         print "Finished Calc on one temperature"
@@ -106,19 +106,18 @@ def estimate_lambda(trunc):
     #will read the singular values file and find where a alrge jump exists
     #assumes singular_values.dat is in the directory this is run in
     print "estimating the value of lambda from singular values"    
-    svf = np.loadtxt("singular_values.dat") 
+    svf = np.loadtxt("lambdas.dat") 
     index = 0
-    num = np.shape(svf)[0]
+    max_search = np.shape(svf)[0]
     lowvalue = np.min(svf)
     highvalue = np.min(svf)
     go = True
     i = 0 
     while (go and i < num):
-        if svf[i] < trunc:
-            index = num -i
+        if svf[i] <= trunc or i > max_search:
             go = False
             lowvalue = svf[i]
-            highvalue = svf[i-1]
+            highvalue = svf[i+1]
         i += 1
     open("Lambda_index.txt","w").write("%d"%index)
     return highvalue, lowvalue, index

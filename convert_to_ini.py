@@ -45,7 +45,7 @@ def calc_initial_direc(subdir, iters, t_fit, trunc):
     #fitopt["fret_pairs"] = [[115, 193]]
     #fitopt["spacing"] = 0.1
     #fitopt["iteration"] = iters
-    fitopt["truncate_value"] = trunc
+    #fitopt["truncate_value"] = trunc
     inp.save_model(model, fitopt)
     
     
