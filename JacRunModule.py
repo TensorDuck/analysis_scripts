@@ -124,19 +124,20 @@ def estimate_lambda(trunc):
     return highvalue, lowvalue, index
 
 def test_truncate(lam, svf, trunc):
-    if svf[0] > lam:
-        return False
-    elif svf[np.shape(svf)[0]-1] < lam:
+    if svf[0] < lam:
         raise IOError("Larges singular value is smaller than the truncate value, consider changing")
+    elif svf[np.shape(svf)[0]-1] > lam:
+        high = svf[np.shape(svf)[0]-1]
+        low = 0
     else:    
         for i in range(np.shape(svf)[0]-1):
-            if svf[i] < lam and svf[i+1] >= lamb:
-                high = svf[i+1]
-                low = svf[i]
-        if high >= trunc and low <trunc:
-            return True
-        else:
-            return False
+            if svf[i] >= lam and svf[i+1] < lamb:
+                low = svf[i+1]
+                high = svf[i]
+    if high >= trunc and low =<trunc:
+        return True
+    else:
+        return False
         
 def run_save_all(args):
     original_directory = os.getcwd() #starting directory. Not necessarily the cwd
