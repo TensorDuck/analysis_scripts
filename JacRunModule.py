@@ -131,10 +131,10 @@ def test_truncate(lam, svf, trunc):
         low = 0
     else:    
         for i in range(np.shape(svf)[0]-1):
-            if svf[i] >= lam and svf[i+1] < lamb:
+            if svf[i] >= lam and svf[i+1] <= lamb:
                 low = svf[i+1]
                 high = svf[i]
-    if high >= trunc and low =<trunc:
+    if high >= trunc and low <=trunc:
         return True
     else:
         return False
