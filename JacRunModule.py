@@ -53,7 +53,7 @@ def run_calc_all(args):
             os.chdir("%d"%t)
             centers_of_bins, normalized_valu, labels, highvalue, lowvalue = run_main_calc(t, args)
             #Calcualte and Plot the histograms
-            os.chdir(cwd)
+            os.chdir(args.cwd)
             fret_data = pdistance.get_FRET_data(args.fret_data)
             os.chdir(owd)
             pdistance.plot_iterations(centers_of_bins, normalized_valu, args.pairs, labels, args.spacing, t, fretdata=args.fret_data)
