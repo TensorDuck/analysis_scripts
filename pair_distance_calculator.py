@@ -58,7 +58,7 @@ def histogram_iterations(pairs,spacing,temperature, fitopts):
         print "Warning, some files missing, skipping and assuming no zeroeth order files exist"
         start_iteration = 0
         num_calculated = 0
-        iterations -= 1
+        
 
     ##start histogram analysis
     for i in range(iterations):
