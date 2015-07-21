@@ -58,6 +58,7 @@ def histogram_iterations(pairs,spacing,temperature, fitopts):
         print "Warning, some files missing, skipping and assuming no zeroeth order files exist"
         start_iteration = 0
         num_calculated = 0
+        iterations -= 1
 
     ##start histogram analysis
     for i in range(iterations):
@@ -149,6 +150,7 @@ def histogram_multi(args):
     fwd = args.filedir
     swd = args.savedir
     
+    fret_data = get_FRET_data(args.fret_data)
     centers_of_bins = [] 
     normalized_valu = []
     for i in args.pairs:
@@ -178,7 +180,7 @@ def histogram_multi(args):
                 normalized_valu[j].append(hist)
     
     os.chdir(args.savedir)
-    plot_it(centers_of_bins, normalized_valu, args.pairs, args.labels, args.spacing, args.title, fretdata = args.fret_data)
+    plot_it(centers_of_bins, normalized_valu, args.pairs, args.labels, args.spacing, args.title, fretdata = fret_data)
     os.chdir(cwd)
     
 
@@ -212,13 +214,12 @@ def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title, axis
     colors = ["b","g","r","c","m","y","b","g","r","c","m","y","b","g","r","c","m","y","b","g","r","c","m","y"]
     linetype = ["-", "--",":"]
     
-    fdata = get_FRET_data(fretdata)
-    if len(fdata) == 0:
+    
+    if fretdata == None:
         fhist = [0]
-        fcenter= [0]
+        fcenter = [0]
     else:
         fhist, fcenter = histogram_data_normalized(fdata, spacing)
-
     for j in range(np.shape(pairs)[0]):
         plt.figure()
         maxvalue = 0.0
@@ -247,7 +248,7 @@ def get_FRET_data(fret_type):
         name = "FRET_trace.dat"
         
     found = False
-    paths = [ "/home/jchen/projects/10_00_14-FRET/", "/home/jc49/work/", ""]
+    paths = [""]
     fdata = []
     for i in paths:
         if os.path.isfile("%s%s"%(i,name)) and (not found):
