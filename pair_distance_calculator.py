@@ -219,7 +219,7 @@ def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title, axis
         fhist = [0]
         fcenter = [0]
     else:
-        fhist, fcenter = histogram_data_normalized(fdata, spacing)
+        fhist, fcenter = histogram_data_normalized(fretdata, spacing)
     for j in range(np.shape(pairs)[0]):
         plt.figure()
         maxvalue = 0.0
