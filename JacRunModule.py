@@ -117,7 +117,7 @@ def estimate_lambda(trunc):
     go = True
     i = 0 
     while (go and i < max_search):
-        found_lamda, high, low = test_truncate(lvalues[i], svf, trunc)
+        found_lambda, high, low = test_truncate(lvalues[i], svf, trunc)
         if found_lambda:
             go = False
             lowvalue = low
