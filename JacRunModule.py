@@ -117,10 +117,11 @@ def estimate_lambda(trunc):
     go = True
     i = 0 
     while (go and i < max_search):
-        if test_truncate(lvalues[i], svf, trunc):
+        found_lamda, high, low = test_truncate(lvalues[i], svf, trunc)
+        if found_lambda:
             go = False
-            lowvalue = svf[i]
-            highvalue = svf[i+1]
+            lowvalue = low
+            highvalue = high
         i += 1
     open("Lambda_index.txt","w").write("%d"%(i-1))
     return highvalue, lowvalue, index
@@ -137,9 +138,9 @@ def test_truncate(lam, svf, trunc):
                 low = svf[i+1]
                 high = svf[i]
     if high >= trunc and low <=trunc:
-        return True
+        return True, high, low
     else:
-        return False
+        return False, high, low
         
 def run_save_all(args):
     original_directory = os.getcwd() #starting directory. Not necessarily the cwd
