@@ -248,17 +248,16 @@ def get_FRET_data(fret_type):
         name = "FRET_trace.dat"
         
     found = False
-    paths = [""]
     fdata = []
-    for i in paths:
-        if os.path.isfile("%s%s"%(i,name)) and (not found):
-            found = True
-            print "here is the data"
-            print np.loadtxt("%s%s"%(i,name))
-             
-            fdata = np.loadtxt("%s%s"%(i,name))
-            print "FOUND FRET_data"
-    
+    if os.path.isfile(name):
+        found = True
+        print "here is the data"
+        print np.loadtxt("%s%s"%(i,name))
+         
+        fdata = np.loadtxt("%s%s"%(i,name))
+        print "FOUND FRET_data"
+    else:
+        raise IOError("FRET data not found, aborting!!")
     return fdata
 
 def histogram_data_normalized(y, spacing, wgt=None):
