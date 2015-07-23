@@ -252,9 +252,9 @@ def get_FRET_data(fret_type):
     if os.path.isfile(name):
         found = True
         print "here is the data"
-        print np.loadtxt("%s%s"%(i,name))
+        print np.loadtxt(name)
          
-        fdata = np.loadtxt("%s%s"%(i,name))
+        fdata = np.loadtxt(name)
         print "FOUND FRET_data"
     else:
         raise IOError("FRET data not found, aborting!!")
