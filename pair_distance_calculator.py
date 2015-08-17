@@ -244,7 +244,7 @@ def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title, axis
 def get_FRET_data(fret_type):
     if fret_type == "obs":
         name = "FRET_trace_obs.dat"
-    elif den:
+    elif fret_type == "den":
         name = "FRET_trace.dat"
     else:
         name = fret_type
