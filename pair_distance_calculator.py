@@ -341,7 +341,7 @@ def get_args():
     sub = par.add_subparsers(dest="method")
     
     multi_sub = sub.add_parser("multi", parents=[parser], help="for plotting an arbitrary set of files")
-    multi_sub.add_argument("--names", type=s:qtr, nargs="+", help="Specify names of all the files")
+    multi_sub.add_argument("--names", type=str, nargs="+", help="Specify names of all the files")
     multi_sub.add_argument("--labels", type=str, nargs="+", help="Specify labels of all the files")
     multi_sub.add_argument("--title", type=str, nargs="+", help="Specify title displayed on the plot")
     multi_sub.add_argument("--native", type=str, help="specify the location of the native.pdb file for use in the filedir")
