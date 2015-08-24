@@ -41,7 +41,7 @@ def handle_dmdmd(ext1, ext2, args):
         plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(start,stop), args, weights=weights, temp=args.temps[0], extra=args.extra)
     else:
         ##multiple increments, set an array of things to go through and plot
-        if start < step:
+        if start <= step:
             fit_range = np.arange(step, stop, step)
         else:
             fit_range = np.arange(start+step, stop, step)
@@ -56,15 +56,15 @@ def handle_dmdmd(ext1, ext2, args):
             initial = start
             ##if flow flag is set, this will re=initialize the matrices being merged.
             if args.flow:
-                initial = fit_range[i]+2
+                initial = fit_range[i]+step
                 rc1, rc2, weights = get_empty_arrays(args.weight)
-            rc1, rc2, weights = dmdmd_iteration(fit_range[i]+2, fit_range[i+1], weights, wsum, rc1, rc2, ext1, ext2, cfd)
+            rc1, rc2, weights = dmdmd_iteration(fit_range[i]+step, fit_range[i+1], weights, wsum, rc1, rc2, ext1, ext2, cfd, step)
             plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(initial,fit_range[i+1]), args, weights=weights, temp=args.temps[0], extra=args.extra)
 
-def dmdmd_iteration(start, stop, weights, wsum, rc1, rc2, ext1, ext2, cfd):    
+def dmdmd_iteration(start, stop, weights, wsum, rc1, rc2, ext1, ext2, cfd, step):    
     ##subroutine handle_dmdmd 
     if not weights == None:
-        for i in np.arange(start, stop+1, 2):
+        for i in np.arange(start, stop+1, step):
             fw = np.loadtxt("%s/iter%d.w"%(cfd,i))
             weights = np.append(weights, fw, axis=0)
             if np.abs(np.sum(fw)-wsum)>1:
@@ -72,7 +72,7 @@ def dmdmd_iteration(start, stop, weights, wsum, rc1, rc2, ext1, ext2, cfd):
     else:
         weights = None
     #loop through and combine all the data from every iteration.
-    for i in np.arange(start, stop+1, 2):
+    for i in np.arange(start, stop+1, step):
         f1 = get_value("iter%d"%i, ext1, cfd)
         f2 = get_value("iter%d"%i, ext2, cfd)
         rc1 = np.append(rc1, f1, axis=0)
