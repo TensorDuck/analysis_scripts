@@ -37,7 +37,7 @@ def handle_dmdmd(ext1, ext2, args):
     wsum = np.sum(np.loadtxt("%s/iter%d.w"%(cfd,start)))
     
     if args.step == None:
-        rc1, rc2, weights = dmdmd_iteration(start, stop, weights, wsum, rc1, rc2, ext1, ext2, cfd)
+        rc1, rc2, weights = dmdmd_iteration(start, stop, weights, wsum, rc1, rc2, ext1, ext2, cfd, step)
         plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(start,stop), args, weights=weights, temp=args.temps[0], extra=args.extra)
     else:
         ##multiple increments, set an array of things to go through and plot
@@ -48,7 +48,7 @@ def handle_dmdmd(ext1, ext2, args):
         if not stop==fit_range[-1]:
             fit_range = np.append(fit_range, stop)
         ##Do first step, it's unique
-        rc1, rc2, weights = dmdmd_iteration(start, fit_range[0], weights, wsum, rc1, rc2, ext1, ext2, cfd)
+        rc1, rc2, weights = dmdmd_iteration(start, fit_range[0], weights, wsum, rc1, rc2, ext1, ext2, cfd, step)
         plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(start,fit_range[0]), args, weights=weights, temp=args.temps[0], extra=args.extra)
         
         ##go through all the possibilities then    
