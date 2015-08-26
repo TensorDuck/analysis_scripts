@@ -155,7 +155,7 @@ def get_args():
     parser.add_argument("--QQ", type=int, nargs="+", default=[800, 900], help="range of Q values to cutoff and use")
     parser.add_argument("--Qspacing", type=int, default=10, help="bin size for Q")
     parser.add_argument("--temperature", type=float, default=170, help="temperature of simulation")
-    parser.add_argument("--y_shift", type=float, default=0.2, help="Specify the y-shift to the FRET distance data")
+    parser.add_argument("--y_shift", type=float, default=0, help="Specify the y-shift to the FRET distance data")
     parser.add_argument("--handle", type=str, default="dmdmd", help="Specify the directory structure")
     parser.add_argument("--axis", type=float, default=None, nargs=4, help="Specify the axis in 'x0 x1 y0 y1' format")
     ##The Real Parser
