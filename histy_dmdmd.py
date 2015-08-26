@@ -122,7 +122,7 @@ def get_qy(args):
         
 def sanitize_args(args):
     ##set the pairs for fitting in the array format for the calculation
-    pairs = np.array([[args.pairs[0][0], args.pairs[0][1]]])
+    pairs = np.array([[args.pairs[0], args.pairs[1]]])
     #print "Number of pairs is: %d" % (len(args.pairs)/2)
     if len(args.pairs)>2:
         for i in np.arange(3, len(args.pairs), 2):
