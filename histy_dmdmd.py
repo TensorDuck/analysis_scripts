@@ -41,7 +41,7 @@ def handle_dmaps(args):
     all_w = np.array([]) # corresponding weights (.w) to the files
     
     for i in np.arange(args.iters[0], args.iters[1]+1, args.iters[2]):
-        y = np.loadtxt("iter%d-y%d-%d.out" % (i , args.pairs[0], args.pairs[1]))
+        y = np.loadtxt("iter%d-y%d-%d.out" % (i , args.pairs[0][0], args.pairs[0][1]))
         Q = np.loadtxt("iter%d-Qclosed.out" % i)
         w = np.loadtxt("iter%d.w" % i)
         all_y = np.append(all_y, y, axis=0)
@@ -108,7 +108,7 @@ def get_qy(args):
     all_w = np.array([]) # corresponding weights (.w) to the files
 
     for i in np.arange(args.iters[0], args.iters[1]+1, args.iters[2]):
-        y = np.loadtxt("iter%d-y%d-%d.out" % (i , args.pairs[0], args.pairs[1]))
+        y = np.loadtxt("iter%d-y%d-%d.out" % (i , args.pairs[0][0], args.pairs[0][1]))
         Q = np.loadtxt("iter%d-Qclosed.out" % i)
         w = np.loadtxt("iter%d.w" % i)
         all_y = np.append(all_y, y, axis=0)
@@ -122,7 +122,7 @@ def get_qy(args):
         
 def sanitize_args(args):
     ##set the pairs for fitting in the array format for the calculation
-    pairs = np.array([[args.pairs[0], args.pairs[1]]])
+    pairs = np.array([[args.pairs[0][0], args.pairs[0][1]]])
     #print "Number of pairs is: %d" % (len(args.pairs)/2)
     if len(args.pairs)>2:
         for i in np.arange(3, len(args.pairs), 2):
