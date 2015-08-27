@@ -24,6 +24,7 @@ import argparse
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from scipy.sparse import spdiags
+import scipy.stats as stats
 
 kb = 6.022141*1.380650/(4.184*1000.0)
 
@@ -64,6 +65,7 @@ class ModeSelect:
             self.select_mode.disconnect()
             self.select_mode = self.mode_selectbox
             self.select_mode.connect()
+#Begin BinSelect
 
 
 ##Begin SelectBox
@@ -260,7 +262,8 @@ def load_DC(dc_file, dc_use, bin_size, temperature, smooth_param):
     dcA = data[:,dc_use[0]]
     dcB = data[:,dc_use[1]]
     
-    z,x,y = np.histogram2d(dcA, dcB, bins=[bin_size,bin_size], normed=True)
+    z, x, y = stats.binned_statistic_2d(dcA, dcB, np.ones(np.shape[dcA][0]), bins=[bin_size,bin_size], statistic='mean')
+    #z,x,y = np.histogram2d(dcA, dcB, bins=[bin_size,bin_size], normed=True)
 
     min_prob = np.min(z)
     
