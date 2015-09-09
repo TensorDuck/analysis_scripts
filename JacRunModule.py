@@ -111,7 +111,7 @@ def estimate_lambda(trunc):
     lvalues = np.loadtxt("lambdas.dat") 
     svf = np.loadtxt("singular_values.dat")
     index = 0
-    max_search = np.shape(svf)[0]
+    max_search = np.shape(lvalues)[0]
     lowvalue = np.min(svf)
     highvalue = np.min(svf)
     go = True
