@@ -13,12 +13,13 @@ import os as os
 import matplotlib.pyplot as plt
 import matplotlib.mpl as mpl
 
-def plot_epsilons(bottom, nameb, modelA):
+def plot_epsilons(bottom, nameb, modelA, gauss=False):
     
     pairs = modelA.pairs
+    if gauss:
+        pairs = pairs[np.arange(1,len(pairs),2)]
     num_pairs = len(pairs)
     max_contact = np.max(pairs)
-    
     colmax = np.max(np.abs(bottom))
     colmin = -1 * colmax
     
@@ -43,7 +44,7 @@ def plot_epsilons(bottom, nameb, modelA):
     #plt.savefig(nameb+".pdf")
     plt.close()
     
-def plot_epsilons_bin(bottom,nameb,model):
+def plot_epsilons_bin(bottom,nameb,model,gauss=False):
     bottomhalf = np.zeros(len(bottom))
     for i in range(len(bottom)):
         if bottom[i] > 0:
@@ -51,7 +52,7 @@ def plot_epsilons_bin(bottom,nameb,model):
         elif bottom[i] < 0:
             bottomhalf[i] = -1
 
-    plot_epsilons(bottomhalf, "bins-"+nameb,model)
+    plot_epsilons(bottomhalf, "bins-"+nameb,model, gauss=gauss)
     
     
 if __name__ == "__main__":  
