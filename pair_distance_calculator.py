@@ -242,6 +242,7 @@ def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title, axis
     print "Finished plotting the directory"
 
 def get_FRET_data(fret_type):
+    print "Getting fret data from: %s" % fret_type
     if fret_type == "obs":
         name = "FRET_trace_obs.dat"
     elif fret_type == "den":
