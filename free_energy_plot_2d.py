@@ -31,13 +31,14 @@ def handle_dmdmd(ext1, ext2, args):
     stop = args.range[1]
     cfd = args.file_dir
     step = args.step
+    iter_step = args.iter_step
     #set final matrices, to append all the data onto
     rc1, rc2, weights = get_empty_arrays(args.weight)
     rc1n, rc2n = get_labels(ext1, ext2)
     wsum = np.sum(np.loadtxt("%s/iter%d.w"%(cfd,start)))
     
     if args.step == None:
-        rc1, rc2, weights = dmdmd_iteration(start, stop, weights, wsum, rc1, rc2, ext1, ext2, cfd, step)
+        rc1, rc2, weights = dmdmd_iteration(start, stop, weights, wsum, rc1, rc2, ext1, ext2, cfd, iter_step)
         plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(start,stop), args, weights=weights, temp=args.temps[0], extra=args.extra)
     else:
         ##multiple increments, set an array of things to go through and plot
@@ -48,7 +49,7 @@ def handle_dmdmd(ext1, ext2, args):
         if not stop==fit_range[-1]:
             fit_range = np.append(fit_range, stop)
         ##Do first step, it's unique
-        rc1, rc2, weights = dmdmd_iteration(start, fit_range[0], weights, wsum, rc1, rc2, ext1, ext2, cfd, step)
+        rc1, rc2, weights = dmdmd_iteration(start, fit_range[0], weights, wsum, rc1, rc2, ext1, ext2, cfd, iter_step)
         plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(start,fit_range[0]), args, weights=weights, temp=args.temps[0], extra=args.extra)
         
         ##go through all the possibilities then    
@@ -58,7 +59,7 @@ def handle_dmdmd(ext1, ext2, args):
             if args.flow:
                 initial = fit_range[i]+step
                 rc1, rc2, weights = get_empty_arrays(args.weight)
-            rc1, rc2, weights = dmdmd_iteration(fit_range[i]+step, fit_range[i+1], weights, wsum, rc1, rc2, ext1, ext2, cfd, step)
+            rc1, rc2, weights = dmdmd_iteration(fit_range[i]+step, fit_range[i+1], weights, wsum, rc1, rc2, ext1, ext2, cfd, iter_step)
             plot_2D_Free_Energy(rc1, rc2, rc1n, rc2n, "iter%d-%d"%(initial,fit_range[i+1]), args, weights=weights, temp=args.temps[0], extra=args.extra)
 
 def dmdmd_iteration(start, stop, weights, wsum, rc1, rc2, ext1, ext2, cfd, step):    
@@ -269,6 +270,7 @@ def get_args():
     par.add_argument("--file_dir", default=os.getcwd(), type=str, help="location of files for analysis")
     par.add_argument("--range", default=[6,100], nargs=2, type=int, help="Range of iterations to plot for")
     par.add_argument("--step", type=int, help="Use for specifying what step-size to take in iterations for plotting")
+    par.add_argument("--iter_step", type=int, default=1, help="Use for specifying what step-size the simulation took")
     par.add_argument("--no_weight", dest="weight", action="store_false", default=True, help="Use if frames don't have a weight in a .w file")
     par.add_argument("--bins", type=int, default=50, help="Number of bins in each axis for binning data")
     par.add_argument("--scatter_only", action="store_true", default=False, help="use for plotting only a scatter plot")
