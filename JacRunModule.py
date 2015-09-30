@@ -139,6 +139,9 @@ def test_truncate(lam, svf, trunc):
                 high = svf[i]
     if high >= trunc and low <=trunc:
         return True, high, low
+    elif high>= trunc and low >= trunc:
+        print "Lambdas selected overshoot desired cutoff. Defaulting to first Lambda greater than cutoff"
+        return True, high, low
     else:
         return False, high, low
         
