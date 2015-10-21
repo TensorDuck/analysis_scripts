@@ -69,6 +69,7 @@ def run_calc_all(args):
 
 def run_main_calc(T_fit, args):
     #internal directory tree here. Assumings everything is arranged a certain way
+    subfolder = args.subdir
     cwd = os.getcwd()
     cwd0 = os.getcwd()
     cwd += "/%s" % subfolder
@@ -79,9 +80,8 @@ def run_main_calc(T_fit, args):
     #calculate for a temperature directory. Loads the arguments into the variables here
     #also load fret data for returning the option later
     pairs = np.array(fitopts["fret_pairs"]) - 1
-    spacing = fitopts["spacing"])
+    spacing = fitopts["spacing"]
     fretdata = fitopts["fretdata"]
-    subfolder = args.subdir
     
     if not args.fitting_method==None:
         fitopts["solver"] = args.fitting_method
@@ -224,14 +224,6 @@ def sanitize_args(args):
         args.temps = np.loadtxt("Temparray.txt",dtype=int)
     else:
         print "ERROR: No Temperature Directories Specified"
-    
-    ##set the pairs for fitting in the array format for the calculation
-    pairs = np.array([[args.pairs[0], args.pairs[1]]])
-    print "Number of pairs is: %d" % len(args.pairs)
-    if len(args.pairs)>2:
-        for i in np.arange(3, len(args.pairs), 2):
-            pairs = np.append(pairs, np.array([[args.pairs[i-1], args.pairs[i]]]), axis=0)
-    args.pairs = pairs
     
     #If no fitting method specified, look for the fitting.txt file to re-specify. If none, it will use the model's default method
     if args.fitting_method == None and os.path.isfile("fitting.txt"):

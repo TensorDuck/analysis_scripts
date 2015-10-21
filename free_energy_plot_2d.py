@@ -183,7 +183,7 @@ def get_value(name, ext, cfd):
     if ext == "phi" or ext == "chi":
         count = 0
         go = True
-        f = open("%s/%s%s"%(cfd,name, ext), "r")
+        f = open("%s/%s-dihedral.xvg"%(cfd,name), "r")
         while go:
             first = f.readline()[0]
             if first == "#" or first == "@":
@@ -191,11 +191,12 @@ def get_value(name, ext, cfd):
             else:
                 go = False
         f.close()
+        print count
         if ext == "phi":
-            return np.loadtxt("%s/%s-dihedral.xvg"%(cfd,name, ext), skiprows=count, usecols=(0))
+            return np.loadtxt("%s/%s-dihedral.xvg"%(cfd,name), skiprows=count, usecols=(0,1))[:,0]
         if ext == "chi":
-            return np.loadtxt("%s/%s-dihedral.xvg"%(cfd,name, ext), skiprows=count, usecols=(1))
-    if ext[-4:] == ".xvg":
+            return np.loadtxt("%s/%s-dihedral.xvg"%(cfd,name), skiprows=count, usecols=(0,1))[:,1]
+    elif ext[-4:] == ".xvg":
         count = 0
         go = True
         f = open("%s/%s%s"%(cfd,name, ext), "r")
