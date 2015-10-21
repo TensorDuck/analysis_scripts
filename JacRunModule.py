@@ -51,12 +51,14 @@ def run_calc_all(args):
             #Analyze and get the new histograms
             print "Starting analysis on temperature %d" % t
             os.chdir("%d"%t)
-            centers_of_bins, normalized_valu, labels, highvalue, lowvalue = run_main_calc(t, args)
-            #Calcualte and Plot the histograms
+            centers_of_bins, normalized_valu, labels, highvalue, lowvalue, pairs, spacing, fretdata = run_main_calc(t, args)
+            #Calculate and Plot the histograms
             os.chdir(args.cwd)
-            fret_data = pdistance.get_FRET_data(args.fret_data)
+            fret_data = []
+            for i in range(len(fretdata)):
+                fret_data.append(pdistance.get_FRET_data(fretdata[i]))
             os.chdir(owd)
-            pdistance.plot_iterations(centers_of_bins, normalized_valu, args.pairs, labels, args.spacing, t, fretdata=fret_data)
+            pdistance.plot_iterations(centers_of_bins, normalized_valu, pairs, labels, spacing, t, fretdata=fret_data)
             os.chdir(args.cwd)
             #write the cutoff into a file for easy access
             fsv.write("The Cutoff occurs between singular values: %.3e and %.3e\n" % (highvalue, lowvalue))
@@ -66,11 +68,6 @@ def run_calc_all(args):
     
 
 def run_main_calc(T_fit, args):
-    #calculate for a temperature directory. Loads the arguments into the variables here
-    pairs = args.pairs
-    spacing = args.spacing
-    subfolder = args.subdir
-    
     #internal directory tree here. Assumings everything is arranged a certain way
     cwd = os.getcwd()
     cwd0 = os.getcwd()
@@ -78,6 +75,14 @@ def run_main_calc(T_fit, args):
     
     #load model, and change fitting method if specified
     model, fitopts = mdb.inputs.load_model(args.subdir, False)
+    
+    #calculate for a temperature directory. Loads the arguments into the variables here
+    #also load fret data for returning the option later
+    pairs = np.array(fitopts["fret_pairs"]) - 1
+    spacing = fitopts["spacing"])
+    fretdata = fitopts["fretdata"]
+    subfolder = args.subdir
+    
     if not args.fitting_method==None:
         fitopts["solver"] = args.fitting_method
         
@@ -102,7 +107,7 @@ def run_main_calc(T_fit, args):
     
     fitopts["last_completed_task"] = "Finished: Solving_Newtons_Method"
     
-    return centers_of_bins, normalized_valu, labels, highvalue, lowvalue
+    return centers_of_bins, normalized_valu, labels, highvalue, lowvalue, pairs, spacing, fretdata
 
 def estimate_lambda(trunc):
     #will read the singular values file and find where a alrge jump exists
@@ -246,10 +251,10 @@ def get_args():
     parser.add_argument("--subdir", default="1PB7", type=str, help="Sub Directory, also the name of the .ini file")
     parser.add_argument("--temps", default=None, type=int, nargs="+", help="Temperature Directories for Fitting. Default=load Temarray.txt")
     parser.add_argument("--cwd", type=str, default=os.getcwd(), help="Directory for fitting")
-    parser.add_argument("--pairs", nargs="+",type=int, default=[114,192], help="pairs for FRET fitting")
+    #parser.add_argument("--pairs", nargs="+",type=int, default=[114,192], help="pairs for FRET fitting")
     parser.add_argument("--fitting_method", default=None, type=str, help="Choose either TSVD (def) or Levenberg")
-    parser.add_argument("--spacing", type=float, default=0.1, help="spacing for binning the simulated and experimental FRET data")
-    parser.add_argument("--fret_data", type=str, default="den", help="specify the type of FRET data using. Either den=Denoised or obs=Observed")
+    #parser.add_argument("--spacing", type=float, default=0.1, help="spacing for binning the simulated and experimental FRET data")
+    #parser.add_argument("--fret_data", type=str, default="den", help="specify the type of FRET data using. Either den=Denoised or obs=Observed")
     parser.add_argument("--single", default=False, action="store_true", help="Specify you are working with only one temperature or file")
     parser.add_argument("--title", default="test", type=str, help="specify a title for save files for certain auto-generated files. Generally not needed")
     

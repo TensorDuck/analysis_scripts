@@ -216,15 +216,21 @@ def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title, axis
     
     
     if fretdata == None:
-        fhist = [0]
-        fcenter = [0]
+        fhist = [[0]]
+        fcenter = [[0]]
     else:
-        fhist, fcenter = histogram_data_normalized(fretdata, spacing)
+        fhist = []
+        fcenter = []
+        for data in fretdata:
+            histogram_data_normalized(data, spacing)
+            fhist_temp, fcenter_temp = histogram_data_normalized(fretdata, spacing)
+            fhist.append(fhist_temp)
+            fcenter.append(fcenter_temp)
     for j in range(np.shape(pairs)[0]):
         plt.figure()
         maxvalue = 0.0
         maxcenter = 0.0
-        plt.plot(fcenter,fhist, alpha=1, color="k", linewidth=2, marker="o", label="D-FRET Data")
+        plt.plot(fcenter[j],fhist[j], alpha=1, color="k", linewidth=2, marker="o", label="D-FRET Data")
         plt.xlabel("R (nm)", fontsize=20)
         plt.ylabel("Probability",fontsize=20)
         plt.title("R-histogram for pair %d-%d"% (pairs[j][0]+1, pairs[j][1]+1), fontsize=20)
@@ -275,8 +281,7 @@ def histogram_data(y, spacing, wgt=None):
     numbins = maxstep - minstep
     ransize = (minstep*spacing,maxstep*spacing)
     hist, edges = np.histogram(y, numbins, ransize, weights=wgt)
-    edges = edges + (0.5*spacing)
-    bincenters = edges[:-1]
+    bincenters = 0.5 * (edges[:-1] + edges[1:])
     return hist, bincenters
 
 def compute_distances(traj, prs, yshift=0.0):
