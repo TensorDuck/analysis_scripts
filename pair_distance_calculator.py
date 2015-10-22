@@ -222,8 +222,7 @@ def plot_it(centers_of_bins, normalized_valu, pairs, label, spacing, title, axis
         fhist = []
         fcenter = []
         for data in fretdata:
-            histogram_data_normalized(data, spacing)
-            fhist_temp, fcenter_temp = histogram_data_normalized(fretdata, spacing)
+            fhist_temp, fcenter_temp = histogram_data_normalized(data, spacing)
             fhist.append(fhist_temp)
             fcenter.append(fcenter_temp)
     for j in range(np.shape(pairs)[0]):
