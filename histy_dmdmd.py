@@ -109,7 +109,7 @@ def get_qy(args):
 
     for i in np.arange(args.iters[0], args.iters[1]+1, args.iters[2]):
         y = np.loadtxt("iter%d-y%d-%d.out" % (i , args.pairs[0][0], args.pairs[0][1]))
-        if args.QQ == 0:
+        if args.QQ == [0]:
             Q = np.ones(len(y))
         else:
             Q = np.loadtxt("iter%d-Qclosed.out" % i)
