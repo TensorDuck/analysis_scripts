@@ -15,13 +15,16 @@ def return_max(cmax, nmax):
     else:
         return cmax
 
-def plot_simple(x, y, label, title, xaxis_label, yaxis_label, axis=None, save_file=None, show=True):
+def plot_simple(x, y, label, title, xaxis_label, yaxis_label, axis=None, save_file=None, show=True, reference=False):
     """plot_simple is for a simple x-y plot with the dots connected.  """    
     #set the save_file name to the same as the title name
     if save_file == None:
         save_file = title
     #specify generic color order for use
-    colors = ["b","g","r","c","m","y","b","g","r","c","m","y","b","g","r","c","m","y","b","g","r","c","m","y"]
+    if reference:
+        colors = ["k","b","g","r","c","m","y","b","g","r","c","m","y","b","g","r","c","m","y","b","g","r","c","m","y"]
+    else:
+        colors = ["b","g","r","c","m","y","b","g","r","c","m","y","b","g","r","c","m","y","b","g","r","c","m","y"]
     linetype = ["-", "--",":"]
     
     plt.figure()
