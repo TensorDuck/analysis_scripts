@@ -11,16 +11,20 @@ def direc_run(args):
     cwd = os.getcwd()
     maxz = 0
     minz = 1000
+    if not args.reference == None:
+        ref_data = np.loadtxt(args.reference)
+    else:
+        ref_data = None
     for temp in args.temps:
         for i in np.arange(args.iterations[0], args.iterations[1]+1, 1):
             fwd = "%s/%d/%s/iteration_%d/%d_0"% (args.filedir, temp, args.subdir, i, temp) 
-            pairs = np.loadtxt("%s/%s"%(fwd, args.pairs_name), skiprows=1)[:,0:2]
+            pairs = np.loadtxt("%s/%s"%(fwd, args.pairs_name), skiprows=args.pairs_skip)[:,0:2]
             params = np.loadtxt("%s/%s"%(fwd, args.mparams_name))
             y = pairs[:,0]
             x = pairs[:,1]
             title = "T%d-I%d" % (temp, i)
             os.chdir(args.savedir)
-            plot_it(x,y, params, title, args)
+            plot_it(x,y, params, title, args, reference=ref_data)
             plot_spread(params, title, args)
             os.chdir(cwd)
             if np.max(params) > maxz:
@@ -36,14 +40,18 @@ def direc_run(args):
 def single_run(args):
     cwd = os.getcwd()
     
-    pairs = np.loadtxt(args.pairs_name, skiprows=1)[:,0:2]
+    pairs = np.loadtxt(args.pairs_name, skiprows=args.pairs_skip)[:,0:2]
     params = np.loadtxt(args.mparams_name)
-    
+    if not args.reference == None:
+        ref_data = np.loadtxt(args.reference)
+    else:
+        ref_data = None
+        
     y = pairs[:,0]
     x = pairs[:,1]
     os.chdir(args.savedir)
     plot_spread(params, args.title, args)
-    plot_it(x,y, params, args.title, args)
+    plot_it(x,y, params, args.title, args, reference=ref_data)
     os.chdir(cwd)
 
 def plot_spread(epsilons, title, args):
@@ -54,7 +62,7 @@ def plot_spread(epsilons, title, args):
     plt.title("spread of epsilons", fontsize=20)
     plt.savefig("%s_spread.png"%title)
 
-def plot_it(x,y,z,title, args):
+def plot_it(x, y, z, title, args, reference=None):
     ctype = args.ctype
     
     if args.log:
@@ -84,9 +92,15 @@ def plot_it(x,y,z,title, args):
     edges = np.append(edges, args.max_residue)
     residues = np.zeros((args.max_residue+1, args.max_residue+1))
     
-    for i in range(np.shape(z)[0]):
-        residues[x.astype(int)[i], y.astype(int)[i]] = z[i]
-        residues[y.astype(int)[i], x.astype(int)[i]] = z[i]
+    if reference == None:
+        for i in range(np.shape(z)[0]):
+            residues[x.astype(int)[i], y.astype(int)[i]] = z[i]
+            residues[y.astype(int)[i], x.astype(int)[i]] = z[i]
+    else:
+        for i in range(np.shape(z)[0]):
+            residues[x.astype(int)[i], y.astype(int)[i]] = z[i]
+        for i in range(np.shape(reference)[0]):
+            residues[reference.astype(int)[i,1],reference.astype(int)[i,0]] = 1    
     
     residues_masked = np.ma.masked_where(residues==0, residues)
     
@@ -119,12 +133,16 @@ def get_args():
     par.add_argument("--filedir", default=os.getcwd(), type=str, help="Starting location")
     par.add_argument("--mparams_name", default="model_params", type=str, help="name of the model_params file(s)")
     par.add_argument("--pairs_name", default="pairwise_params", type=str, help="name of the file containing the contact pairs")
+    par.add_argument("--pairs_skip", default=1, type=int, help="specify number of rows to skip when reading the pairs file")
     par.add_argument("--zmin", default=None, type=float, help="minimum value of z for color mapping")
     par.add_argument("--zmax", default=None, type=float, help="maximum value of z for color mapping")
     par.add_argument("--ctype", default="jet", type=str, help="type of color-map to use")
     par.add_argument("--center", default=False, action="store_true")
     par.add_argument("--log", default=False, action="store_true")
     par.add_argument("--max_residue", default=292, type=int)
+    par.add_argument("--only", default=None, args="+", help="specify which types of atom contacts you want")
+    par.add_argument("--reference", default=None, help="Specify a reference set of pairs")
+    
     parser = argparse.ArgumentParser(description="For Deciding how to plot the results")
     sub = parser.add_subparsers(dest="method")
     
