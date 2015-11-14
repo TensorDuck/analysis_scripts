@@ -18,9 +18,9 @@ def direc_run(args):
     for temp in args.temps:
         for i in np.arange(args.iterations[0], args.iterations[1]+1, 1):
             fwd = "%s/%d/%s/iteration_%d/%d_0"% (args.filedir, temp, args.subdir, i, temp) 
-            pairs = np.loadtxt("%s/%s"%(fwd, args.pairs_name), skiprows=args.pairs_skip)[:,0:2]
+            pairs = np.loadtxt("%s/%s"%(fwd, args.pairs_name), skiprows=args.pairs_skip, usecols=(0,1))
             params = np.loadtxt("%s/%s"%(fwd, args.mparams_name))
-            pairs = pairs[args.epsilon_start::args.epsilon_stride]
+            pairs = pairs[args.epsilon_start::args.epsilon_stride,:]
             params = params[args.epsilon_start::args.epsilon_stride]
             y = pairs[:,0]
             x = pairs[:,1]
@@ -42,9 +42,9 @@ def direc_run(args):
 def single_run(args):
     cwd = os.getcwd()
     
-    pairs = np.loadtxt(args.pairs_name, skiprows=args.pairs_skip)[:,0:2]
+    pairs = np.loadtxt(args.pairs_name, skiprows=args.pairs_skip, usecols=(0,1))
     params = np.loadtxt(args.mparams_name)
-    pairs = pairs[args.epsilon_start::args.epsilon_stride]
+    pairs = pairs[args.epsilon_start::args.epsilon_stride,:]
     params = params[args.epsilon_start::args.epsilon_stride]
     if not args.reference == None:
         ref_data = np.loadtxt(args.reference)
@@ -144,10 +144,9 @@ def get_args():
     par.add_argument("--center", default=False, action="store_true")
     par.add_argument("--log", default=False, action="store_true")
     par.add_argument("--max_residue", default=292, type=int)
-    par.add_argument("--only", default=None, args="+", help="specify which types of atom contacts you want")
     par.add_argument("--reference", default=None, help="Specify a reference set of pairs")
-    par.add_argument("--epislon_stride", default=1, help="specify every nth term in the array")
-    par.add_argument("--epsilon_start", default=0, help="specify starting epsilon to use")
+    par.add_argument("--epsilon_stride", default=1, type=int, help="specify every nth term in the array")
+    par.add_argument("--epsilon_start", default=0, type=int, help="specify starting epsilon to use")
     parser = argparse.ArgumentParser(description="For Deciding how to plot the results")
     sub = parser.add_subparsers(dest="method")
     
