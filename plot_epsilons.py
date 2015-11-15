@@ -60,7 +60,7 @@ def single_run(args):
 
 def plot_spread(epsilons, title, args):
     plt.figure()
-    plt.hist(epsilons, 50, alpha=0.75)
+    plt.hist(epsilons[epsilons != 0], 50, alpha=0.75)
     plt.xlabel("epsilon",fontsize=20)
     plt.ylabel("number",fontsize=20)
     plt.title("spread of epsilons", fontsize=20)
@@ -104,7 +104,7 @@ def plot_it(x, y, z, title, args, reference=None):
         for i in range(np.shape(z)[0]):
             residues[x.astype(int)[i], y.astype(int)[i]] = z[i]
         for i in range(np.shape(reference)[0]):
-            residues[reference.astype(int)[i,1],reference.astype(int)[i,0]] = 1    
+            residues[reference.astype(int)[i,0],reference.astype(int)[i,1]] = 1    
     
     residues_masked = np.ma.masked_where(residues==0, residues)
     
