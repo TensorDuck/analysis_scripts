@@ -112,7 +112,7 @@ def plot_it(x, y, z, title, args, reference=None):
     qmesh = plt.pcolormesh(edges, edges, residues_masked, vmin=zmin, vmax=zmax, cmap=ctype)
     #cp = plt.scatter(x, y, s=5, c=z, cmap=ctype, marker='o', linewidth=0., vmin=zmin, vmax=zmax)
     #cp = plt.scatter(y, x, s=5, c=z, cmap=ctype, marker='o', linewidth=0., vmin=zmin, vmax=zmax)
-
+    plt.plot([0, args.max_residue],[0, args.max_residue], color='k', linewidth=2)
     plt.axis([0, args.max_residue, 0, args.max_residue])
     cb = plt.colorbar(qmesh)
     cb.set_label("epsilons", size=16)
