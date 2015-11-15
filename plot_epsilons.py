@@ -26,8 +26,8 @@ def direc_run(args):
             x = pairs[:,1]
             title = "T%d-I%d" % (temp, i)
             os.chdir(args.savedir)
-            plot_it(x,y, params, title, args, reference=ref_data)
             plot_spread(params, title, args)
+            plot_it(x,y, params, title, args, reference=ref_data)
             os.chdir(cwd)
             if np.max(params) > maxz:
                 maxz = np.max(params)
@@ -102,9 +102,9 @@ def plot_it(x, y, z, title, args, reference=None):
             residues[y.astype(int)[i], x.astype(int)[i]] = z[i]
     else:
         for i in range(np.shape(z)[0]):
-            residues[x.astype(int)[i], y.astype(int)[i]] = z[i]
+            residues[y.astype(int)[i], x.astype(int)[i]] = z[i]
         for i in range(np.shape(reference)[0]):
-            residues[reference.astype(int)[i,0],reference.astype(int)[i,1]] = 1    
+            residues[reference.astype(int)[i,1],reference.astype(int)[i,0]] = 1    
     
     residues_masked = np.ma.masked_where(residues==0, residues)
     
