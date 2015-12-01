@@ -5,13 +5,15 @@ fnew = open("pairwise_params_nonnative", "w")
 fparams = open("model_params_nonnative", "w")
 pdb = open("Native.pdb", "r")
 
-residue_list = []
-for line in pdb:
-    residue_list.append(pdb.strip.split()[3])
-
 fnew.write(fold.readline())
 fparams.write("# model params\n")
 maxresidue = 58
+
+residue_list = []
+for i in range(maxresidue):
+    line = pdb.readline()
+    residue_list.append(line.strip().split()[3])
+
 
 residue_volumes = {'ALA': 67.0, 'ARG': 148.0, 'ASN': 96.0,
                 'ASP': 91.0, 'CYS': 86.0, 'GLN': 114.0,
@@ -23,34 +25,34 @@ residue_volumes = {'ALA': 67.0, 'ARG': 148.0, 'ASN': 96.0,
 
 residue_volume_mod = {key:(residue_volumes[key]/ ((4.0*3.14159)/3.0))**(1.0/3.0) for key in residue_volumes} 
 
-residue_radii_new = {key:residue_volume_mod*1.4 for key in residue_volume_mod}
+residue_radii_new = {key:residue_volume_mod[key]*.14 for key in residue_volume_mod}
 
 count = 0
 parcount = 0
 cur_list = fold.readline().strip().split()
+native_contact = [int(cur_list[0]), int(cur_list[1])]
 
 for i in range(maxresidue):
     for j in range(maxresidue):
-        radii_a = residue_radii_new[residue_list[i+1]]
-        radii_b = residue_radii_new[residue_list[j+1]]
+        radii_a = residue_radii_new[residue_list[i]]
+        radii_b = residue_radii_new[residue_list[j]]
         excvol = (radii_a*radii_b)**0.5
         if i+1 == native_contact[0] and  j+1 == native_contact[1]:
             native = True
-            minima = float(cur_list[5])
-            fold.readline()
+            minima = float(cur_list[4])
             cur_list = fold.readline().strip().split()
             try:
                 native_contact = [int(cur_list[0]), int(cur_list[1])]
             except:
-                native_contact=[max_residue+1, max_residue+1]
+                native_contact=[maxresidue+1, maxresidue+1]
             
         else:
             native=False
             minima = excvol+0.2
         if j-i > 3:
-            fnew.write("%5d%5d%7d%5d%11.5f%12.5f%12.5f\n" %(i+1, j+1, parcount, 8, excvol, minima, 0.05)
+            fnew.write("%5d%5d%7d%5d%11.5f%12.5f%12.5f\n" %(i+1, j+1, parcount, 8, excvol, minima, 0.05))
             parcount += 1 
-            fnew.write("%5d%5d%7d%5d%11.5f%12.5f\n" %(i+1, j+1, parcount, 4, minima, 0.05)
+            fnew.write("%5d%5d%7d%5d%11.5f%12.5f\n" %(i+1, j+1, parcount, 4, minima, 0.05))
             parcount += 1
             if native:
                 fparams.write("   1.00000\n   1.00000\n")
