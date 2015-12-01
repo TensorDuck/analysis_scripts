@@ -3,6 +3,11 @@
 fold = open("pairwise_params", "r")
 fnew = open("pairwise_params_nonnative", "w")
 fparams = open("model_params_nonnative", "w")
+pdb = open("Native.pdb", "r")
+
+residue_list = []
+for line in pdb:
+    residue_list.append(pdb.strip.split()[3])
 
 fnew.write(fold.readline())
 fparams.write("# model params\n")
@@ -22,7 +27,7 @@ residue_radii_new = {key:residue_volume_mod*1.4 for key in residue_volume_mod}
 
 count = 0
 parcount = 0
-cur_list = fold.readline()
+cur_list = fold.readline().strip().split()
 
 for i in range(maxresidue):
     for j in range(maxresidue):
@@ -31,11 +36,11 @@ for i in range(maxresidue):
         excvol = (radii_a*radii_b)**0.5
         if i+1 == native_contact[0] and  j+1 == native_contact[1]:
             native = True
-            minima = float(cur_list[38:44])
-            cur_list = fold.readline()
-            cur_list = fold.readline()
+            minima = float(cur_list[5])
+            fold.readline()
+            cur_list = fold.readline().strip().split()
             try:
-                native_contact = [int(cur_list[0:4]), int(cur_list[6:10])]
+                native_contact = [int(cur_list[0]), int(cur_list[1])]
             except:
                 native_contact=[max_residue+1, max_residue+1]
             
