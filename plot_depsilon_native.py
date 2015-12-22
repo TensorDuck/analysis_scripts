@@ -11,7 +11,7 @@ import numpy as np
 import model_builder as mdb
 import os as os
 import matplotlib.pyplot as plt
-import matplotlib.mpl as mpl
+
 
 def plot_epsilons(bottom, nameb, modelA):
     
