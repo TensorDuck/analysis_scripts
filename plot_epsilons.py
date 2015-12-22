@@ -11,7 +11,7 @@ def direc_run(args):
     cwd = os.getcwd()
     maxz = 0
     minz = 1000
-    repulsive = [5]
+    repulsive = 5
     if not args.reference == None:
         ref_data = np.loadtxt(args.reference)
     else:
@@ -28,7 +28,7 @@ def direc_run(args):
             ##eliminate terms that are too small
             params[params < args.lower_bound] = 0
             interaction_type = pairs[:,2] #if interaction type is repulsive, then turn param negative
-            params[interaction_type in repulsive] *= -1.0
+            params[interaction_type == repulsive] *= -1.0
             title = "T%d-I%d" % (temp, i)
             os.chdir(args.savedir)
             plot_spread(params, title, args)
