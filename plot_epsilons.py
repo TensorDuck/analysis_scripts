@@ -109,7 +109,7 @@ def plot_it(x, y, z, title, args, reference=None):
         for i in range(np.shape(z)[0]):
             residues[y.astype(int)[i], x.astype(int)[i]] = z[i]
         for i in range(np.shape(reference)[0]):
-            residues[reference.astype(int)[i,1],reference.astype(int)[i,0]] = zmax    
+            residues[reference.astype(int)[i,1],reference.astype(int)[i,0]] = 1   
     
     residues_masked = np.ma.masked_where(residues==0, residues)
     
