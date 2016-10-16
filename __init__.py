@@ -11,11 +11,12 @@ matplotlib.use("Agg")
 #import plot_epsilon_native
 #import FRET_experiment
 
-
-import plot_depsilon_native
-import free_energy_plot_1d
-import free_energy_plot_2d
-import plot_epsilons
+#import free_energy_plot_1d
+#import free_energy_plot_2d
 import make_index
+import phi_values
+import plot_depsilon_native
+import plot_epsilons
 import plot_package
 import traj_trace
+
