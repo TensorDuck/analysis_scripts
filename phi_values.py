@@ -12,6 +12,15 @@ import numpy as np
 import mdtraj as md
 
 def compute_phi_gradual(traj, relevant_native_potentials, periodic=False):
+    #Helper function for computing phi values using 
+    #compute_contact_probability_gradual
+    num_pairs = len(relevant_native_potentials)
+    contact_probability = compute_contact_probability_gradual(traj, relevant_native_potentials, periodic=periodic)
+    phi = np.sum(contact_probability) / num_pairs
+    
+    return phi
+    
+def compute_contact_probability_gradual(traj, relevant_native_potentials, periodic=False):
     #assumes traj is the correct traj
     #periodic is almost always False, unless for all-atom simulation
     native_pairs = []
@@ -21,7 +30,9 @@ def compute_phi_gradual(traj, relevant_native_potentials, periodic=False):
     distances = md.compute_distances(traj, native_pairs, periodic=periodic)
     assert np.shape(distances)[1] == num_pairs
     
-    total_prob = 0.
+
+    total_prob = []
+
     for idx in range(num_pairs):
         prob = 0.
         r0 = relevant_native_potentials[idx].r0
@@ -33,10 +44,12 @@ def compute_phi_gradual(traj, relevant_native_potentials, periodic=False):
                 prob -= val
         
         prob /= traj.n_frames
-        total_prob += prob
+
+        total_prob.append(prob)
     
-    phi_value = total_prob / num_pairs
-    return phi_value
+    total_prob = np.array(total_prob)
+    
+    return total_prob
 
 def find_specific_native_potentials(phi_residue_idx, potentials_list, native_list):
     #assumes phi_residue_idx is already indexed the python way (-1)
