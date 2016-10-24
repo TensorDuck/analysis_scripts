@@ -36,7 +36,7 @@ def compute_ddG_flavored(traj, relevant_native_potentials, start, end, periodic=
         prob = contact_probability[i]
         res1 = pot.atmi.residue.name
         res2 = pot.atmj.residue.name
-        if not res1 == start or res2 == start:
+        if not (res1 == start or res2 == start):
             error_str = "start residue and potential residues do not match\n"
             error_str += "contacts: %s%d %s%d\n" % (res1, pot.atmi.index, res2, pot.atmj.index)
             error_str += "expected residue: %s" % start
@@ -55,7 +55,7 @@ def compute_ddG_flavored(traj, relevant_native_potentials, start, end, periodic=
         ddE = energy_end - energy_start
 
         total_ddG += ddE * prob
-        
+
     return total_ddG
 
 def compute_contact_probability_gradual(traj, relevant_native_potentials, periodic=False):
