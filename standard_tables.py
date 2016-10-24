@@ -12,6 +12,7 @@ amino_acid_1code_to_3code = {"G":"Gly", "C":"Cys", "A":"Ala", "M":"Met", "V":"Va
     "N":"Asn", "Y":"Tyr", "Q":"Gln"}
 
 amino_acid_1code_to_3code_uppercase = {key:amino_acid_1code_to_3code[key].upper() for key in amino_acid_1code_to_3code}
+amino_acid_3code_to_1code_uppercase = {amino_acid_1code_to_3code_uppercase[key]:key for key in amino_acid_1code_to_3code_uppercase}
 mj_contact_energies = np.loadtxt("Miyazawa-Jernigan_Potentials.dat")
 
 assert np.shape(mj_contact_energies)[0] == 20
