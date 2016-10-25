@@ -101,6 +101,20 @@ def find_specific_native_potentials(phi_residue_idx, potentials_list, native_lis
                 affected_potentials.append(pot)
     return affected_potentials
 
+def find_all_potentials(phi_residue_idx, potentials_list):
+    #assumes phi_residue_idx is already indexed the python way (-1)
+    #potentials_list is a list of pairwise interactison from mdb
+    #will return all potentials that fall into accepted_potentials
+
+    accepted_potentials = ["LJ12GAUSSIAN", "LJ1210"]
+
+    affected_potentials = []
+    for pot in potentials_list:
+        if pot.atmi.residue.index == phi_residue_idx or pot.atmj.residue.index == phi_residue_idx:
+            if pot.prefix_label in accepeted_potentials:
+                affected_potentials.append(pot)
+    return affected_potentials
+
 def check_idx_list(idx, jdx, native_list):
     #assumes idx, jdx and native_list are all python formatted (-1)
     found = False
