@@ -22,7 +22,7 @@ def compute_phi_gradual(traj, relevant_native_potentials, periodic=False):
 
     return phi
 
-def compute_ddG_flavored(traj, relevant_native_potentials, start, end, periodic=False):
+def compute_ddG_flavored(traj, relevant_native_potentials, start, end, periodic=False, debug=False):
     #helper function for computing the phi values with MJ potentials
 
     num_pairs = len(relevant_native_potentials)
@@ -53,7 +53,11 @@ def compute_ddG_flavored(traj, relevant_native_potentials, start, end, periodic=
         energy_end = st.mj_contact_energies[pos1_final,pos2]
 
         ddE = energy_end - energy_start
-
+        if debug:
+            if dde < 0:
+                print "Mutant improves contact"
+            else:
+                print "Mutant worsens contact"
         total_ddG += ddE * prob
 
     return total_ddG
