@@ -115,7 +115,7 @@ def find_all_potentials(phi_residue_idx, potentials_list):
     affected_potentials = []
     for pot in potentials_list:
         if pot.atmi.residue.index == phi_residue_idx or pot.atmj.residue.index == phi_residue_idx:
-            if pot.prefix_label in accepeted_potentials:
+            if pot.prefix_label in accepted_potentials:
                 affected_potentials.append(pot)
     return affected_potentials
 
