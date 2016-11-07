@@ -55,9 +55,11 @@ def compute_ddG_flavored(traj, relevant_native_potentials, start, end, periodic=
         ddE = energy_end - energy_start
         if debug:
             if ddE < 0:
-                print "Mutant improves contact"
+                print "Mutant improves contact: %f to %f" % (energy_start, energy_end)
+                print "code: %d %d to %d %d" % (pos1, pos2, pos1_final, pos2)
             else:
-                print "Mutant worsens contact"
+                print "Mutant worsens contact: %f to %f" % (energy_start, energy_end)
+                print "code: %d %d to %d %d" % (pos1, pos2, pos1_final, pos2)
         total_ddG += ddE * prob
 
     return total_ddG
