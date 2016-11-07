@@ -90,7 +90,7 @@ def compute_contact_probability_gradual(traj, relevant_native_potentials, period
         total_prob.append(prob)
 
     total_prob = np.array(total_prob)
-
+    assert not np.any(total_prob < 0)
     return total_prob
 
 def find_specific_native_potentials(phi_residue_idx, potentials_list, native_list):
