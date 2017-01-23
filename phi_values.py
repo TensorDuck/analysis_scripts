@@ -17,7 +17,7 @@ def compute_phi_gradual(traj, relevant_native_potentials, periodic=False):
     #Helper function for computing phi values using
     #compute_contact_probability_gradual
     num_pairs = len(relevant_native_potentials)
-    contact_probability = compute_contact_probability_gradual(traj, relevant_native_potentials, periodic=periodic)
+    contact_probability = compute_contact_probability(traj, relevant_native_potentials, periodic=periodic)
     phi = np.sum(contact_probability) / num_pairs
 
     return phi
@@ -26,7 +26,7 @@ def compute_ddG_flavored(traj, relevant_native_potentials, start, end, periodic=
     #helper function for computing the phi values with MJ potentials
 
     num_pairs = len(relevant_native_potentials)
-    contact_probability = compute_contact_probability_gradual(traj, relevant_native_potentials, periodic=periodic)
+    contact_probability = compute_contact_probability(traj, relevant_native_potentials, periodic=periodic)
     assert np.shape(contact_probability)[0] == num_pairs
 
     total_ddG = 0.0
@@ -64,7 +64,7 @@ def compute_ddG_flavored(traj, relevant_native_potentials, start, end, periodic=
 
     return total_ddG
 
-def compute_contact_probability_gradual(traj, relevant_native_potentials, periodic=False):
+def compute_contact_probability(traj, relevant_native_potentials, periodic=False, gradual=False):
     #assumes traj is the correct traj
     #periodic is almost always False, unless for all-atom simulation
     native_pairs = []
@@ -80,13 +80,20 @@ def compute_contact_probability_gradual(traj, relevant_native_potentials, period
     for idx in range(num_pairs):
         prob = 0.
         r0 = relevant_native_potentials[idx].r0
-        for jdx in range(traj.n_frames):
-            if distances[jdx,idx] < r0:
-                prob += 1.
-            else:
-                val = relevant_native_potentials[idx].dVdeps(distances[jdx,idx])
-                prob -= val
-
+        if gradual:
+            for jdx in range(traj.n_frames):
+                if distances[jdx,idx] < r0:
+                    prob += 1.
+                else:
+                    val = relevant_native_potentials[idx].dVdeps(distances[jdx,idx])
+                    prob -= val
+        else:
+            for jdx in range(traj.n_frames):
+                cutoff = 1.25 * r0
+                if distances[jdx,idx] < cutoff:
+                    prob += 1.
+                else:
+                    pass
         prob /= traj.n_frames
 
         total_prob.append(prob)
