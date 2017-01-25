@@ -14,19 +14,22 @@ import standard_tables as st
 
 
 def compute_phi_gradual(traj, relevant_native_potentials, periodic=False):
+    return compute_phi_probability(traj, relevant_native_potentials, gradual=True):
+
+def compute_phi_probability(traj, relevant_native_potentials, periodic=False, gradual=False):
     #Helper function for computing phi values using
     #compute_contact_probability_gradual
     num_pairs = len(relevant_native_potentials)
-    contact_probability = compute_contact_probability(traj, relevant_native_potentials, periodic=periodic)
+    contact_probability = compute_contact_probability(traj, relevant_native_potentials, periodic=periodic, gradual=gradual)
     phi = np.sum(contact_probability) / num_pairs
 
     return phi
 
-def compute_ddG_flavored(traj, relevant_native_potentials, start, end, periodic=False, debug=False):
+def compute_ddG_flavored(traj, relevant_native_potentials, start, end, periodic=False, debug=False, gradual=False):
     #helper function for computing the phi values with MJ potentials
 
     num_pairs = len(relevant_native_potentials)
-    contact_probability = compute_contact_probability(traj, relevant_native_potentials, periodic=periodic)
+    contact_probability = compute_contact_probability(traj, relevant_native_potentials, periodic=periodic, gradual=gradual)
     assert np.shape(contact_probability)[0] == num_pairs
 
     total_ddG = 0.0
