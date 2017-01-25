@@ -14,7 +14,7 @@ import standard_tables as st
 
 
 def compute_phi_gradual(traj, relevant_native_potentials, periodic=False):
-    return compute_phi_probability(traj, relevant_native_potentials, gradual=True):
+    return compute_phi_probability(traj, relevant_native_potentials, gradual=True)
 
 def compute_phi_probability(traj, relevant_native_potentials, periodic=False, gradual=False):
     #Helper function for computing phi values using
