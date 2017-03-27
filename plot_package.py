@@ -46,6 +46,7 @@ def plot_simple(x, y, label, title, xaxis_label, yaxis_label, axis=None, save_fi
     plt.xlabel(xaxis_label, fontsize=25)
     plt.ylabel(yaxis_label,fontsize=25)
     plt.title(title, fontsize=25)
+    plt.tight_layout()
     
     plt.savefig("%s.png"%save_file)
     if show:
