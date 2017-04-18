@@ -2,6 +2,16 @@ import numpy as np
 import mdtraj as md
 import matplotlib.pyplot as plt
 
+class solution_container(object):
+    def __init__(self, contacts_list, contact_probability_list, distance_pairs, hamming_matrix, factor_distances, shift_distances):
+        self.contacts_list = contacts_list
+        self.contact_probability_list = contact_probability_list
+        self.distance_pairs = distance_pairs
+        self.hamming_matrix = hamming_matrix
+        self.factor_distances = factor_distances #distances as a factor of r0
+        self.shift_distances = shift_distances #distances as a difference of r0
+
+
 def plot_probability(pairs, n_residues, save_file, native_pairs=None, probability=None, native_probability=None):
     """ Plot the contact probability in a grid
 
@@ -68,7 +78,7 @@ def plot_probability(pairs, n_residues, save_file, native_pairs=None, probabilit
     plt.axis([0.5, n_residues+0.5, 0.5, n_residues+0.5])
     plt.savefig(save_file)
 
-def compare_contacts(pairs_1, pairs_2, probability_1=None, probability_2=None, hamming=False):
+def compare_contacts(pairs_1, pairs_2, probability_1=None, probability_2=None, hamming=False, no_abs=False):
     """ Compare two sets of contacts and returns a distance_matrix.
     Euclidean Distance : hamming = False
         Computes a euclidean distance between the two list of contacts, by
@@ -105,8 +115,15 @@ def compare_contacts(pairs_1, pairs_2, probability_1=None, probability_2=None, h
             compare_matrix[i,j] = probability_1[idx]
 
     for idx in range(np.shape(pairs_2)[0]): #for pairs_2
-        i = pairs_2[idx,0]
-        j = pairs_2[idx,1]
+        try:
+            i = pairs_2[idx,0]
+            j = pairs_2[idx,1]
+        except:
+            print "ERROR"
+            print pairs_2
+            print type(pairs_2)
+            print idx
+            raise
         assert i < j
         if hamming:
             compare_matrix[j,i] = 1
@@ -116,8 +133,11 @@ def compare_contacts(pairs_1, pairs_2, probability_1=None, probability_2=None, h
     total = 0. #treat like euclidean distance
     for i in range(num_make):
         for j in range(i+1, num_make):
-            diff = compare_matrix[i,j] - compare_matrix[j,i]
-            total += diff ** 2
+            diff =  compare_matrix[j,i] - compare_matrix[i,j]
+            if no_abs:
+                total += diff
+            else:
+                total += diff ** 2
 
     if not hamming:
         total = np.sqrt(total)
@@ -195,10 +215,11 @@ def compute_aa_contacts(traj, distance_cutoff=0.35, contact_probability_cutoff=0
             contacts_list.append(distance_pairs[distance_index])
             contact_probability_list.append(contact_probability)
 
-    return contacts_list, contact_probability_list, distance_pairs, hamming_matrix
 
-def get_cg_contact_params():
-    f = open("contacts_by_residue_ww_domain.dat", "r")
+    return solution_container(contacts_list, contact_probability_list, distance_pairs, hamming_matrix, None, None)
+
+def get_cg_contact_params(data_file="contacts_by_residue_ww_domain.dat"):
+    f = open(data_file, "r")
 
     residue_pairs = []
     atom_pairs = []
@@ -220,11 +241,22 @@ def get_cg_contact_params():
 
     return residue_pairs, atom_pairs, r0
 
-def run_cg_computations(traj, compute_pairs, r0, num_total, hamming_matrix=None):
-    distances = md.compute_distances(traj, compute_pairs, periodic=False)
-    num_total = np.shape(distances)[0]
+def run_cg_computations(traj, compute_pairs, r0, r_original, num_total, hamming_matrix=None, shift_distances=None, factor_distances=None):
+    md_distances = md.compute_distances(traj, compute_pairs, periodic=False)
+    num_total = np.shape(md_distances)[0]
+    data_shape = np.shape(md_distances)
+    distances = np.zeros(data_shape)
+    shift_dist = np.zeros(data_shape)
+    factor_dist = np.zeros(data_shape)
     for idx in range(num_total):
-        distances[idx,:] = distances[idx,:] - r0
+        distances[idx,:] = md_distances[idx,:] - r0
+        shift_dist[idx,:] = md_distances[idx,:] - r_original
+        factor_dist[idx,:] = md_distances[idx,:] / r_original
+
+    this_factor_distance = np.amin(factor_dist, axis=1)
+    this_shift_distance = np.amin(shift_dist, axis=1)
+    assert np.shape(this_factor_distance)[0] == num_total
+    assert np.shape(this_shift_distance)[0] == num_total
 
     contact = np.where(distances <= 0)
     not_contact = np.where(distances > 0)
@@ -245,17 +277,27 @@ def run_cg_computations(traj, compute_pairs, r0, num_total, hamming_matrix=None)
     else:
         hamming_matrix.append(one_d_hamming)
 
+    if shift_distances is None:
+        shift_distances = [this_shift_distance]
+    else:
+        shift_distances.append(this_shift_distance)
+
+    if factor_distances is None:
+        factor_distances = [this_factor_distance]
+    else:
+        factor_distances.append(this_factor_distance)
 
 
-    return hamming_matrix, contact_probability
+    return hamming_matrix, factor_distances, shift_distances, contact_probability
 
 def compute_cg_contacts(traj, residue_pairs, atom_pairs, r0, factor=None, shift=None, probability_cutoff=0.3):
     max_count = len(residue_pairs)
-    if not shift is None:
-        r0 = r0 + shift
+    r_start = np.copy(r0)
     if not factor is None:
         r0 = r0*factor
-        
+    if not shift is None:
+        r0 = r0 + shift
+
     contacts_list = []
     contact_probability_list = []
 
@@ -266,6 +308,8 @@ def compute_cg_contacts(traj, residue_pairs, atom_pairs, r0, factor=None, shift=
 
     distance_pairs = []
     hamming_matrix = None
+    shift_distances = None
+    factor_distances = None
     num_total = traj.n_frames
     while go:
         if current_residue_pair[0] ==  residue_pairs[count][0] and current_residue_pair[1] == residue_pairs[count][1]:
@@ -279,8 +323,9 @@ def compute_cg_contacts(traj, residue_pairs, atom_pairs, r0, factor=None, shift=
 
             compute_pairs = atom_pairs[compute_idxs, :]
             r0_comparison = r0[compute_idxs]
+            r_original = r_start[compute_idxs]
 
-            hamming_matrix, contact_probability = run_cg_computations(traj, compute_pairs, r0_comparison, num_total, hamming_matrix=hamming_matrix)
+            hamming_matrix, factor_distances, shift_distances, contact_probability = run_cg_computations(traj, compute_pairs, r0_comparison, r_original, num_total, hamming_matrix=hamming_matrix, factor_distances=factor_distances, shift_distances=shift_distances)
 
             if contact_probability > probability_cutoff:
                 contacts_list.append(current_residue_pair)
@@ -298,14 +343,17 @@ def compute_cg_contacts(traj, residue_pairs, atom_pairs, r0, factor=None, shift=
 
     compute_pairs = atom_pairs[compute_idxs, :]
     r0_comparison = r0[compute_idxs]
+    r_original = r_start[compute_idxs]
 
-    hamming_matrix, contact_probability = run_cg_computations(traj, compute_pairs, r0_comparison, num_total, hamming_matrix=hamming_matrix)
+    hamming_matrix, factor_distances, shift_distances, contact_probability = run_cg_computations(traj, compute_pairs, r0_comparison, r_original, num_total, hamming_matrix=hamming_matrix, factor_distances=factor_distances, shift_distances=shift_distances)
 
     if contact_probability > probability_cutoff:
         contacts_list.append(current_residue_pair)
         contact_probability_list.append(contact_probability)
 
     hamming_matrix = np.array(hamming_matrix).transpose()
+    factor_distances = np.array(factor_distances).transpose()
+    shift_distances = np.array(shift_distances).transpose()
 
     try:
         assert np.shape(hamming_matrix)[0] == num_total
@@ -313,4 +361,5 @@ def compute_cg_contacts(traj, residue_pairs, atom_pairs, r0, factor=None, shift=
         print np.shape(hamming_matrix)
         print num_total
         raise
-    return contacts_list, contact_probability_list, distance_pairs, hamming_matrix
+
+    return solution_container(contacts_list, contact_probability_list, distance_pairs, hamming_matrix, factor_distances, shift_distances)
