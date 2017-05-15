@@ -157,8 +157,15 @@ def get_traj_sliced(traj, hmm_memberships, state_idx, dtraj_all, state_cutoff=0.
     return traj[rows]
 
 def get_rows_sliced(hmm_memberships, state_idx, dtraj_all, state_cutoff=0.95):
-    """ Return trajectory object sliced for specific states"""
-    selected_states = np.where(hmm_memberships[:,state_idx] > state_cutoff)[0]
+    """ Return row for a dtraj sliced for specific states
+    set state_cutoff to -1 to take the maximum index of each row instead """
+    if state_cutoff == -1:
+        max_states = np.argmax(hmm_memberships, axis=1)
+        selected_states = np.where(max_states == state_idx)[0]
+    else:
+        if state_cutoff < 0.5:
+            print "Warning: cutoff less than 0.5 could lead to a non-unique state assignment"
+        selected_states = np.where(hmm_memberships[:,state_idx] > state_cutoff)[0]
     for count,index in enumerate(selected_states):
         if count == 0:
             rows = np.where(dtraj_all == index)[0]
