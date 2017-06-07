@@ -33,7 +33,11 @@ def plot_simple(x, y, label, title, xaxis_label, yaxis_label, axis=None, save_fi
 
     #plot it!
     for i in range(np.shape(label)[0]):
-        plt.plot(x[i], y[i], alpha=0.75, linewidth=2, linestyle=linetype[i/6], color=colors[i], label="%s"%label[i], marker="o")
+        if reference and i==0:
+            alpha_value = 1.0
+        else:
+            alpha_value = 0.75
+        plt.plot(x[i], y[i], alpha=alpha_value, linewidth=2, linestyle=linetype[i/6], color=colors[i], label="%s"%label[i], marker="o")
         maxvalue = return_max(maxvalue, np.max(y[i]))
         maxcenter = return_max(maxcenter, np.max(x[i]))
 
