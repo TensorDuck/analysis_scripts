@@ -7,7 +7,7 @@ import matplotlib
 matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
-
+import matplotlib.lines as mlines
 
 def return_max(cmax, nmax):
     if cmax < nmax:
@@ -126,3 +126,71 @@ def multiplot_stacked(x, y, labels, xaxis_label, yaxis_label, axis=None, save_fi
 
     if not save_file is None:
         plt.savefig(save_file)
+
+def plot_timescales(lags_list, timescales_list, labels, save_name, time_step=1., mark_lines=None, units=None, manual_x_max=None):
+    """ Plot timescales versus lag time with the nice gray area at the bottom
+
+    """
+
+    colors = ["blue", "red", "orange", "green", "magenta", "yellow", "cyan"]
+
+    fig = plt.figure()
+    assert len(lags_list) == len(timescales_list)
+    assert len(lags_list) == len(labels)
+
+    all_linestyles = ["-", "--", "."]
+    label_lines = []
+    max_time = np.max(timescales_list[0])
+    min_time = np.min(timescales_list[0])
+    for count in range(len(lags_list)):
+        all_timescales = timescales_list[count]
+        lags = lags_list[count]
+        this_line = all_linestyles[count%len(all_linestyles)]
+        try:
+            retain = np.shape(all_timescales)[1]
+        except:
+            retain = 1 # thsi is terrible code, but it works
+            print np.shape(all_timescales)
+        if retain == 1:
+            plt.semilogy(lags*time_step, all_timescales*time_step, marker="o", linestyle=this_line, linewidth=2.0, color=colors[0])
+        else:
+            for i in range(retain):
+                plt.semilogy(lags*time_step, all_timescales[:,i]*time_step, marker="o", linestyle=this_line, linewidth=2.0, color=colors[i])
+        max_timescales = np.max(all_timescales)
+        min_timescales = np.min(all_timescales)
+        if max_time < max_timescales:
+            max_time = max_timescales
+        if min_time > min_timescales:
+            min_time = min_timescales
+
+        label_lines.append(mlines.Line2D([0],[0], linewidth=2, color="black", linestyle=this_line))
+
+    miny = min_time * time_step * 0.1
+    maxy = max_time * time_step * 3.
+
+    if manual_x_max is not None:
+        maxx = manual_x_max
+    else:
+        maxx = np.max(np.array(lags)) * time_step
+
+    if mark_lines is not None:
+        yrange = [miny, maxy]
+        for step in mark_lines:
+            plt.plot([step*time_step, step*time_step], yrange, label="%d Time Steps" % step, linestyle="--")
+
+    # make the legend
+    fig.axes[0].legend(label_lines, labels, loc="lower right")
+
+    xspacing = np.arange(0, maxx*1.1, maxx / 1000. )
+    num_fill = np.shape(xspacing)[0]
+    yhigh = xspacing
+    ylow = np.ones(num_fill) * miny
+    plt.fill_between(xspacing, ylow, yhigh, where=yhigh>=ylow, interpolate=True, color="grey")
+
+    plt.axis([0, maxx, miny, maxy])
+
+    if units is None:
+        units = "steps"
+    plt.xlabel("Lag Time (%s)" % units)
+    plt.ylabel("Timescales (%s)" % units)
+    plt.savefig(save_name)
