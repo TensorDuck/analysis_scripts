@@ -166,6 +166,35 @@ def get_rows_sliced(hmm_memberships, state_idx, dtraj_all, state_cutoff=0.95):
         if state_cutoff < 0.5:
             print "Warning: cutoff less than 0.5 could lead to a non-unique state assignment"
         selected_states = np.where(hmm_memberships[:,state_idx] > state_cutoff)[0]
+    rows = []
+    for count,index in enumerate(selected_states):
+        if count == 0:
+            rows = np.where(dtraj_all == index)[0]
+        else:
+            rows = np.append(rows, np.where(dtraj_all == index)[0])
+
+    return rows
+
+def get_rows_bounded(memberships, state_idx, dtraj_all, low_cutoff=0.45, high_cutoff=0.55):
+    temp_comparison = np.zeros((np.shape(memberships)[0],2))
+    temp_comparison[:,0] = memberships[:,state_idx] > low_cutoff
+    temp_comparison[:,1] = memberships[:,state_idx] < high_cutoff
+    selected_states = np.where(np.all(temp_comparison, axis=1))[0]
+    rows = []
+    for count,index in enumerate(selected_states):
+        if count == 0:
+            rows = np.where(dtraj_all == index)[0]
+        else:
+            rows = np.append(rows, np.where(dtraj_all == index)[0])
+
+    return rows
+
+def get_committor_bounded(committor, dtraj_all, low_cutoff=0.45, high_cutoff=0.55):
+    temp_comparison = np.zeros((np.shape(committor)[0],2))
+    temp_comparison[:,0] = committor >= low_cutoff
+    temp_comparison[:,1] = committor <= high_cutoff
+    selected_states = np.where(np.all(temp_comparison, axis=1))[0]
+    rows = []
     for count,index in enumerate(selected_states):
         if count == 0:
             rows = np.where(dtraj_all == index)[0]

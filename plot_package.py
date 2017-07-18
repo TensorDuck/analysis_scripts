@@ -127,7 +127,15 @@ def multiplot_stacked(x, y, labels, xaxis_label, yaxis_label, axis=None, save_fi
     if not save_file is None:
         plt.savefig(save_file)
 
-def plot_timescales(lags_list, timescales_list, labels, save_name, time_step=1., mark_lines=None, units=None, manual_x_max=None):
+def determine_number_states(check_array):
+    try:
+        retain = np.shape(check_array)[1]
+    except:
+        retain = 1 # thsi is terrible code, but it works
+
+    return retain
+
+def plot_timescales(lags_list, timescales_list, labels, save_name, time_step=1., mark_lines=None, units=None, manual_x_max=None, confidence_lags=None, confidence_interval=None):
     """ Plot timescales versus lag time with the nice gray area at the bottom
 
     """
@@ -139,6 +147,19 @@ def plot_timescales(lags_list, timescales_list, labels, save_name, time_step=1.,
     assert len(lags_list) == len(labels)
 
     all_linestyles = ["-", "--", "."]
+
+    if confidence_interval is not None:
+        this_line = all_linestyles[0]
+        lower = confidence_interval[0]
+        upper = confidence_interval[1]
+        lags = lags_list[count]
+        retain = determine_number_states(lower)
+        if retain == 1:
+            plt.fill_between(confidence_lags, lower, upper, where=yhigh>=ylow, interpolate=True, color=colors[0],alpha=0.5)
+        else:
+            for i in range(retain):
+                plt.fill_between(confidence_lags, lower[:,i], upper[:,i], where=yhigh>=ylow, interpolate=True, color=colors[i], alpha=0.5)
+
     label_lines = []
     max_time = np.max(timescales_list[0])
     min_time = np.min(timescales_list[0])
@@ -146,11 +167,7 @@ def plot_timescales(lags_list, timescales_list, labels, save_name, time_step=1.,
         all_timescales = timescales_list[count]
         lags = lags_list[count]
         this_line = all_linestyles[count%len(all_linestyles)]
-        try:
-            retain = np.shape(all_timescales)[1]
-        except:
-            retain = 1 # thsi is terrible code, but it works
-            print np.shape(all_timescales)
+        retain = determine_number_states(all_timescales)
         if retain == 1:
             plt.semilogy(lags*time_step, all_timescales*time_step, marker="o", linestyle=this_line, linewidth=2.0, color=colors[0])
         else:
